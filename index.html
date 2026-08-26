@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMG Project — East Pattaya Villa Configurator</title>
+<style>
+  :root{
+    --navy:#132a44;
+    --navy-2:#1c3a5e;
+    --gold:#c69a4b;
+    --gold-soft:#f4e9d8;
+    --bg:#f7f8fa;
+    --card:#ffffff;
+    --border:#e3e6eb;
+    --text:#1c2430;
+    --muted:#6b7684;
+    --green:#1f8a55;
+    --green-bg:#e8f6ee;
+    --amber:#a8710a;
+    --amber-bg:#fdf1de;
+    --red:#b3261e;
+    --red-bg:#fbeae9;
+    --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.5;
+  }
+  a{color:var(--navy-2);}
+
+  /* ---------- Password Gate ---------- */
+  #gate{
+    position:fixed;inset:0;background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);
+    display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px;
+  }
+  #gate .box{
+    background:var(--card);border-radius:var(--radius);padding:40px 36px;max-width:400px;width:100%;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center;
+  }
+  #gate h1{font-size:1.3rem;margin:0 0 6px;color:var(--navy);}
+  #gate p{color:var(--muted);font-size:.92rem;margin:0 0 22px;}
+  #gate input[type=password]{
+    width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;font-size:1rem;margin-bottom:12px;
+  }
+  #gate button{
+    width:100%;padding:12px 14px;background:var(--navy);color:#fff;border:none;border-radius:8px;
+    font-size:1rem;font-weight:600;cursor:pointer;transition:background .15s;
+  }
+  #gate button:hover{background:var(--navy-2);}
+  #gate .err{color:var(--red);font-size:.85rem;min-height:1.2em;margin-top:10px;}
+  #gate .badge{
+    display:inline-block;background:var(--gold-soft);color:#7a5b1e;font-size:.72rem;font-weight:700;
+    letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:14px;
+  }
+
+  /* ---------- Layout ---------- */
+  #app{display:none;}
+  header.site{
+    background:var(--navy);color:#fff;padding:22px 28px;
+  }
+  header.site .wrap{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+  header.site h1{margin:0;font-size:1.4rem;font-weight:700;}
+  header.site .sub{color:#c9d4e0;font-size:.9rem;margin-top:4px;}
+  .conf-banner{
+    background:var(--gold-soft);color:#7a5b1e;font-size:.78rem;font-weight:600;
+    padding:8px 28px;text-align:center;border-bottom:1px solid #e9dcbf;
+  }
+  main{max-width:1400px;margin:0 auto;padding:28px;}
+  .grid{display:grid;grid-template-columns:400px 1fr;gap:24px;align-items:start;}
+  @media (max-width:960px){.grid{grid-template-columns:1fr;}}
+
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:20px;}
+  .card h2{margin:0 0 4px;font-size:1.05rem;color:var(--navy);}
+  .card .hint{color:var(--muted);font-size:.82rem;margin:0 0 16px;}
+
+  .field{margin-bottom:18px;}
+  .field label{display:flex;justify-content:space-between;font-size:.86rem;font-weight:600;margin-bottom:6px;color:var(--text);}
+  .field label .val{color:var(--navy-2);font-weight:700;}
+  .field .tip{font-size:.76rem;color:var(--muted);margin-top:4px;}
+  input[type=range]{width:100%;accent-color:var(--gold);}
+  select{
+    width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;font-size:.88rem;background:#fff;
+  }
+  .toggle-group{display:flex;gap:8px;}
+  .toggle-group button{
+    flex:1;padding:9px 8px;border:1px solid var(--border);background:#fff;border-radius:8px;font-size:.82rem;
+    cursor:pointer;font-weight:600;color:var(--muted);transition:all .15s;
+  }
+  .toggle-group button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  details.advanced{border:1px dashed var(--border);border-radius:10px;padding:14px 16px;margin-top:6px;background:#fbfbfc;}
+  details.advanced summary{cursor:pointer;font-weight:700;font-size:.85rem;color:var(--navy-2);}
+  details.advanced .field{margin-top:16px;}
+
+  #resetBtn{
+    width:100%;padding:10px;background:#fff;border:1px solid var(--navy);color:var(--navy);border-radius:8px;
+    font-weight:700;font-size:.85rem;cursor:pointer;margin-top:4px;
+  }
+  #resetBtn:hover{background:var(--navy);color:#fff;}
+
+  /* Recommendation panel */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:6px;}
+  .kpi{background:var(--bg);border-radius:10px;padding:14px 16px;border:1px solid var(--border);}
+  .kpi .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700;}
+  .kpi .value{font-size:1.35rem;font-weight:800;color:var(--navy);margin-top:4px;}
+
+  table{width:100%;border-collapse:collapse;font-size:.86rem;}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--border);}
+  th{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  th.num{text-align:right;}
+
+  .flag{border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:.86rem;display:flex;gap:10px;align-items:flex-start;}
+  .flag .dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+  .flag.green{background:var(--green-bg);color:#155c38;}
+  .flag.green .dot{background:var(--green);}
+  .flag.amber{background:var(--amber-bg);color:#7a5107;}
+  .flag.amber .dot{background:var(--amber);}
+  .flag.red{background:var(--red-bg);color:#7d1c16;}
+  .flag.red .dot{background:var(--red);}
+
+  .assumption{
+    font-size:.76rem;color:var(--muted);background:var(--bg);border-left:3px solid var(--gold);
+    padding:8px 12px;border-radius:0 6px 6px 0;margin-top:10px;
+  }
+  .narrative{font-size:.92rem;line-height:1.6;background:var(--bg);border-radius:10px;padding:14px 16px;}
+
+  footer{max-width:1400px;margin:0 auto;padding:20px 28px 40px;color:var(--muted);font-size:.78rem;}
+  footer .conf{font-weight:700;color:var(--navy);margin-bottom:6px;}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="box">
+    <div class="badge">Confidential — Restricted Access</div>
+    <h1>SMG Project</h1>
+    <p>East Pattaya Villa Development — Investor Configurator.<br>Enter the access password to continue.</p>
+    <input type="password" id="pwInput" placeholder="Password" autocomplete="off">
+    <button id="pwBtn">Enter</button>
+    <div class="err" id="pwErr"></div>
+  </div>
+</div>
+
+<div id="app">
+  <header class="site">
+    <div class="wrap">
+      <div>
+        <h1>SMG Project — Family Housing Development, East Pattaya</h1>
+        <div class="sub">Interactive investor configurator · 50-unit luxury pool villa community · near Highgate International School Thailand &amp; Siam Country Club</div>
+      </div>
+    </div>
+  </header>
+  <div class="conf-banner">Confidential — prepared for internal investment discussion only. Figures are indicative, based on comparable-market benchmarking (24 Aug 2026), and require validation via a full feasibility study.</div>
+
+  <main>
+    <div class="grid">
+
+      <!-- ================= PART 1: INPUTS ================= -->
+      <div>
+        <div class="card">
+          <h2>Investment Committee Parameters</h2>
+          <p class="hint">Section 7 — Key Questions for the Investment Committee</p>
+
+          <div class="field">
+            <label>Confirmed land parcel size <span class="val" id="v_land">32 rai</span></label>
+            <input type="range" id="in_land" min="15" max="40" step="1" value="32">
+            <div class="tip">Report's indicative requirement: ≈31–34 rai (Section 5).</div>
+          </div>
+
+          <div class="field">
+            <label>Distance to Highgate campus gate <span class="val" id="v_dist">1,500 m</span></label>
+            <input type="range" id="in_dist" min="0" max="5000" step="100" value="1500">
+            <div class="tip">"Walking distance to school" is only a valid claim if literally true from the actual site (Section 1 caution).</div>
+          </div>
+
+          <div class="field">
+            <label>Ownership structure</label>
+            <select id="in_own">
+              <option value="freehold">Thai-Company Freehold</option>
+              <option value="leasehold">Leasehold</option>
+              <option value="condo">Condominium-titled villas</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Target sales velocity / hold period</label>
+            <select id="in_velocity">
+              <option value="fast">Fast — 12–18 months, all units</option>
+              <option value="moderate" selected>Moderate — 24–36 months, phased</option>
+              <option value="patient">Patient — 36–48+ months</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>All-in budget ceiling (land + construction) <span class="val" id="v_budget">฿1.60bn</span></label>
+            <input type="range" id="in_budget" min="0.8" max="3.0" step="0.05" value="1.60">
+          </div>
+
+          <div class="field">
+            <label>Target margin / IRR <span class="val" id="v_margin">20%</span></label>
+            <input type="range" id="in_margin" min="10" max="35" step="1" value="20">
+          </div>
+
+          <div class="field">
+            <label>Launch approach</label>
+            <div class="toggle-group">
+              <button type="button" data-val="phased" class="active">Phased (2 releases)</button>
+              <button type="button" data-val="simultaneous">Simultaneous</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Contractor / developer tier</label>
+            <select id="in_contractor">
+              <option value="top">Top-tier international 5-star</option>
+              <option value="regional">Established regional premium</option>
+              <option value="standard">Standard local builder</option>
+            </select>
+          </div>
+
+          <details class="advanced">
+            <summary>Advanced — explore beyond the committee's base questions</summary>
+            <div class="field">
+              <label>Total unit count <span class="val" id="v_units">50</span></label>
+              <input type="range" id="in_units" min="20" max="70" step="1" value="50">
+            </div>
+            <div class="field">
+              <label>Price positioning target</label>
+              <select id="in_position">
+                <option value="gapfill" selected>Fill the boutique-ultra-luxury gap (report's recommendation)</option>
+                <option value="volume">Push toward mid-luxury volume</option>
+                <option value="flagship">Push toward ultra-luxury flagship-only</option>
+              </select>
+            </div>
+          </details>
+
+          <button id="resetBtn">Reset to report's base case</button>
+        </div>
+      </div>
+
+      <!-- ================= PART 2: RECOMMENDATION ================= -->
+      <div>
+        <div class="card">
+          <h2>Recommended Configuration</h2>
+          <p class="hint">Recomputes instantly from the parameters on the left, using the report's own ratios, sizing, and pricing logic.</p>
+
+          <div class="kpis">
+            <div class="kpi"><div class="label">Total Units</div><div class="value" id="k_units">50</div></div>
+            <div class="kpi"><div class="label">Est. GDV</div><div class="value" id="k_gdv">฿2.37bn</div></div>
+            <div class="kpi"><div class="label">Blended Avg. Price</div><div class="value" id="k_avg">฿47.4M</div></div>
+            <div class="kpi"><div class="label">Land Required</div><div class="value" id="k_landreq">32.0 rai</div></div>
+          </div>
+
+          <table>
+            <thead>
+              <tr><th>Type</th><th>Beds</th><th>Living Area</th><th>Plot Size</th><th class="num">Price (THB)</th><th class="num">Units</th></tr>
+            </thead>
+            <tbody id="mixTable"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>Feasibility Flags</h2>
+          <p class="hint">Automated checks against the report's evidence and your stated assumptions.</p>
+          <div id="flags"></div>
+        </div>
+
+        <div class="card">
+          <h2>Phasing Plan</h2>
+          <div id="phasing" class="narrative"></div>
+        </div>
+
+        <div class="card">
+          <h2>Market-Gap Positioning</h2>
+          <div id="narrative" class="narrative"></div>
+        </div>
+
+        <div class="card">
+          <h2>Ownership Structure — Buyer Pool Impact</h2>
+          <div id="ownershipNote" class="narrative"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="conf">Confidential — internal investment discussion only.</div>
+    <div>Source: "Investment Recommendation — Family Housing Development, East Pattaya," prepared for the Investment Committee, 24 August 2026. Figures are indicative, based on comparable-market benchmarking, and require validation via a full feasibility study. Sources: Highgate School Thailand · Highgate School UK · Siam Motors Group · Bangkok Post · The Pattaya News · Cornerstone Real Estate · Pearl Property Pattaya · Lakeside Property Pattaya · Conrad Villas/Conrad Properties · Hipflat · Thailand-Property · FazWaz · PropertyHub.in.th · Lumina Pool Villa · Opal Village · Keller Henson · Thai Property 1 · Lazudi · PropertySpace Pattaya · Wikipedia (Siam Country Club). Figures current as of August 2026.</div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Password gate ---------------- */
+  var PASSWORD = "SMGPattaya2026";
+  var gate = document.getElementById('gate');
+  var app = document.getElementById('app');
+  var pwInput = document.getElementById('pwInput');
+  var pwBtn = document.getElementById('pwBtn');
+  var pwErr = document.getElementById('pwErr');
+
+  function unlock(){
+    gate.style.display = 'none';
+    app.style.display = 'block';
+    try{ sessionStorage.setItem('smg_unlocked','1'); }catch(e){}
+  }
+  function tryPassword(){
+    if(pwInput.value === PASSWORD){ unlock(); }
+    else { pwErr.textContent = 'Incorrect password.'; }
+  }
+  pwBtn.addEventListener('click', tryPassword);
+  pwInput.addEventListener('keydown', function(e){ if(e.key==='Enter') tryPassword(); });
+  try{
+    if(sessionStorage.getItem('smg_unlocked')==='1'){ unlock(); }
+  }catch(e){}
+
+  /* ---------------- Recommendation engine ---------------- */
+  // Constants sourced from the report (Sections 2, 3, 5, 6).
+  var TYPES = {
+    A: { beds:4, livingLabel:"450–500 sqm", livingAvg:475, plotLabel:"150–180 sq.wah", plotSqm:660,  priceLabel:"40M – 45M",  priceMid:42.5 },
+    B: { beds:5, livingLabel:"550–650 sqm", livingAvg:600, plotLabel:"180–220 sq.wah", plotSqm:800,  priceLabel:"48M – 55M",  priceMid:51.5 },
+    C: { beds:6, livingLabel:"750–900+ sqm", livingAvg:825, plotLabel:"250+ sq.wah (premium plots)", plotSqm:1100, priceLabel:"58M – 65M+", priceMid:61.5 }
+  };
+  var POSITION_RATIOS = {
+    gapfill:  { A:0.60, B:0.28, C:0.12 }, // report's base case: 30/14/6 of 50
+    volume:   { A:0.75, B:0.20, C:0.05 },
+    flagship: { A:0.20, B:0.35, C:0.45 }
+  };
+  var CONSTRUCTION_COST_PER_SQM = 55000; // Illustrative assumption — not from source report.
+  var COMMON_AREA_FACTOR = 1.325; // midpoint of report's 30–35% allowance (Section 5)
+  var SQWAH_TO_SQM = 4;
+
+  function fmtBaht(millions){
+    if(millions >= 1000) return "฿" + (millions/1000).toFixed(2) + "bn";
+    return "฿" + millions.toFixed(1) + "M";
+  }
+  function fmtBahtBn(bn){ return "฿" + bn.toFixed(2) + "bn"; }
+
+  var state = {
+    land: 32, dist: 1500, own: "freehold", velocity: "moderate",
+    budget: 1.60, margin: 20, launch: "phased", contractor: "top",
+    units: 50, position: "gapfill"
+  };
+
+  function computeMix(){
+    var ratios = POSITION_RATIOS[state.position];
+    var N = state.units;
+    var countA = Math.round(N * ratios.A);
+    var countB = Math.round(N * ratios.B);
+    var countC = N - countA - countB;
+    if(countC < 0){ countB += countC; countC = 0; }
+    return { A:countA, B:countB, C:countC };
+  }
+
+  function render(){
+    var mix = computeMix();
+    var N = state.units;
+
+    // KPIs
+    var gdvM = mix.A*TYPES.A.priceMid + mix.B*TYPES.B.priceMid + mix.C*TYPES.C.priceMid;
+    var avgM = gdvM / N;
+    var plotSqmTotal = mix.A*TYPES.A.plotSqm + mix.B*TYPES.B.plotSqm + mix.C*TYPES.C.plotSqm;
+    var landReqRai = (plotSqmTotal * COMMON_AREA_FACTOR) / 1600;
+    var livingSqmTotal = mix.A*TYPES.A.livingAvg + mix.B*TYPES.B.livingAvg + mix.C*TYPES.C.livingAvg;
+    var constructionCostM = (livingSqmTotal * CONSTRUCTION_COST_PER_SQM) / 1e6;
+    var budgetM = state.budget * 1000;
+
+    document.getElementById('k_units').textContent = N;
+    document.getElementById('k_gdv').textContent = fmtBaht(gdvM);
+    document.getElementById('k_avg').textContent = fmtBaht(avgM);
+    document.getElementById('k_landreq').textContent = landReqRai.toFixed(1) + " rai";
+
+    // Mix table
+    var rows = "";
+    ["A","B","C"].forEach(function(key){
+      var t = TYPES[key];
+      var label = key==="A" ? "A — Core" : key==="B" ? "B — Elevated" : "C — Signature";
+      rows += "<tr><td>"+label+"</td><td>"+t.beds+"</td><td>"+t.livingLabel+"</td><td>"+t.plotLabel+"</td><td class='num'>"+t.priceLabel+"</td><td class='num'>"+mix[key]+"</td></tr>";
+    });
+    document.getElementById('mixTable').innerHTML = rows;
+
+    // ---- Flags ----
+    var flags = [];
+
+    // Land utilization
+    if(landReqRai > state.land * 1.05){
+      flags.push(['red', "Undersized parcel: this mix needs ≈"+landReqRai.toFixed(1)+" rai but only "+state.land+" rai is confirmed. Reduce unit count or shift the mix toward Type A (Core) to fit the parcel."]);
+    } else if(landReqRai < state.land * 0.85){
+      flags.push(['amber', "Parcel is larger than required: this mix needs only ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" rai available. Consider more units, larger common areas, or a higher-end mix."]);
+    } else {
+      flags.push(['green', "Land parcel is appropriately sized for this configuration (requires ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" rai)."]);
+    }
+
+    // Budget / construction cost check (illustrative)
+    var remainingForLandEtc = budgetM - constructionCostM;
+    if(remainingForLandEtc <= 0){
+      flags.push(['red', "Illustrative construction cost alone (≈"+fmtBaht(constructionCostM)+" at ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm of living area) already exceeds your ฿"+state.budget.toFixed(2)+"bn budget ceiling — no room left for land, financing, or margin."]);
+    } else if(remainingForLandEtc < 0.15 * budgetM){
+      flags.push(['amber', "Tight budget: illustrative construction cost is ≈"+fmtBaht(constructionCostM)+", leaving only ≈"+fmtBaht(remainingForLandEtc)+" of your "+state.budget.toFixed(2)+"bn ceiling for land, financing, and contingency."]);
+    } else {
+      flags.push(['green', "Illustrative construction cost (≈"+fmtBaht(constructionCostM)+") leaves ≈"+fmtBaht(remainingForLandEtc)+" of your budget ceiling for land, financing, and contingency."]);
+    }
+
+    // Margin check
+    var impliedMarginPct = ((gdvM - budgetM) / gdvM) * 100;
+    if(impliedMarginPct < state.margin - 5){
+      flags.push(['red', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%, GDV vs. budget ceiling) is materially below your "+state.margin+"% target."]);
+    } else if(impliedMarginPct < state.margin){
+      flags.push(['amber', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) is close to but below your "+state.margin+"% target."]);
+    } else {
+      flags.push(['green', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) meets or exceeds your "+state.margin+"% target (illustrative, excludes financing detail)."]);
+    }
+
+    // Walking distance
+    if(state.dist <= 800){
+      flags.push(['green', "At "+state.dist+" m, the site is genuinely walkable to Highgate's gate (~"+Math.round(state.dist/80)+" min) — a 'walking distance to school' marketing claim is defensible."]);
+    } else if(state.dist <= 2000){
+      flags.push(['amber', "At "+state.dist+" m, 'walking distance' is a stretch (~"+Math.round(state.dist/80)+" min walk). Consider '"+Math.round(state.dist/80)+" minutes from Highgate' or shuttle-based messaging instead."]);
+    } else {
+      flags.push(['red', "At "+state.dist+" m, this is not walking distance. Do not use a 'walking distance to school' claim — lead with the scheduled shuttle-service differentiator (Section 4) instead."]);
+    }
+
+    // Contractor tier vs. mix
+    var signatureShare = mix.C / N;
+    if(state.contractor === "standard" && (signatureShare > 0.05 || state.position === "flagship")){
+      flags.push(['red', "A standard local builder profile may not credibly back the 5-star warranty and specification claims Type C Signature pricing (58M–65M+) requires against the comparables in Section 2. Consider an established or top-tier contractor for this mix."]);
+    } else if(state.contractor === "top"){
+      flags.push(['green', "Top-tier international contractor is consistent with top-end positioning across all three types."]);
+    } else {
+      flags.push(['amber', "Established regional builder is generally consistent with this tier — confirm the firm's track record includes comparable ultra-luxury villa delivery before finalizing."]);
+    }
+
+    // Velocity vs. launch approach
+    if(state.velocity === "fast" && state.launch === "phased"){
+      flags.push(['amber', "Section 6's phased plan assumes a multi-year sell-down tied to Highgate's opening and growth. A 12–18 month fast-velocity target may be hard to reconcile with a 2-phase plan gated on school-opening performance — consider a simultaneous release or a compressed gap between phases."]);
+    }
+    if(state.velocity === "patient" && state.launch === "simultaneous"){
+      flags.push(['amber', "A patient hold period reduces the urgency to phase, but releasing all "+N+" units simultaneously still carries the absorption risk described in Section 6."]);
+    }
+
+    document.getElementById('flags').innerHTML = flags.map(function(f){
+      return "<div class='flag "+f[0]+"'><div class='dot'></div><div>"+f[1]+"</div></div>";
+    }).join("") + "<div class='assumption'>Illustrative assumption — not from source report: all-in construction cost of ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm applied to total living area only (excludes land cost, infrastructure, financing, and contingency). Land-area math and unit pricing are sourced directly from Sections 3 and 5 of the report.</div>";
+
+    // ---- Phasing ----
+    var phasingHtml = "";
+    if(state.launch === "phased"){
+      var p1C = Math.min(2, mix.C);
+      var p1Units = mix.A + p1C;
+      var p2Units = mix.B + (mix.C - p1C);
+      phasingHtml = "<strong>Phase 1 (~"+p1Units+" units):</strong> Full Type A (Core) allocation ("+mix.A+" units) plus "+p1C+" Type C (Signature) show villa(s) to establish top-of-market pricing and generate marketing material.<br><br>" +
+        "<strong>Phase 2 (~"+p2Units+" units):</strong> Full Type B (Elevated) allocation ("+mix.B+" units) plus the remaining "+(mix.C-p1C)+" Type C unit(s), released once Highgate has opened and Phase 1 performance is known.";
+    } else {
+      phasingHtml = "<strong>Simultaneous release:</strong> All "+N+" units ("+mix.A+" A / "+mix.B+" B / "+mix.C+" C) marketed together. " +
+        (N > 11 ? "No comparable project in this corridor has proven simultaneous absorption of "+N+" units at this price tier — the largest proven scheme at THB 40M+ sold 8–11 units (Section 2). This is the single biggest lever on absorption risk (Section 6, Q5)." : "At "+N+" units, this is within the range of proven boutique ultra-luxury absorption in this corridor (8–11 units, Section 2).");
+    }
+    document.getElementById('phasing').innerHTML = phasingHtml;
+
+    // ---- Market-gap narrative ----
+    var narrative;
+    if(N <= 11 && avgM >= 40){
+      narrative = "This configuration targets "+N+" units at a blended average price of ≈"+fmtBaht(avgM)+". This matches the scale of proven boutique ultra-luxury absorption in this corridor (comparables sell 8–11 units in the THB 40M–65M range).";
+    } else if(avgM < 30 && N > 40){
+      narrative = "This configuration targets "+N+" units at a blended average price of ≈"+fmtBaht(avgM)+". This aligns with proven mid-luxury volume absorption in this corridor (comparables sell 40–124 units, typically under THB 30M).";
+    } else if(N > 11 && avgM >= 40){
+      narrative = "This configuration targets "+N+" units at a blended average price of ≈"+fmtBaht(avgM)+" — exceeding the largest proven absorption at this price tier (8–11 units) by "+(N-11)+" units. This is the core absorption-risk gap the report identifies: no comparable project has yet sold "+N+" units at a THB 40M+ average price.";
+    } else {
+      narrative = "This configuration targets "+N+" units at a blended average price of ≈"+fmtBaht(avgM)+" — occupying the gap between boutique ultra-luxury (8–11 units, THB 40M–65M) and mid-luxury volume schemes (40–124 units, typically under THB 30M). No direct comparable has yet proven this combination; absorption should be managed carefully (Section 2).";
+    }
+    document.getElementById('narrative').innerHTML = narrative;
+
+    // ---- Ownership note ----
+    var ownNotes = {
+      freehold: "Thai-Company Freehold enables freehold registration via a Thai limited company structure — the most flexible option for high-net-worth Thai buyers and international buyers willing to use a company vehicle. It adds legal/compliance complexity that can slow individual transactions. Not legal or tax advice — confirm structuring with Thai counsel.",
+      leasehold: "Leasehold (typically a 30-year, often renewable structure) is simpler and often preferred by international buyers who cannot or prefer not to hold Thai company structures. Perceived leasehold risk can soften pricing power versus freehold comparables and may narrow the buyer pool among Thai HNW families who expect freehold. Not legal or tax advice.",
+      condo: "Condominium-titled villas allow up to 49% foreign freehold ownership per project under the Condominium Act, which can speed international sales. This requires titling the development under a condominium juristic structure rather than as standalone landed villas — a departure from every comparable in Section 2, which are all titled as landed villas — and should be tested with counsel before finalizing this unit mix. Not legal or tax advice."
+    };
+    document.getElementById('ownershipNote').innerHTML = ownNotes[state.own];
+  }
+
+  /* ---------------- Wire up inputs ---------------- */
+  function bindRange(id, stateKey, fmt){
+    var el = document.getElementById(id);
+    el.addEventListener('input', function(){
+      state[stateKey] = parseFloat(el.value);
+      if(fmt) fmt(el.value);
+      render();
+    });
+  }
+
+  bindRange('in_land','land', function(v){ document.getElementById('v_land').textContent = v+" rai"; });
+  bindRange('in_dist','dist', function(v){ document.getElementById('v_dist').textContent = Number(v).toLocaleString()+" m"; });
+  bindRange('in_budget','budget', function(v){ document.getElementById('v_budget').textContent = "฿"+parseFloat(v).toFixed(2)+"bn"; });
+  bindRange('in_margin','margin', function(v){ document.getElementById('v_margin').textContent = v+"%"; });
+  bindRange('in_units','units', function(v){ document.getElementById('v_units').textContent = v; });
+
+  document.getElementById('in_own').addEventListener('change', function(e){ state.own = e.target.value; render(); });
+  document.getElementById('in_velocity').addEventListener('change', function(e){ state.velocity = e.target.value; render(); });
+  document.getElementById('in_contractor').addEventListener('change', function(e){ state.contractor = e.target.value; render(); });
+  document.getElementById('in_position').addEventListener('change', function(e){ state.position = e.target.value; render(); });
+
+  var toggleBtns = document.querySelectorAll('.toggle-group button');
+  toggleBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      toggleBtns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.launch = btn.getAttribute('data-val');
+      render();
+    });
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    state = { land:32, dist:1500, own:"freehold", velocity:"moderate", budget:1.60, margin:20, launch:"phased", contractor:"top", units:50, position:"gapfill" };
+    document.getElementById('in_land').value = 32; document.getElementById('v_land').textContent = "32 rai";
+    document.getElementById('in_dist').value = 1500; document.getElementById('v_dist').textContent = "1,500 m";
+    document.getElementById('in_own').value = "freehold";
+    document.getElementById('in_velocity').value = "moderate";
+    document.getElementById('in_budget').value = 1.60; document.getElementById('v_budget').textContent = "฿1.60bn";
+    document.getElementById('in_margin').value = 20; document.getElementById('v_margin').textContent = "20%";
+    document.getElementById('in_contractor').value = "top";
+    document.getElementById('in_units').value = 50; document.getElementById('v_units').textContent = "50";
+    document.getElementById('in_position').value = "gapfill";
+    toggleBtns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-val')==='phased'); });
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
