@@ -102,10 +102,6 @@
   }
   .toggle-group button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 
-  details.advanced{border:1px dashed var(--border);border-radius:10px;padding:14px 16px;margin-top:6px;background:#fbfbfc;}
-  details.advanced summary{cursor:pointer;font-weight:700;font-size:.85rem;color:var(--navy-2);}
-  details.advanced .field{margin-top:16px;}
-
   #resetBtn{
     width:100%;padding:10px;background:#fff;border:1px solid var(--navy);color:var(--navy);border-radius:8px;
     font-weight:700;font-size:.85rem;cursor:pointer;margin-top:4px;
@@ -124,6 +120,10 @@
   td.num{text-align:right;font-variant-numeric:tabular-nums;}
   th.num{text-align:right;}
   tr.zero{opacity:.45;}
+  .swatch{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:middle;}
+  .subhead{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--gold);font-weight:800;margin:22px 0 10px;padding-top:16px;border-top:1px solid var(--border);}
+  .subhead:first-of-type{margin-top:0;padding-top:0;border-top:none;}
+  .subhead .beyond{color:var(--muted);text-transform:none;letter-spacing:0;font-weight:600;font-size:.72rem;}
   .type-note{font-size:.78rem;color:var(--muted);background:var(--bg);border-left:3px solid var(--gold);padding:8px 12px;border-radius:0 6px 6px 0;margin-top:8px;}
 
   .flag{border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:.86rem;display:flex;gap:10px;align-items:flex-start;}
@@ -179,57 +179,74 @@
       <!-- ================= PART 1: INPUTS ================= -->
       <div>
         <div class="card">
-          <h2>Investment Committee Parameters</h2>
-          <p class="hint">Section 7 — Key Questions for the Investment Committee</p>
+          <h2>Configuration Parameters</h2>
+          <p class="hint">Grouped by decision area. Fields marked with a Section 7 question number map directly to the Investment Committee's open questions; "Scale &amp; Product" fields go beyond Section 7 to let you explore alternative product strategies.</p>
 
+          <div class="subhead">Scale &amp; product <span class="beyond">— beyond Section 7</span></div>
+          <div class="field">
+            <label>Total unit count <span class="val" id="v_units">50</span></label>
+            <input type="range" id="in_units" min="20" max="70" step="1" value="50">
+            <div class="tip">Report's brief fixed this at 50 — adjustable here to explore other scales.</div>
+          </div>
+          <div class="field">
+            <label>Price / unit-mix positioning</label>
+            <select id="in_position">
+              <option value="gapfill" selected>Fill the boutique-ultra-luxury gap (report's recommendation)</option>
+              <option value="volume">Push toward mid-luxury volume</option>
+              <option value="flagship">Push toward ultra-luxury flagship-only</option>
+              <option value="affordable">Affordable / corporate-rental anchored (adds smaller unit types)</option>
+            </select>
+            <div class="tip">Determines the split across Types A–E — see the Recommended Configuration panel.</div>
+          </div>
+
+          <div class="subhead">Site <span class="beyond">— Q1</span></div>
           <div class="field">
             <label>Confirmed land parcel size <span class="val" id="v_land">32 rai</span></label>
             <input type="range" id="in_land" min="15" max="40" step="1" value="32">
             <div class="tip">Report's indicative requirement: ≈31–34 rai (Section 5).</div>
           </div>
-
           <div class="field">
             <label>Distance to Highgate campus gate <span class="val" id="v_dist">1,500 m</span></label>
             <input type="range" id="in_dist" min="0" max="5000" step="100" value="1500">
             <div class="tip">"Walking distance to school" is only a valid claim if literally true from the actual site (Section 1 caution).</div>
           </div>
 
+          <div class="subhead">Commercial structure <span class="beyond">— Q2, Q3, Q5</span></div>
           <div class="field">
-            <label>Ownership structure</label>
+            <label>Ownership structure <span class="val" style="font-weight:600;color:var(--muted);font-size:.72rem;">Q2</span></label>
             <select id="in_own">
               <option value="freehold">Thai-Company Freehold</option>
               <option value="leasehold">Leasehold</option>
               <option value="condo">Condominium-titled villas</option>
             </select>
           </div>
-
           <div class="field">
-            <label>Target sales velocity / hold period</label>
+            <label>Target sales velocity / hold period <span class="val" style="font-weight:600;color:var(--muted);font-size:.72rem;">Q3</span></label>
             <select id="in_velocity">
               <option value="fast">Fast — 12–18 months, all units</option>
               <option value="moderate" selected>Moderate — 24–36 months, phased</option>
               <option value="patient">Patient — 36–48+ months</option>
             </select>
           </div>
-
           <div class="field">
-            <label>All-in budget ceiling (land + construction) <span class="val" id="v_budget">฿1.60bn</span></label>
-            <input type="range" id="in_budget" min="0.6" max="3.0" step="0.05" value="1.60">
-          </div>
-
-          <div class="field">
-            <label>Target margin / IRR <span class="val" id="v_margin">20%</span></label>
-            <input type="range" id="in_margin" min="10" max="35" step="1" value="20">
-          </div>
-
-          <div class="field">
-            <label>Launch approach</label>
+            <label>Launch approach <span class="val" style="font-weight:600;color:var(--muted);font-size:.72rem;">Q5</span></label>
             <div class="toggle-group">
               <button type="button" data-val="phased" class="active">Phased (2 releases)</button>
               <button type="button" data-val="simultaneous">Simultaneous</button>
             </div>
           </div>
 
+          <div class="subhead">Financial targets <span class="beyond">— Q4</span></div>
+          <div class="field">
+            <label>All-in budget ceiling (land + construction) <span class="val" id="v_budget">฿1.60bn</span></label>
+            <input type="range" id="in_budget" min="0.6" max="3.0" step="0.05" value="1.60">
+          </div>
+          <div class="field">
+            <label>Target margin / IRR <span class="val" id="v_margin">20%</span></label>
+            <input type="range" id="in_margin" min="10" max="35" step="1" value="20">
+          </div>
+
+          <div class="subhead">Delivery <span class="beyond">— Q6</span></div>
           <div class="field">
             <label>Contractor / developer tier</label>
             <select id="in_contractor">
@@ -238,23 +255,6 @@
               <option value="standard">Standard local builder</option>
             </select>
           </div>
-
-          <details class="advanced">
-            <summary>Advanced — explore beyond the committee's base questions</summary>
-            <div class="field">
-              <label>Total unit count <span class="val" id="v_units">50</span></label>
-              <input type="range" id="in_units" min="20" max="70" step="1" value="50">
-            </div>
-            <div class="field">
-              <label>Price / unit-mix positioning</label>
-              <select id="in_position">
-                <option value="gapfill" selected>Fill the boutique-ultra-luxury gap (report's recommendation)</option>
-                <option value="volume">Push toward mid-luxury volume</option>
-                <option value="flagship">Push toward ultra-luxury flagship-only</option>
-                <option value="affordable">Affordable / corporate-rental anchored (adds smaller unit types)</option>
-              </select>
-            </div>
-          </details>
 
           <button id="resetBtn">Reset to report's base case</button>
         </div>
@@ -414,7 +414,6 @@
          note:"Type E has no comparable of this size anywhere in the report's corridor. Hitting this price point likely means a shared communal pool rather than a private pool — a departure from the private-pool market-entry standard identified in Sections 2 & 4. Treat as exploratory, not a validated local product." }
   };
   var TYPE_ORDER = ["E","D","A","B","C"]; // ascending by price — the product ladder
-  var ORDINAL_COLORS = { E:"#86b6ef", D:"#5598e7", A:"#2a78d6", B:"#1c5cab", C:"#104281" };
 
   var POSITION_RATIOS = {
     gapfill:    { A:0.60, B:0.28, C:0.12, D:0,    E:0    }, // report's base case: 30/14/6 of 50
@@ -422,10 +421,10 @@
     flagship:   { A:0.20, B:0.35, C:0.45, D:0,    E:0    },
     affordable: { A:0.10, B:0.05, C:0,    D:0.45, E:0.40 }
   };
-  var POSITION_ANCHOR = { gapfill:"A", volume:"A", flagship:"C", affordable:"D" };
 
   var CONSTRUCTION_COST_PER_SQM = 55000; // Illustrative assumption — not from source report.
   var COMMON_AREA_FACTOR = 1.325; // midpoint of report's 30–35% allowance (Section 5)
+  var MAX_GDV_FOR_BUBBLE_SCALE = 4300; // ≈ 70 units all at Type C avg price — fixed reference so bubble sizes stay comparable as inputs change, instead of auto-normalizing to whatever is largest on screen.
 
   function fmtBaht(millions){
     if(Math.abs(millions) >= 1000) return "฿" + (millions/1000).toFixed(2) + "bn";
@@ -439,17 +438,24 @@
     famBudget: 115000, rentalYield: 6
   };
 
+  // Largest-remainder apportionment: guarantees counts sum to exactly N,
+  // never go negative, and stay as proportional as integer counts allow —
+  // unlike a round-then-patch-the-anchor approach, which can drift off N.
   function computeMix(){
     var ratios = POSITION_RATIOS[state.position];
     var N = state.units;
-    var counts = {}, sum = 0;
-    ["A","B","C","D","E"].forEach(function(k){
-      counts[k] = Math.round(N * (ratios[k] || 0));
-      sum += counts[k];
+    var keys = ["A","B","C","D","E"];
+    var floor = {}, fracs = [], flooredSum = 0;
+    keys.forEach(function(k){
+      var exact = N * (ratios[k] || 0);
+      floor[k] = Math.floor(exact);
+      flooredSum += floor[k];
+      fracs.push({ k:k, frac: exact - floor[k] });
     });
-    var anchor = POSITION_ANCHOR[state.position];
-    counts[anchor] = Math.max(0, counts[anchor] + (N - sum));
-    return counts;
+    var remainder = N - flooredSum;
+    fracs.sort(function(a,b){ return b.frac - a.frac; });
+    for(var i=0; i<remainder; i++){ floor[fracs[i].k] += 1; }
+    return floor;
   }
 
   /* ---------------- Chart builders (hand-rolled inline SVG, no dependencies) ---------------- */
@@ -472,7 +478,9 @@
     var yMax = Math.max(avgM+10, 70);
     var x = scale(0, xMax, 0, plotW);
     var y = scale(0, yMax, plotH, 0);
-    function r(g){ return Math.max(7, Math.min(24, Math.sqrt(g)*0.85)); }
+    // Fixed reference domain (not auto-normalized to the current max) so bubble size
+    // actually responds as GDV changes, instead of every configuration clipping to the cap.
+    function r(g){ return 6 + Math.sqrt(Math.min(g, MAX_GDV_FOR_BUBBLE_SCALE) / MAX_GDV_FOR_BUBBLE_SCALE) * 20; }
 
     var svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Market positioning map" style="width:100%;height:auto;">';
     svg += '<g transform="translate('+padL+','+padT+')">';
@@ -488,13 +496,13 @@
     svg += '<line x1="0" y1="0" x2="0" y2="'+plotH+'" stroke="var(--axis-line)" stroke-width="1"/>';
 
     var bx1=x(5), bx2=x(11), by1=y(65), by2=y(39);
-    svg += '<rect x="'+bx1+'" y="'+by1+'" width="'+(bx2-bx1)+'" height="'+(by2-by1)+'" fill="var(--series-1)" opacity="0.08"/>';
-    svg += '<text x="'+(bx1+4)+'" y="'+(by1+13)+'" font-size="9" font-weight="700" fill="var(--series-1)">Proven boutique ultra-luxury zone</text>';
+    svg += '<rect x="'+bx1+'" y="'+by1+'" width="'+(bx2-bx1)+'" height="'+(by2-by1)+'" fill="var(--gold)" opacity="0.12"/>';
+    svg += '<text x="'+(bx1+4)+'" y="'+(by1+13)+'" font-size="9" font-weight="700" fill="#7a5b1e">Proven boutique ultra-luxury zone</text>';
 
     var vx2=Math.min(124,xMax);
     var vx1=x(40), vx2p=x(vx2), vy1=y(30), vy2=y(0);
-    svg += '<rect x="'+vx1+'" y="'+vy1+'" width="'+(vx2p-vx1)+'" height="'+(vy2-vy1)+'" fill="var(--series-3)" opacity="0.08"/>';
-    svg += '<text x="'+(vx1+4)+'" y="'+(vy1+13)+'" font-size="9" font-weight="700" fill="var(--series-3)">Proven mid-luxury volume zone</text>';
+    svg += '<rect x="'+vx1+'" y="'+vy1+'" width="'+(vx2p-vx1)+'" height="'+(vy2-vy1)+'" fill="var(--context-gray)" opacity="0.18"/>';
+    svg += '<text x="'+(vx1+4)+'" y="'+(vy1+13)+'" font-size="9" font-weight="700" fill="var(--muted)">Proven mid-luxury volume zone</text>';
 
     comps.forEach(function(c){
       var cx=x(c.units), cy=y(c.price), rr=r(c.gdv);
@@ -503,14 +511,15 @@
     });
 
     var yr=r(gdvM), yx=x(N), yyv=y(avgM);
-    svg += '<circle cx="'+yx+'" cy="'+yyv+'" r="'+yr+'" fill="var(--series-1)" fill-opacity="0.9" stroke="#fff" stroke-width="2"><title>Your configuration: '+N+' units, ฿'+avgM.toFixed(1)+'M avg price, ≈'+fmtBaht(gdvM)+' GDV</title></circle>';
+    svg += '<circle cx="'+yx+'" cy="'+yyv+'" r="'+yr+'" fill="var(--navy-2)" fill-opacity="0.9" stroke="#fff" stroke-width="2"><title>Your configuration: '+N+' units, ฿'+avgM.toFixed(1)+'M avg price, ≈'+fmtBaht(gdvM)+' GDV</title></circle>';
     svg += '<text x="'+yx+'" y="'+(yyv-yr-6)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--navy-2)">Your Configuration</text>';
     svg += '</g>';
     svg += '<text x="'+(padL+plotW/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="var(--muted)">Total Units</text>';
+    svg += '<text x="14" y="'+(padT+plotH/2)+'" text-anchor="middle" font-size="11" fill="var(--muted)" transform="rotate(-90 14 '+(padT+plotH/2)+')">Blended Avg. Price (฿M)</text>';
     svg += '</svg>';
     var legend = '<div style="display:flex;gap:18px;margin-top:4px;font-size:.8rem;color:var(--muted);flex-wrap:wrap;">'+
       '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--context-gray);margin-right:5px;"></span>Comparable projects (Section 2)</span>'+
-      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--series-1);margin-right:5px;"></span>Your configuration</span>'+
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--navy-2);margin-right:5px;"></span>Your configuration</span>'+
       '</div>';
     return svg + legend;
   }
@@ -542,9 +551,9 @@
 
   function renderFeasibilityChart(gdvM, budgetM, constructionM, impliedMarginPct){
     var items = [
-      { label:"Estimated GDV", value:gdvM, color:"var(--series-1)" },
-      { label:"Budget ceiling (land + construction)", value:budgetM, color:"var(--series-2)" },
-      { label:"Illustrative construction cost", value:constructionM, color:"var(--series-3)" }
+      { label:"Estimated GDV", value:gdvM, color:"var(--navy-2)" },
+      { label:"Budget ceiling (land + construction)", value:budgetM, color:"var(--gold)" },
+      { label:"Illustrative construction cost", value:constructionM, color:"var(--context-gray)" }
     ];
     var W=640, rowH=36, labelW=190;
     var H = items.length*rowH + 12;
@@ -568,7 +577,7 @@
     var W=640;
     if(launch === "simultaneous"){
       var total = mix.A+mix.B+mix.C+mix.D+mix.E;
-      return '<svg viewBox="0 0 '+W+' 50" style="width:100%;height:auto;"><rect x="0" y="10" width="'+W+'" height="24" rx="4" fill="var(--series-1)"><title>Simultaneous release: '+total+' units, '+fmtBaht(gdvM)+'</title></rect><text x="'+(W/2)+'" y="27" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">All '+total+' units — simultaneous release — '+fmtBaht(gdvM)+' GDV</text></svg>';
+      return '<svg viewBox="0 0 '+W+' 50" style="width:100%;height:auto;"><rect x="0" y="10" width="'+W+'" height="24" rx="4" fill="var(--navy-2)"><title>Simultaneous release: '+total+' units, '+fmtBaht(gdvM)+'</title></rect><text x="'+(W/2)+'" y="27" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">All '+total+' units — simultaneous release — '+fmtBaht(gdvM)+' GDV</text></svg>';
     }
     var p1C = Math.min(2, mix.C);
     var p1Units = mix.A + mix.D + mix.E + p1C;
@@ -577,12 +586,12 @@
     var p2GDV = gdvM - p1GDV;
     var w1 = (p1GDV/gdvM) * W, w2 = W - w1 - 2;
     var svg = '<svg viewBox="0 0 '+W+' 50" style="width:100%;height:auto;">'+
-      '<rect x="0" y="10" width="'+w1+'" height="24" rx="4" fill="var(--series-1)"><title>Phase 1: '+p1Units+' units, '+fmtBaht(p1GDV)+'</title></rect>'+
-      '<rect x="'+(w1+2)+'" y="10" width="'+w2+'" height="24" rx="4" fill="var(--series-2)"><title>Phase 2: '+p2Units+' units, '+fmtBaht(p2GDV)+'</title></rect>'+
+      '<rect x="0" y="10" width="'+w1+'" height="24" rx="4" fill="var(--navy-2)"><title>Phase 1: '+p1Units+' units, '+fmtBaht(p1GDV)+'</title></rect>'+
+      '<rect x="'+(w1+2)+'" y="10" width="'+w2+'" height="24" rx="4" fill="var(--gold)"><title>Phase 2: '+p2Units+' units, '+fmtBaht(p2GDV)+'</title></rect>'+
       '</svg>'+
       '<div style="display:flex;gap:16px;margin-top:8px;font-size:.8rem;flex-wrap:wrap;">'+
-      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--series-1);margin-right:5px;"></span>Phase 1 — '+p1Units+' units ('+fmtBaht(p1GDV)+')</span>'+
-      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--series-2);margin-right:5px;"></span>Phase 2 — '+p2Units+' units ('+fmtBaht(p2GDV)+')</span>'+
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--navy-2);margin-right:5px;"></span>Phase 1 — '+p1Units+' units ('+fmtBaht(p1GDV)+')</span>'+
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--gold);margin-right:5px;"></span>Phase 2 — '+p2Units+' units ('+fmtBaht(p2GDV)+')</span>'+
       '</div>';
     return svg;
   }
@@ -602,11 +611,11 @@
       var t = TYPES[k], yy = 10 + i*rowH;
       svg += '<text x="0" y="'+(yy+13)+'" font-size="11" fill="var(--text)">'+k+' — '+t.name+'</text>';
       var x1=x(t.priceLow), x2=x(t.priceHigh);
-      svg += '<rect x="'+x1+'" y="'+yy+'" width="'+Math.max(3,x2-x1)+'" height="18" rx="4" fill="'+ORDINAL_COLORS[k]+'"><title>'+t.priceLabel+' (฿M)</title></rect>';
+      svg += '<rect x="'+x1+'" y="'+yy+'" width="'+Math.max(3,x2-x1)+'" height="18" rx="4" fill="'+t.color+'"><title>'+t.priceLabel+' (฿M)</title></rect>';
     });
     var tx = x(Math.min(supportableM, xMax));
-    svg += '<line x1="'+tx+'" y1="0" x2="'+tx+'" y2="'+(H-18)+'" stroke="var(--series-2)" stroke-width="2"/>';
-    svg += '<text x="'+(tx+4)+'" y="10" font-size="9.5" font-weight="700" fill="var(--series-2)">Affordability ceiling ฿'+supportableM.toFixed(1)+'M</text>';
+    svg += '<line x1="'+tx+'" y1="0" x2="'+tx+'" y2="'+(H-18)+'" stroke="var(--gold)" stroke-width="2"/>';
+    svg += '<text x="'+(tx+4)+'" y="10" font-size="9.5" font-weight="700" fill="#7a5b1e">Affordability ceiling ฿'+supportableM.toFixed(1)+'M</text>';
     svg += '</svg>';
     return svg;
   }
@@ -639,7 +648,7 @@
     var rows = "";
     TYPE_ORDER.forEach(function(k){
       var t = TYPES[k];
-      var label = k + " — " + t.name;
+      var label = "<span class='swatch' style='background:"+t.color+"'></span>"+k+" — " + t.name;
       rows += "<tr class='"+(mix[k]===0?'zero':'')+"'><td>"+label+"</td><td>"+t.beds+"</td><td>"+t.livingLabel+"</td><td>"+t.plotLabel+"</td><td class='num'>"+t.priceLabel+"</td><td class='num'>"+mix[k]+"</td></tr>";
     });
     document.getElementById('mixTable').innerHTML = rows;
