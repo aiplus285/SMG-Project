@@ -22,6 +22,15 @@
     --red:#b3261e;
     --red-bg:#fbeae9;
     --radius:12px;
+    /* chart tokens (validated categorical order — see dataviz palette) */
+    --series-1:#2a78d6;
+    --series-2:#eb6834;
+    --series-3:#1baf7a;
+    --series-4:#eda100;
+    --series-5:#e87ba4;
+    --context-gray:#b9b7ae;
+    --gridline:#e1e0d9;
+    --axis-line:#c3c2b7;
   }
   *{box-sizing:border-box;}
   body{
@@ -104,16 +113,18 @@
   #resetBtn:hover{background:var(--navy);color:#fff;}
 
   /* Recommendation panel */
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:6px;}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:6px;}
   .kpi{background:var(--bg);border-radius:10px;padding:14px 16px;border:1px solid var(--border);}
   .kpi .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700;}
-  .kpi .value{font-size:1.35rem;font-weight:800;color:var(--navy);margin-top:4px;}
+  .kpi .value{font-size:1.3rem;font-weight:800;color:var(--navy);margin-top:4px;}
 
   table{width:100%;border-collapse:collapse;font-size:.86rem;}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--border);}
   th{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}
   td.num{text-align:right;font-variant-numeric:tabular-nums;}
   th.num{text-align:right;}
+  tr.zero{opacity:.45;}
+  .type-note{font-size:.78rem;color:var(--muted);background:var(--bg);border-left:3px solid var(--gold);padding:8px 12px;border-radius:0 6px 6px 0;margin-top:8px;}
 
   .flag{border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:.86rem;display:flex;gap:10px;align-items:flex-start;}
   .flag .dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0;}
@@ -129,6 +140,10 @@
     padding:8px 12px;border-radius:0 6px 6px 0;margin-top:10px;
   }
   .narrative{font-size:.92rem;line-height:1.6;background:var(--bg);border-radius:10px;padding:14px 16px;}
+  .chart-wrap{margin-top:6px;}
+  .chart-wrap svg{display:block;}
+  .sources-line{font-size:.74rem;color:var(--muted);margin-top:12px;line-height:1.6;}
+  .sources-line a{color:var(--muted);text-decoration:underline;}
 
   footer{max-width:1400px;margin:0 auto;padding:20px 28px 40px;color:var(--muted);font-size:.78rem;}
   footer .conf{font-weight:700;color:var(--navy);margin-bottom:6px;}
@@ -152,7 +167,7 @@
     <div class="wrap">
       <div>
         <h1>SMG Project — Family Housing Development, East Pattaya</h1>
-        <div class="sub">Interactive investor configurator · 50-unit luxury pool villa community · near Highgate International School Thailand &amp; Siam Country Club</div>
+        <div class="sub">Interactive investor configurator · luxury pool villa community · near Highgate International School Thailand &amp; Siam Country Club</div>
       </div>
     </div>
   </header>
@@ -199,7 +214,7 @@
 
           <div class="field">
             <label>All-in budget ceiling (land + construction) <span class="val" id="v_budget">฿1.60bn</span></label>
-            <input type="range" id="in_budget" min="0.8" max="3.0" step="0.05" value="1.60">
+            <input type="range" id="in_budget" min="0.6" max="3.0" step="0.05" value="1.60">
           </div>
 
           <div class="field">
@@ -231,16 +246,43 @@
               <input type="range" id="in_units" min="20" max="70" step="1" value="50">
             </div>
             <div class="field">
-              <label>Price positioning target</label>
+              <label>Price / unit-mix positioning</label>
               <select id="in_position">
                 <option value="gapfill" selected>Fill the boutique-ultra-luxury gap (report's recommendation)</option>
                 <option value="volume">Push toward mid-luxury volume</option>
                 <option value="flagship">Push toward ultra-luxury flagship-only</option>
+                <option value="affordable">Affordable / corporate-rental anchored (adds smaller unit types)</option>
               </select>
             </div>
           </details>
 
           <button id="resetBtn">Reset to report's base case</button>
+        </div>
+
+        <div class="card">
+          <h2>Corporate &amp; Expat Rental Demand Check</h2>
+          <p class="hint">Is there real demand for a smaller/lower-priced unit? Modeled from researched corporate housing-allowance ranges for international-company families near East Pattaya.</p>
+
+          <div class="field">
+            <label>Representative family size</label>
+            <div class="toggle-group">
+              <button type="button" class="famBtn" data-budget="90000">Family of 3</button>
+              <button type="button" class="famBtn active" data-budget="115000">Family of 4</button>
+              <button type="button" class="famBtn" data-budget="140000">Family of 5</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Monthly corporate housing budget <span class="val" id="v_famBudget">฿115,000</span></label>
+            <input type="range" id="in_famBudget" min="40000" max="200000" step="5000" value="115000">
+            <div class="tip">Researched range: East Pattaya 3-bed compounds ≈฿20,000–50,000/mo; 4-bed private-pool villas ≈฿65,000–125,000/mo; Bangkok-anchored corporate relocation packages commonly ฿65,000–180,000/mo.</div>
+          </div>
+
+          <div class="field">
+            <label>Assumed gross rental yield <span class="val" id="v_yield">6.0%</span></label>
+            <input type="range" id="in_yield" min="4" max="8" step="0.5" value="6">
+            <div class="tip">Illustrative — Thailand-wide average gross yield ≈6.3–6.5%; luxury pool-villa resort markets typically 5–8% gross. Not a Pattaya-specific survey figure.</div>
+          </div>
         </div>
       </div>
 
@@ -255,6 +297,7 @@
             <div class="kpi"><div class="label">Est. GDV</div><div class="value" id="k_gdv">฿2.37bn</div></div>
             <div class="kpi"><div class="label">Blended Avg. Price</div><div class="value" id="k_avg">฿47.4M</div></div>
             <div class="kpi"><div class="label">Land Required</div><div class="value" id="k_landreq">32.0 rai</div></div>
+            <div class="kpi"><div class="label">Implied Margin</div><div class="value" id="k_margin">33%</div></div>
           </div>
 
           <table>
@@ -263,6 +306,25 @@
             </thead>
             <tbody id="mixTable"></tbody>
           </table>
+          <div id="typeNotes"></div>
+        </div>
+
+        <div class="card">
+          <h2>Market Positioning Map</h2>
+          <p class="hint">Your configuration vs. the comparable projects in Section 2 — unit count × blended average price, bubble size ≈ total GDV.</p>
+          <div class="chart-wrap" id="chartPositioning"></div>
+        </div>
+
+        <div class="card">
+          <h2>Revenue Mix by Unit Type</h2>
+          <p class="hint">Share of estimated GDV contributed by each type in the recommended mix.</p>
+          <div class="chart-wrap" id="chartRevenueMix"></div>
+        </div>
+
+        <div class="card">
+          <h2>Budget, Cost &amp; Margin</h2>
+          <p class="hint">Estimated GDV vs. your stated budget ceiling vs. an illustrative construction-cost estimate.</p>
+          <div class="chart-wrap" id="chartFeasibility"></div>
         </div>
 
         <div class="card">
@@ -274,6 +336,7 @@
         <div class="card">
           <h2>Phasing Plan</h2>
           <div id="phasing" class="narrative"></div>
+          <div class="chart-wrap" id="chartPhasing" style="margin-top:14px;"></div>
         </div>
 
         <div class="card">
@@ -284,6 +347,22 @@
         <div class="card">
           <h2>Ownership Structure — Buyer Pool Impact</h2>
           <div id="ownershipNote" class="narrative"></div>
+        </div>
+
+        <div class="card">
+          <h2>Corporate &amp; Expat Rental Affordability</h2>
+          <p class="hint">What capital value can the researched corporate-housing-budget demand pool actually support — and does your current mix reach it?</p>
+          <div class="chart-wrap" id="chartAffordability"></div>
+          <div id="affordabilityVerdict" style="margin-top:12px;"></div>
+          <div class="sources-line">
+            Research sources: <a href="https://pearlpropertythailand.com/blog/highgate-international-school-thailand" target="_blank" rel="noopener">Pearl Property Pattaya — Highgate School</a>,
+            <a href="https://lakesidepropertypattaya.com/real-talk/international-schools-pattaya-guide/" target="_blank" rel="noopener">Lakeside Property — International Schools Guide</a>,
+            <a href="https://www.fazwaz.com/villa-for-rent/thailand/chon-buri/pattaya" target="_blank" rel="noopener">FazWaz — Pattaya villa rentals</a>,
+            <a href="https://www.internationalcitizens.com/living-abroad/costs/thailand.php" target="_blank" rel="noopener">International Citizens — Thailand cost of living</a>,
+            <a href="https://www.gregtodiffer.com/housing-allowance/" target="_blank" rel="noopener">Greg to Differ — Bangkok housing allowance</a>,
+            <a href="https://www.globalpropertyguide.com/asia/thailand/rental-yields" target="_blank" rel="noopener">Global Property Guide — Thailand rental yields</a>.
+            Figures are illustrative benchmarks (Aug 2026), not a Pattaya-specific corporate-mobility survey — validate with HR/relocation data before underwriting.
+          </div>
         </div>
       </div>
 
@@ -324,94 +403,281 @@
   }catch(e){}
 
   /* ---------------- Recommendation engine ---------------- */
-  // Constants sourced from the report (Sections 2, 3, 5, 6).
+  // Constants sourced from the report (Sections 2, 3, 5, 6) unless marked as an assumption.
   var TYPES = {
-    A: { beds:4, livingLabel:"450–500 sqm", livingAvg:475, plotLabel:"150–180 sq.wah", plotSqm:660,  priceLabel:"40M – 45M",  priceMid:42.5 },
-    B: { beds:5, livingLabel:"550–650 sqm", livingAvg:600, plotLabel:"180–220 sq.wah", plotSqm:800,  priceLabel:"48M – 55M",  priceMid:51.5 },
-    C: { beds:6, livingLabel:"750–900+ sqm", livingAvg:825, plotLabel:"250+ sq.wah (premium plots)", plotSqm:1100, priceLabel:"58M – 65M+", priceMid:61.5 }
+    A: { name:"Core",      beds:4, livingLabel:"450–500 sqm",  livingAvg:475, plotLabel:"150–180 sq.wah",              plotSqm:660,  priceLabel:"40M – 45M",  priceLow:40,  priceHigh:45,  priceMid:42.5, color:"var(--series-1)" },
+    B: { name:"Elevated",  beds:5, livingLabel:"550–650 sqm",  livingAvg:600, plotLabel:"180–220 sq.wah",              plotSqm:800,  priceLabel:"48M – 55M",  priceLow:48,  priceHigh:55,  priceMid:51.5, color:"var(--series-2)" },
+    C: { name:"Signature", beds:6, livingLabel:"750–900+ sqm", livingAvg:825, plotLabel:"250+ sq.wah (premium plots)", plotSqm:1100, priceLabel:"58M – 65M+", priceLow:58,  priceHigh:65,  priceMid:61.5, color:"var(--series-3)" },
+    D: { name:"Essential", beds:3, livingLabel:"280–320 sqm",  livingAvg:300, plotLabel:"100–120 sq.wah",              plotSqm:440,  priceLabel:"18M – 25M",  priceLow:18,  priceHigh:25,  priceMid:21.5, color:"var(--series-4)",
+         note:"Type D has no exact match among the report's ultra-luxury comps, but aligns with proven mid-luxury comparables (Amber/Onyx: 3–5 bed, ฿17.9M–28.5M+; Lumina Pool Villa: 3–6 bed, mid-luxury family estate) — a lower-risk, already-proven category in this corridor." },
+    E: { name:"Compact",   beds:2, livingLabel:"150–180 sqm",  livingAvg:165, plotLabel:"60–80 sq.wah",                plotSqm:280,  priceLabel:"9.5M – 13M", priceLow:9.5, priceHigh:13,  priceMid:11.25, color:"var(--series-5)",
+         note:"Type E has no comparable of this size anywhere in the report's corridor. Hitting this price point likely means a shared communal pool rather than a private pool — a departure from the private-pool market-entry standard identified in Sections 2 & 4. Treat as exploratory, not a validated local product." }
   };
+  var TYPE_ORDER = ["E","D","A","B","C"]; // ascending by price — the product ladder
+  var ORDINAL_COLORS = { E:"#86b6ef", D:"#5598e7", A:"#2a78d6", B:"#1c5cab", C:"#104281" };
+
   var POSITION_RATIOS = {
-    gapfill:  { A:0.60, B:0.28, C:0.12 }, // report's base case: 30/14/6 of 50
-    volume:   { A:0.75, B:0.20, C:0.05 },
-    flagship: { A:0.20, B:0.35, C:0.45 }
+    gapfill:    { A:0.60, B:0.28, C:0.12, D:0,    E:0    }, // report's base case: 30/14/6 of 50
+    volume:     { A:0.70, B:0.20, C:0.05, D:0.05, E:0    },
+    flagship:   { A:0.20, B:0.35, C:0.45, D:0,    E:0    },
+    affordable: { A:0.10, B:0.05, C:0,    D:0.45, E:0.40 }
   };
+  var POSITION_ANCHOR = { gapfill:"A", volume:"A", flagship:"C", affordable:"D" };
+
   var CONSTRUCTION_COST_PER_SQM = 55000; // Illustrative assumption — not from source report.
   var COMMON_AREA_FACTOR = 1.325; // midpoint of report's 30–35% allowance (Section 5)
-  var SQWAH_TO_SQM = 4;
 
   function fmtBaht(millions){
-    if(millions >= 1000) return "฿" + (millions/1000).toFixed(2) + "bn";
+    if(Math.abs(millions) >= 1000) return "฿" + (millions/1000).toFixed(2) + "bn";
     return "฿" + millions.toFixed(1) + "M";
   }
-  function fmtBahtBn(bn){ return "฿" + bn.toFixed(2) + "bn"; }
 
   var state = {
     land: 32, dist: 1500, own: "freehold", velocity: "moderate",
     budget: 1.60, margin: 20, launch: "phased", contractor: "top",
-    units: 50, position: "gapfill"
+    units: 50, position: "gapfill",
+    famBudget: 115000, rentalYield: 6
   };
 
   function computeMix(){
     var ratios = POSITION_RATIOS[state.position];
     var N = state.units;
-    var countA = Math.round(N * ratios.A);
-    var countB = Math.round(N * ratios.B);
-    var countC = N - countA - countB;
-    if(countC < 0){ countB += countC; countC = 0; }
-    return { A:countA, B:countB, C:countC };
+    var counts = {}, sum = 0;
+    ["A","B","C","D","E"].forEach(function(k){
+      counts[k] = Math.round(N * (ratios[k] || 0));
+      sum += counts[k];
+    });
+    var anchor = POSITION_ANCHOR[state.position];
+    counts[anchor] = Math.max(0, counts[anchor] + (N - sum));
+    return counts;
   }
 
+  /* ---------------- Chart builders (hand-rolled inline SVG, no dependencies) ---------------- */
+
+  function scale(domainMin, domainMax, rangeMin, rangeMax){
+    return function(v){ return rangeMin + (v - domainMin) / (domainMax - domainMin) * (rangeMax - rangeMin); };
+  }
+
+  function renderPositioningChart(mix, N, avgM, gdvM){
+    var W=640, H=380, padL=54, padR=16, padT=16, padB=44;
+    var plotW=W-padL-padR, plotH=H-padT-padB;
+    var comps=[
+      {name:"Siam Royal View", units:11, price:55},
+      {name:"Opal Village",    units:8,  price:39.9},
+      {name:"Amber / Onyx",    units:40, price:23.2},
+      {name:"Impress Village", units:5,  price:15.9}
+    ];
+    comps.forEach(function(c){ c.gdv = c.units * c.price; });
+    var xMax = Math.max(N+10, 50);
+    var yMax = Math.max(avgM+10, 70);
+    var x = scale(0, xMax, 0, plotW);
+    var y = scale(0, yMax, plotH, 0);
+    function r(g){ return Math.max(7, Math.min(24, Math.sqrt(g)*0.85)); }
+
+    var svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Market positioning map" style="width:100%;height:auto;">';
+    svg += '<g transform="translate('+padL+','+padT+')">';
+    for(var gy=0; gy<=yMax; gy+=10){
+      var yy=y(gy);
+      svg += '<line x1="0" y1="'+yy+'" x2="'+plotW+'" y2="'+yy+'" stroke="var(--gridline)" stroke-width="1"/>';
+      svg += '<text x="-8" y="'+(yy+3)+'" text-anchor="end" font-size="10" fill="var(--muted)">'+gy+'</text>';
+    }
+    for(var gx=0; gx<=xMax; gx+=10){
+      svg += '<text x="'+x(gx)+'" y="'+(plotH+16)+'" text-anchor="middle" font-size="10" fill="var(--muted)">'+gx+'</text>';
+    }
+    svg += '<line x1="0" y1="'+plotH+'" x2="'+plotW+'" y2="'+plotH+'" stroke="var(--axis-line)" stroke-width="1"/>';
+    svg += '<line x1="0" y1="0" x2="0" y2="'+plotH+'" stroke="var(--axis-line)" stroke-width="1"/>';
+
+    var bx1=x(5), bx2=x(11), by1=y(65), by2=y(39);
+    svg += '<rect x="'+bx1+'" y="'+by1+'" width="'+(bx2-bx1)+'" height="'+(by2-by1)+'" fill="var(--series-1)" opacity="0.08"/>';
+    svg += '<text x="'+(bx1+4)+'" y="'+(by1+13)+'" font-size="9" font-weight="700" fill="var(--series-1)">Proven boutique ultra-luxury zone</text>';
+
+    var vx2=Math.min(124,xMax);
+    var vx1=x(40), vx2p=x(vx2), vy1=y(30), vy2=y(0);
+    svg += '<rect x="'+vx1+'" y="'+vy1+'" width="'+(vx2p-vx1)+'" height="'+(vy2-vy1)+'" fill="var(--series-3)" opacity="0.08"/>';
+    svg += '<text x="'+(vx1+4)+'" y="'+(vy1+13)+'" font-size="9" font-weight="700" fill="var(--series-3)">Proven mid-luxury volume zone</text>';
+
+    comps.forEach(function(c){
+      var cx=x(c.units), cy=y(c.price), rr=r(c.gdv);
+      svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+rr+'" fill="var(--context-gray)" fill-opacity="0.6" stroke="#fff" stroke-width="2"><title>'+c.name+': '+c.units+' units, ฿'+c.price.toFixed(1)+'M avg price, ≈'+fmtBaht(c.gdv)+' GDV</title></circle>';
+      svg += '<text x="'+cx+'" y="'+(cy-rr-5)+'" text-anchor="middle" font-size="9" fill="var(--muted)">'+c.name+'</text>';
+    });
+
+    var yr=r(gdvM), yx=x(N), yyv=y(avgM);
+    svg += '<circle cx="'+yx+'" cy="'+yyv+'" r="'+yr+'" fill="var(--series-1)" fill-opacity="0.9" stroke="#fff" stroke-width="2"><title>Your configuration: '+N+' units, ฿'+avgM.toFixed(1)+'M avg price, ≈'+fmtBaht(gdvM)+' GDV</title></circle>';
+    svg += '<text x="'+yx+'" y="'+(yyv-yr-6)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--navy-2)">Your Configuration</text>';
+    svg += '</g>';
+    svg += '<text x="'+(padL+plotW/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="11" fill="var(--muted)">Total Units</text>';
+    svg += '</svg>';
+    var legend = '<div style="display:flex;gap:18px;margin-top:4px;font-size:.8rem;color:var(--muted);flex-wrap:wrap;">'+
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--context-gray);margin-right:5px;"></span>Comparable projects (Section 2)</span>'+
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--series-1);margin-right:5px;"></span>Your configuration</span>'+
+      '</div>';
+    return svg + legend;
+  }
+
+  function renderRevenueMixChart(mix, gdvM){
+    var W=640, barH=24, top=8;
+    var svg = '<svg viewBox="0 0 '+W+' '+(barH+top+34)+'" style="width:100%;height:auto;">';
+    var segs = TYPE_ORDER.filter(function(k){ return mix[k] > 0; }).map(function(k){
+      return { key:k, value: mix[k]*TYPES[k].priceMid };
+    });
+    var curX=0, gap=2;
+    segs.forEach(function(s, i){
+      var w = (s.value/gdvM) * W;
+      var w2 = Math.max(2, w - (i < segs.length-1 ? gap : 0));
+      svg += '<rect x="'+curX+'" y="'+top+'" width="'+w2+'" height="'+barH+'" rx="4" fill="'+TYPES[s.key].color+'"><title>Type '+s.key+' — '+TYPES[s.key].name+': '+fmtBaht(s.value)+' ('+((s.value/gdvM)*100).toFixed(0)+'%), '+mix[s.key]+' units</title></rect>';
+      if(w2 > 34){
+        svg += '<text x="'+(curX+w2/2)+'" y="'+(top+barH/2+4)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">'+((s.value/gdvM)*100).toFixed(0)+'%</text>';
+      }
+      curX += w;
+    });
+    svg += '</svg>';
+    var legend = '<div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:.8rem;">' +
+      segs.map(function(s){
+        var t=TYPES[s.key];
+        return '<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:'+t.color+';margin-right:5px;"></span>'+s.key+' — '+t.name+' ('+mix[s.key]+' units, '+fmtBaht(s.value)+')</span>';
+      }).join('') + '</div>';
+    return svg + legend;
+  }
+
+  function renderFeasibilityChart(gdvM, budgetM, constructionM, impliedMarginPct){
+    var items = [
+      { label:"Estimated GDV", value:gdvM, color:"var(--series-1)" },
+      { label:"Budget ceiling (land + construction)", value:budgetM, color:"var(--series-2)" },
+      { label:"Illustrative construction cost", value:constructionM, color:"var(--series-3)" }
+    ];
+    var W=640, rowH=36, labelW=190;
+    var H = items.length*rowH + 12;
+    var maxV = Math.max.apply(null, items.map(function(i){return i.value;})) * 1.2;
+    var barMaxW = W - labelW - 70;
+    var svg = '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;">';
+    items.forEach(function(it, i){
+      var yy = 8 + i*rowH;
+      var w = (it.value/maxV) * barMaxW;
+      svg += '<text x="0" y="'+(yy+15)+'" font-size="11" fill="var(--text)">'+it.label+'</text>';
+      svg += '<rect x="'+labelW+'" y="'+yy+'" width="'+w+'" height="20" rx="4" fill="'+it.color+'"><title>'+it.label+': '+fmtBaht(it.value)+'</title></rect>';
+      svg += '<text x="'+(labelW+w+8)+'" y="'+(yy+15)+'" font-size="11" font-weight="700" fill="var(--navy-2)">'+fmtBaht(it.value)+'</text>';
+    });
+    svg += '</svg>';
+    var marginColor = impliedMarginPct>=20 ? "#1f8a55" : (impliedMarginPct>=10 ? "#a8710a" : "#b3261e");
+    var note = '<div style="margin-top:6px;font-size:.82rem;color:var(--muted);">Implied margin (GDV vs. budget ceiling, illustrative): <strong style="color:'+marginColor+';">'+impliedMarginPct.toFixed(0)+'%</strong></div>';
+    return svg + note;
+  }
+
+  function renderPhasingChart(launch, mix, gdvM){
+    var W=640;
+    if(launch === "simultaneous"){
+      var total = mix.A+mix.B+mix.C+mix.D+mix.E;
+      return '<svg viewBox="0 0 '+W+' 50" style="width:100%;height:auto;"><rect x="0" y="10" width="'+W+'" height="24" rx="4" fill="var(--series-1)"><title>Simultaneous release: '+total+' units, '+fmtBaht(gdvM)+'</title></rect><text x="'+(W/2)+'" y="27" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">All '+total+' units — simultaneous release — '+fmtBaht(gdvM)+' GDV</text></svg>';
+    }
+    var p1C = Math.min(2, mix.C);
+    var p1Units = mix.A + mix.D + mix.E + p1C;
+    var p2Units = mix.B + (mix.C - p1C);
+    var p1GDV = mix.A*TYPES.A.priceMid + mix.D*TYPES.D.priceMid + mix.E*TYPES.E.priceMid + p1C*TYPES.C.priceMid;
+    var p2GDV = gdvM - p1GDV;
+    var w1 = (p1GDV/gdvM) * W, w2 = W - w1 - 2;
+    var svg = '<svg viewBox="0 0 '+W+' 50" style="width:100%;height:auto;">'+
+      '<rect x="0" y="10" width="'+w1+'" height="24" rx="4" fill="var(--series-1)"><title>Phase 1: '+p1Units+' units, '+fmtBaht(p1GDV)+'</title></rect>'+
+      '<rect x="'+(w1+2)+'" y="10" width="'+w2+'" height="24" rx="4" fill="var(--series-2)"><title>Phase 2: '+p2Units+' units, '+fmtBaht(p2GDV)+'</title></rect>'+
+      '</svg>'+
+      '<div style="display:flex;gap:16px;margin-top:8px;font-size:.8rem;flex-wrap:wrap;">'+
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--series-1);margin-right:5px;"></span>Phase 1 — '+p1Units+' units ('+fmtBaht(p1GDV)+')</span>'+
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--series-2);margin-right:5px;"></span>Phase 2 — '+p2Units+' units ('+fmtBaht(p2GDV)+')</span>'+
+      '</div>';
+    return svg;
+  }
+
+  function renderAffordabilityChart(supportableM){
+    var W=640, padL=94, rowH=34;
+    var H = TYPE_ORDER.length*rowH + 26;
+    var xMax = Math.max(70, supportableM+10, TYPES.C.priceHigh+5);
+    var plotW = W - padL - 16;
+    var x = function(v){ return padL + (v/xMax)*plotW; };
+    var svg = '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;">';
+    for(var gx=0; gx<=xMax; gx+=10){
+      svg += '<line x1="'+x(gx)+'" y1="4" x2="'+x(gx)+'" y2="'+(H-18)+'" stroke="var(--gridline)" stroke-width="1"/>';
+      svg += '<text x="'+x(gx)+'" y="'+(H-6)+'" text-anchor="middle" font-size="9.5" fill="var(--muted)">'+gx+'</text>';
+    }
+    TYPE_ORDER.forEach(function(k, i){
+      var t = TYPES[k], yy = 10 + i*rowH;
+      svg += '<text x="0" y="'+(yy+13)+'" font-size="11" fill="var(--text)">'+k+' — '+t.name+'</text>';
+      var x1=x(t.priceLow), x2=x(t.priceHigh);
+      svg += '<rect x="'+x1+'" y="'+yy+'" width="'+Math.max(3,x2-x1)+'" height="18" rx="4" fill="'+ORDINAL_COLORS[k]+'"><title>'+t.priceLabel+' (฿M)</title></rect>';
+    });
+    var tx = x(Math.min(supportableM, xMax));
+    svg += '<line x1="'+tx+'" y1="0" x2="'+tx+'" y2="'+(H-18)+'" stroke="var(--series-2)" stroke-width="2"/>';
+    svg += '<text x="'+(tx+4)+'" y="10" font-size="9.5" font-weight="700" fill="var(--series-2)">Affordability ceiling ฿'+supportableM.toFixed(1)+'M</text>';
+    svg += '</svg>';
+    return svg;
+  }
+
+  /* ---------------- Main render ---------------- */
   function render(){
     var mix = computeMix();
     var N = state.units;
 
-    // KPIs
-    var gdvM = mix.A*TYPES.A.priceMid + mix.B*TYPES.B.priceMid + mix.C*TYPES.C.priceMid;
+    var gdvM = 0, plotSqmTotal = 0, livingSqmTotal = 0;
+    ["A","B","C","D","E"].forEach(function(k){
+      gdvM += mix[k]*TYPES[k].priceMid;
+      plotSqmTotal += mix[k]*TYPES[k].plotSqm;
+      livingSqmTotal += mix[k]*TYPES[k].livingAvg;
+    });
     var avgM = gdvM / N;
-    var plotSqmTotal = mix.A*TYPES.A.plotSqm + mix.B*TYPES.B.plotSqm + mix.C*TYPES.C.plotSqm;
     var landReqRai = (plotSqmTotal * COMMON_AREA_FACTOR) / 1600;
-    var livingSqmTotal = mix.A*TYPES.A.livingAvg + mix.B*TYPES.B.livingAvg + mix.C*TYPES.C.livingAvg;
     var constructionCostM = (livingSqmTotal * CONSTRUCTION_COST_PER_SQM) / 1e6;
     var budgetM = state.budget * 1000;
+    var remainingForLandEtc = budgetM - constructionCostM;
+    var impliedMarginPct = ((gdvM - budgetM) / gdvM) * 100;
 
     document.getElementById('k_units').textContent = N;
     document.getElementById('k_gdv').textContent = fmtBaht(gdvM);
     document.getElementById('k_avg').textContent = fmtBaht(avgM);
     document.getElementById('k_landreq').textContent = landReqRai.toFixed(1) + " rai";
+    document.getElementById('k_margin').textContent = impliedMarginPct.toFixed(0) + "%";
 
     // Mix table
     var rows = "";
-    ["A","B","C"].forEach(function(key){
-      var t = TYPES[key];
-      var label = key==="A" ? "A — Core" : key==="B" ? "B — Elevated" : "C — Signature";
-      rows += "<tr><td>"+label+"</td><td>"+t.beds+"</td><td>"+t.livingLabel+"</td><td>"+t.plotLabel+"</td><td class='num'>"+t.priceLabel+"</td><td class='num'>"+mix[key]+"</td></tr>";
+    TYPE_ORDER.forEach(function(k){
+      var t = TYPES[k];
+      var label = k + " — " + t.name;
+      rows += "<tr class='"+(mix[k]===0?'zero':'')+"'><td>"+label+"</td><td>"+t.beds+"</td><td>"+t.livingLabel+"</td><td>"+t.plotLabel+"</td><td class='num'>"+t.priceLabel+"</td><td class='num'>"+mix[k]+"</td></tr>";
     });
     document.getElementById('mixTable').innerHTML = rows;
 
+    var notesHtml = "";
+    ["D","E"].forEach(function(k){
+      if(mix[k] > 0){ notesHtml += "<div class='type-note'><strong>Type "+k+" ("+TYPES[k].name+"):</strong> "+TYPES[k].note+"</div>"; }
+    });
+    document.getElementById('typeNotes').innerHTML = notesHtml;
+
+    // Charts
+    document.getElementById('chartPositioning').innerHTML = renderPositioningChart(mix, N, avgM, gdvM);
+    document.getElementById('chartRevenueMix').innerHTML = renderRevenueMixChart(mix, gdvM);
+    document.getElementById('chartFeasibility').innerHTML = renderFeasibilityChart(gdvM, budgetM, constructionCostM, impliedMarginPct);
+    document.getElementById('chartPhasing').innerHTML = renderPhasingChart(state.launch, mix, gdvM);
+
     // ---- Flags ----
     var flags = [];
+    var smallShare = (mix.D + mix.E) > 0;
 
-    // Land utilization
     if(landReqRai > state.land * 1.05){
-      flags.push(['red', "Undersized parcel: this mix needs ≈"+landReqRai.toFixed(1)+" rai but only "+state.land+" rai is confirmed. Reduce unit count or shift the mix toward Type A (Core) to fit the parcel."]);
+      var suggestion = smallShare ? "" : " Consider shifting some allocation to Type D (Essential) or Type E (Compact) — they use significantly less land per unit and would ease this constraint (try the 'Affordable / corporate-rental anchored' positioning).";
+      flags.push(['red', "Undersized parcel: this mix needs ≈"+landReqRai.toFixed(1)+" rai but only "+state.land+" rai is confirmed."+suggestion]);
     } else if(landReqRai < state.land * 0.85){
       flags.push(['amber', "Parcel is larger than required: this mix needs only ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" rai available. Consider more units, larger common areas, or a higher-end mix."]);
     } else {
       flags.push(['green', "Land parcel is appropriately sized for this configuration (requires ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" rai)."]);
     }
 
-    // Budget / construction cost check (illustrative)
-    var remainingForLandEtc = budgetM - constructionCostM;
     if(remainingForLandEtc <= 0){
-      flags.push(['red', "Illustrative construction cost alone (≈"+fmtBaht(constructionCostM)+" at ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm of living area) already exceeds your ฿"+state.budget.toFixed(2)+"bn budget ceiling — no room left for land, financing, or margin."]);
+      var suggestion2 = smallShare ? "" : " Consider adding Type D/E units to lower blended construction cost.";
+      flags.push(['red', "Illustrative construction cost alone (≈"+fmtBaht(constructionCostM)+" at ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm of living area) already exceeds your ฿"+state.budget.toFixed(2)+"bn budget ceiling — no room left for land, financing, or margin."+suggestion2]);
     } else if(remainingForLandEtc < 0.15 * budgetM){
       flags.push(['amber', "Tight budget: illustrative construction cost is ≈"+fmtBaht(constructionCostM)+", leaving only ≈"+fmtBaht(remainingForLandEtc)+" of your "+state.budget.toFixed(2)+"bn ceiling for land, financing, and contingency."]);
     } else {
       flags.push(['green', "Illustrative construction cost (≈"+fmtBaht(constructionCostM)+") leaves ≈"+fmtBaht(remainingForLandEtc)+" of your budget ceiling for land, financing, and contingency."]);
     }
 
-    // Margin check
-    var impliedMarginPct = ((gdvM - budgetM) / gdvM) * 100;
     if(impliedMarginPct < state.margin - 5){
       flags.push(['red', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%, GDV vs. budget ceiling) is materially below your "+state.margin+"% target."]);
     } else if(impliedMarginPct < state.margin){
@@ -420,7 +686,6 @@
       flags.push(['green', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) meets or exceeds your "+state.margin+"% target (illustrative, excludes financing detail)."]);
     }
 
-    // Walking distance
     if(state.dist <= 800){
       flags.push(['green', "At "+state.dist+" m, the site is genuinely walkable to Highgate's gate (~"+Math.round(state.dist/80)+" min) — a 'walking distance to school' marketing claim is defensible."]);
     } else if(state.dist <= 2000){
@@ -429,17 +694,18 @@
       flags.push(['red', "At "+state.dist+" m, this is not walking distance. Do not use a 'walking distance to school' claim — lead with the scheduled shuttle-service differentiator (Section 4) instead."]);
     }
 
-    // Contractor tier vs. mix
     var signatureShare = mix.C / N;
+    var essentialCompactShare = (mix.D + mix.E) / N;
     if(state.contractor === "standard" && (signatureShare > 0.05 || state.position === "flagship")){
       flags.push(['red', "A standard local builder profile may not credibly back the 5-star warranty and specification claims Type C Signature pricing (58M–65M+) requires against the comparables in Section 2. Consider an established or top-tier contractor for this mix."]);
+    } else if(state.contractor === "top" && essentialCompactShare > 0.5){
+      flags.push(['amber', "A top-tier international contractor may be cost-inefficient for a volume-driven Essential/Compact product — an established regional builder can typically deliver comparable quality at this tier for lower overhead."]);
     } else if(state.contractor === "top"){
-      flags.push(['green', "Top-tier international contractor is consistent with top-end positioning across all three types."]);
+      flags.push(['green', "Top-tier international contractor is consistent with top-end positioning across the mix."]);
     } else {
-      flags.push(['amber', "Established regional builder is generally consistent with this tier — confirm the firm's track record includes comparable ultra-luxury villa delivery before finalizing."]);
+      flags.push(['amber', "Established regional builder is generally consistent with this tier — confirm the firm's track record includes comparable villa delivery before finalizing."]);
     }
 
-    // Velocity vs. launch approach
     if(state.velocity === "fast" && state.launch === "phased"){
       flags.push(['amber', "Section 6's phased plan assumes a multi-year sell-down tied to Highgate's opening and growth. A 12–18 month fast-velocity target may be hard to reconcile with a 2-phase plan gated on school-opening performance — consider a simultaneous release or a compressed gap between phases."]);
     }
@@ -447,20 +713,21 @@
       flags.push(['amber', "A patient hold period reduces the urgency to phase, but releasing all "+N+" units simultaneously still carries the absorption risk described in Section 6."]);
     }
 
+    // Demand-driven suggestion, computed after affordability math below is available — placeholder inserted, filled after.
     document.getElementById('flags').innerHTML = flags.map(function(f){
       return "<div class='flag "+f[0]+"'><div class='dot'></div><div>"+f[1]+"</div></div>";
     }).join("") + "<div class='assumption'>Illustrative assumption — not from source report: all-in construction cost of ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm applied to total living area only (excludes land cost, infrastructure, financing, and contingency). Land-area math and unit pricing are sourced directly from Sections 3 and 5 of the report.</div>";
 
-    // ---- Phasing ----
+    // ---- Phasing narrative ----
     var phasingHtml = "";
     if(state.launch === "phased"){
       var p1C = Math.min(2, mix.C);
-      var p1Units = mix.A + p1C;
+      var p1Units = mix.A + mix.D + mix.E + p1C;
       var p2Units = mix.B + (mix.C - p1C);
-      phasingHtml = "<strong>Phase 1 (~"+p1Units+" units):</strong> Full Type A (Core) allocation ("+mix.A+" units) plus "+p1C+" Type C (Signature) show villa(s) to establish top-of-market pricing and generate marketing material.<br><br>" +
+      phasingHtml = "<strong>Phase 1 (~"+p1Units+" units):</strong> Full allocation of the everyday sizes in the mix (Types A/D/E as applicable) plus "+p1C+" Type C (Signature) show villa(s) to establish top-of-market pricing and generate marketing material.<br><br>" +
         "<strong>Phase 2 (~"+p2Units+" units):</strong> Full Type B (Elevated) allocation ("+mix.B+" units) plus the remaining "+(mix.C-p1C)+" Type C unit(s), released once Highgate has opened and Phase 1 performance is known.";
     } else {
-      phasingHtml = "<strong>Simultaneous release:</strong> All "+N+" units ("+mix.A+" A / "+mix.B+" B / "+mix.C+" C) marketed together. " +
+      phasingHtml = "<strong>Simultaneous release:</strong> All "+N+" units marketed together. " +
         (N > 11 ? "No comparable project in this corridor has proven simultaneous absorption of "+N+" units at this price tier — the largest proven scheme at THB 40M+ sold 8–11 units (Section 2). This is the single biggest lever on absorption risk (Section 6, Q5)." : "At "+N+" units, this is within the range of proven boutique ultra-luxury absorption in this corridor (8–11 units, Section 2).");
     }
     document.getElementById('phasing').innerHTML = phasingHtml;
@@ -485,6 +752,29 @@
       condo: "Condominium-titled villas allow up to 49% foreign freehold ownership per project under the Condominium Act, which can speed international sales. This requires titling the development under a condominium juristic structure rather than as standalone landed villas — a departure from every comparable in Section 2, which are all titled as landed villas — and should be tested with counsel before finalizing this unit mix. Not legal or tax advice."
     };
     document.getElementById('ownershipNote').innerHTML = ownNotes[state.own];
+
+    // ---- Corporate & Expat Rental Affordability ----
+    var annualRent = state.famBudget * 12;
+    var supportableTHB = annualRent / (state.rentalYield/100);
+    var supportableM = supportableTHB / 1e6;
+
+    document.getElementById('chartAffordability').innerHTML = renderAffordabilityChart(supportableM);
+
+    var reachable = TYPE_ORDER.filter(function(k){ return TYPES[k].priceLow <= supportableM; });
+    var verdictHtml;
+    if(reachable.length === 0){
+      verdictHtml = "<div class='flag red'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and a "+state.rentalYield+"% gross yield assumption, this demand pool supports a capital value of only ≈"+fmtBaht(supportableM)+" — below even the smallest proposed unit (Type E, from ฿"+TYPES.E.priceLow+"M). At this budget level, corporate-rental demand cannot support new-build purchase economics here; it would only work as a directly-held build-to-rent asset, not a for-sale product.</div></div>";
+    } else {
+      var reachableInMix = reachable.filter(function(k){ return mix[k] > 0; });
+      var reachableLabel = reachable.map(function(k){ return "Type "+k+" ("+TYPES[k].name+")"; }).join(", ");
+      if(reachableInMix.length > 0){
+        var pct = reachableInMix.reduce(function(s,k){return s+mix[k];},0) / N * 100;
+        verdictHtml = "<div class='flag green'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and a "+state.rentalYield+"% gross yield assumption, this demand pool supports a capital value of ≈"+fmtBaht(supportableM)+" — reaching "+reachableLabel+". Your current mix allocates "+pct.toFixed(0)+"% of units to these reachable types, so it does align with this researched corporate-rental demand pool.</div></div>";
+      } else {
+        verdictHtml = "<div class='flag amber'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and a "+state.rentalYield+"% gross yield assumption, this demand pool supports a capital value of ≈"+fmtBaht(supportableM)+" — reaching "+reachableLabel+". Your current mix (positioning: '"+state.position+"') allocates 0 units to these types, so this configuration is not aimed at corporate-rental tenant demand and should be underwritten against outright HNW purchasers instead. If capturing this segment matters to the investment thesis, try the 'Affordable / corporate-rental anchored' positioning.</div></div>";
+      }
+    }
+    document.getElementById('affordabilityVerdict').innerHTML = verdictHtml;
   }
 
   /* ---------------- Wire up inputs ---------------- */
@@ -502,13 +792,15 @@
   bindRange('in_budget','budget', function(v){ document.getElementById('v_budget').textContent = "฿"+parseFloat(v).toFixed(2)+"bn"; });
   bindRange('in_margin','margin', function(v){ document.getElementById('v_margin').textContent = v+"%"; });
   bindRange('in_units','units', function(v){ document.getElementById('v_units').textContent = v; });
+  bindRange('in_famBudget','famBudget', function(v){ document.getElementById('v_famBudget').textContent = "฿"+Number(v).toLocaleString(); });
+  bindRange('in_yield','rentalYield', function(v){ document.getElementById('v_yield').textContent = parseFloat(v).toFixed(1)+"%"; });
 
   document.getElementById('in_own').addEventListener('change', function(e){ state.own = e.target.value; render(); });
   document.getElementById('in_velocity').addEventListener('change', function(e){ state.velocity = e.target.value; render(); });
   document.getElementById('in_contractor').addEventListener('change', function(e){ state.contractor = e.target.value; render(); });
   document.getElementById('in_position').addEventListener('change', function(e){ state.position = e.target.value; render(); });
 
-  var toggleBtns = document.querySelectorAll('.toggle-group button');
+  var toggleBtns = document.querySelectorAll('.toggle-group button:not(.famBtn)');
   toggleBtns.forEach(function(btn){
     btn.addEventListener('click', function(){
       toggleBtns.forEach(function(b){ b.classList.remove('active'); });
@@ -518,8 +810,21 @@
     });
   });
 
+  var famBtns = document.querySelectorAll('.famBtn');
+  famBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      famBtns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var v = parseInt(btn.getAttribute('data-budget'), 10);
+      state.famBudget = v;
+      document.getElementById('in_famBudget').value = v;
+      document.getElementById('v_famBudget').textContent = "฿"+v.toLocaleString();
+      render();
+    });
+  });
+
   document.getElementById('resetBtn').addEventListener('click', function(){
-    state = { land:32, dist:1500, own:"freehold", velocity:"moderate", budget:1.60, margin:20, launch:"phased", contractor:"top", units:50, position:"gapfill" };
+    state = { land:32, dist:1500, own:"freehold", velocity:"moderate", budget:1.60, margin:20, launch:"phased", contractor:"top", units:50, position:"gapfill", famBudget:115000, rentalYield:6 };
     document.getElementById('in_land').value = 32; document.getElementById('v_land').textContent = "32 rai";
     document.getElementById('in_dist').value = 1500; document.getElementById('v_dist').textContent = "1,500 m";
     document.getElementById('in_own').value = "freehold";
@@ -529,7 +834,10 @@
     document.getElementById('in_contractor').value = "top";
     document.getElementById('in_units').value = 50; document.getElementById('v_units').textContent = "50";
     document.getElementById('in_position').value = "gapfill";
+    document.getElementById('in_famBudget').value = 115000; document.getElementById('v_famBudget').textContent = "฿115,000";
+    document.getElementById('in_yield').value = 6; document.getElementById('v_yield').textContent = "6.0%";
     toggleBtns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-val')==='phased'); });
+    famBtns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-budget')==='115000'); });
     render();
   });
 
