@@ -81,11 +81,14 @@
   }
   main{max-width:1400px;margin:0 auto;padding:28px;}
   .grid{display:grid;grid-template-columns:400px 1fr;gap:24px;align-items:start;}
+  .grid > div{min-width:0;} /* prevent wide nowrap tables/charts from blowing out the grid track */
   @media (max-width:960px){.grid{grid-template-columns:1fr;}}
 
-  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:20px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:20px;min-width:0;}
   .card h2{margin:0 0 4px;font-size:1.05rem;color:var(--navy);}
   .card .hint{color:var(--muted);font-size:.82rem;margin:0 0 16px;}
+  .group-label{max-width:1400px;margin:8px auto 4px;padding:0 4px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);}
+  .group-label:first-child{margin-top:0;}
 
   .field{margin-bottom:18px;}
   .field label{display:flex;justify-content:space-between;font-size:.86rem;font-weight:600;margin-bottom:6px;color:var(--text);}
@@ -95,9 +98,9 @@
   select{
     width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;font-size:.88rem;background:#fff;
   }
-  .toggle-group{display:flex;gap:8px;}
+  .toggle-group{display:flex;gap:8px;flex-wrap:wrap;}
   .toggle-group button{
-    flex:1;padding:9px 8px;border:1px solid var(--border);background:#fff;border-radius:8px;font-size:.82rem;
+    flex:1 1 auto;min-width:70px;padding:9px 8px;border:1px solid var(--border);background:#fff;border-radius:8px;font-size:.82rem;
     cursor:pointer;font-weight:600;color:var(--muted);transition:all .15s;
   }
   .toggle-group button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
@@ -114,8 +117,9 @@
   .kpi .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700;}
   .kpi .value{font-size:1.3rem;font-weight:800;color:var(--navy);margin-top:4px;}
 
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -2px;}
   table{width:100%;border-collapse:collapse;font-size:.86rem;}
-  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--border);}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--border);white-space:nowrap;}
   th{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}
   td.num{text-align:right;font-variant-numeric:tabular-nums;}
   th.num{text-align:right;}
@@ -141,12 +145,49 @@
   }
   .narrative{font-size:.92rem;line-height:1.6;background:var(--bg);border-radius:10px;padding:14px 16px;}
   .chart-wrap{margin-top:6px;}
+  .chart-wrap.scrollable{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .chart-wrap svg{display:block;}
   .sources-line{font-size:.74rem;color:var(--muted);margin-top:12px;line-height:1.6;}
   .sources-line a{color:var(--muted);text-decoration:underline;}
+  .tag{font-size:.68rem;font-style:italic;color:var(--muted);margin-left:5px;}
+
+  details{margin-top:10px;}
+  details summary{cursor:pointer;font-weight:700;color:var(--navy-2);font-size:.8rem;}
+  details .details-body{font-size:.78rem;color:var(--muted);line-height:1.6;margin-top:8px;}
+
+  /* Demand Fit banner */
+  .demandfit-wrap{max-width:1400px;margin:0 auto;padding:16px 28px 0;}
+  .demandfit{border-radius:var(--radius);padding:16px 20px;border:1px solid var(--border);}
+  .demandfit .tag-line{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;font-weight:800;margin-bottom:6px;}
+  .demandfit .body{font-size:.92rem;line-height:1.55;}
+  .demandfit .context{font-size:.8rem;color:var(--muted);margin-top:8px;}
+  .demandfit.green{background:var(--green-bg);border-color:#bfe6cf;}
+  .demandfit.green .tag-line{color:#155c38;}
+  .demandfit.amber{background:var(--amber-bg);border-color:#f0dcb0;}
+  .demandfit.amber .tag-line{color:#7a5107;}
+  .demandfit.red{background:var(--red-bg);border-color:#eec4c0;}
+  .demandfit.red .tag-line{color:#7d1c16;}
 
   footer{max-width:1400px;margin:0 auto;padding:20px 28px 40px;color:var(--muted);font-size:.78rem;}
   footer .conf{font-weight:700;color:var(--navy);margin-bottom:6px;}
+
+  /* ---------- Mobile ---------- */
+  @media (max-width:640px){
+    header.site{padding:16px 16px;}
+    header.site h1{font-size:1.15rem;}
+    header.site .sub{font-size:.82rem;}
+    .conf-banner{padding:8px 16px;font-size:.7rem;}
+    .demandfit-wrap{padding:12px 14px 0;}
+    main{padding:14px;}
+    .card{padding:16px 14px;margin-bottom:14px;}
+    .kpis{grid-template-columns:repeat(2,1fr);gap:8px;}
+    .kpi{padding:10px 12px;}
+    .kpi .value{font-size:1.05rem;}
+    table{font-size:.78rem;}
+    th,td{padding:7px 6px;}
+    .chart-wrap.scrollable svg{min-width:520px;}
+    footer{padding:16px 16px 32px;}
+  }
 </style>
 </head>
 <body>
@@ -167,11 +208,15 @@
     <div class="wrap">
       <div>
         <h1>SMG Project — Family Housing Development, East Pattaya</h1>
-        <div class="sub">Interactive investor configurator · luxury pool villa community · near Highgate International School Thailand &amp; Siam Country Club</div>
+        <div class="sub">Interactive investor configurator · luxury pool villa community near Highgate International School Thailand &amp; Siam Country Club. Key question: does this configuration actually fit proven local demand?</div>
       </div>
     </div>
   </header>
-  <div class="conf-banner">Confidential — prepared for internal investment discussion only. Figures are indicative, based on comparable-market benchmarking (24 Aug 2026), and require validation via a full feasibility study.</div>
+  <div class="conf-banner">Confidential — internal investment discussion only. Figures are indicative, based on comparable-market benchmarking, and require validation via a full feasibility study.</div>
+
+  <div class="demandfit-wrap">
+    <div class="demandfit" id="demandFit"></div>
+  </div>
 
   <main>
     <div class="grid">
@@ -180,7 +225,7 @@
       <div>
         <div class="card">
           <h2>Configuration Parameters</h2>
-          <p class="hint">Grouped by decision area. Fields marked with a Section 7 question number map directly to the Investment Committee's open questions; "Scale &amp; Product" fields go beyond Section 7 to let you explore alternative product strategies.</p>
+          <p class="hint">Grouped by decision area — numbers map to the Investment Committee's open questions (Section 7).</p>
 
           <div class="subhead">Scale &amp; product <span class="beyond">— beyond Section 7</span></div>
           <div class="field">
@@ -196,19 +241,18 @@
               <option value="flagship">Push toward ultra-luxury flagship-only</option>
               <option value="affordable">Affordable / corporate-rental anchored (adds smaller unit types)</option>
             </select>
-            <div class="tip">Determines the split across Types A–E — see the Recommended Configuration panel.</div>
           </div>
 
           <div class="subhead">Site <span class="beyond">— Q1</span></div>
           <div class="field">
             <label>Confirmed land parcel size <span class="val" id="v_land">32 rai</span></label>
             <input type="range" id="in_land" min="15" max="40" step="1" value="32">
-            <div class="tip">Report's indicative requirement: ≈31–34 rai (Section 5).</div>
+            <div class="tip">Report's indicative requirement: ≈31–34 rai.</div>
           </div>
           <div class="field">
             <label>Distance to Highgate campus gate <span class="val" id="v_dist">1,500 m</span></label>
             <input type="range" id="in_dist" min="0" max="5000" step="100" value="1500">
-            <div class="tip">"Walking distance to school" is only a valid claim if literally true from the actual site (Section 1 caution).</div>
+            <div class="tip">"Walking distance" is only a valid claim if literally true from the actual site.</div>
           </div>
 
           <div class="subhead">Commercial structure <span class="beyond">— Q2, Q3, Q5</span></div>
@@ -238,8 +282,8 @@
 
           <div class="subhead">Financial targets <span class="beyond">— Q4</span></div>
           <div class="field">
-            <label>All-in budget ceiling (land + construction) <span class="val" id="v_budget">฿1.60bn</span></label>
-            <input type="range" id="in_budget" min="0.6" max="3.0" step="0.05" value="1.60">
+            <label>All-in budget ceiling (land + construction) <span class="val" id="v_budget">฿2.20bn</span></label>
+            <input type="range" id="in_budget" min="0.6" max="3.0" step="0.05" value="2.20">
           </div>
           <div class="field">
             <label>Target margin / IRR <span class="val" id="v_margin">20%</span></label>
@@ -256,16 +300,17 @@
             </select>
           </div>
 
-          <button id="resetBtn">Reset to report's base case</button>
+          <button id="resetBtn">Reset to base case</button>
         </div>
 
         <div class="card">
           <h2>Corporate &amp; Expat Rental Demand Check</h2>
-          <p class="hint">Is there real demand for a smaller/lower-priced unit? Modeled from researched corporate housing-allowance ranges for international-company families near East Pattaya.</p>
+          <p class="hint">Is there real demand for a smaller/lower-priced unit, based on what companies actually budget for housing?</p>
 
           <div class="field">
             <label>Representative family size</label>
             <div class="toggle-group">
+              <button type="button" class="famBtn" data-budget="62000">Family of 2</button>
               <button type="button" class="famBtn" data-budget="90000">Family of 3</button>
               <button type="button" class="famBtn active" data-budget="115000">Family of 4</button>
               <button type="button" class="famBtn" data-budget="140000">Family of 5</button>
@@ -275,63 +320,108 @@
           <div class="field">
             <label>Monthly corporate housing budget <span class="val" id="v_famBudget">฿115,000</span></label>
             <input type="range" id="in_famBudget" min="40000" max="200000" step="5000" value="115000">
-            <div class="tip">Researched range: East Pattaya 3-bed compounds ≈฿20,000–50,000/mo; 4-bed private-pool villas ≈฿65,000–125,000/mo; Bangkok-anchored corporate relocation packages commonly ฿65,000–180,000/mo.</div>
+            <div class="tip">See the full breakdown by family size in "Corporate &amp; Expat Housing Budgets" below.</div>
           </div>
 
           <div class="field">
             <label>Assumed gross rental yield <span class="val" id="v_yield">6.0%</span></label>
             <input type="range" id="in_yield" min="4" max="8" step="0.5" value="6">
-            <div class="tip">Illustrative — Thailand-wide average gross yield ≈6.3–6.5%; luxury pool-villa resort markets typically 5–8% gross. Not a Pattaya-specific survey figure.</div>
+            <div class="tip">Also drives the "Approx. Monthly Rent" column in Recommended Configuration.</div>
           </div>
         </div>
       </div>
 
       <!-- ================= PART 2: RECOMMENDATION ================= -->
       <div>
+
+        <div class="group-label">Recommended build</div>
+
         <div class="card">
           <h2>Recommended Configuration</h2>
-          <p class="hint">Recomputes instantly from the parameters on the left, using the report's own ratios, sizing, and pricing logic.</p>
+          <p class="hint">Recomputes instantly from the parameters on the left.</p>
 
           <div class="kpis">
             <div class="kpi"><div class="label">Total Units</div><div class="value" id="k_units">50</div></div>
             <div class="kpi"><div class="label">Est. GDV</div><div class="value" id="k_gdv">฿2.37bn</div></div>
             <div class="kpi"><div class="label">Blended Avg. Price</div><div class="value" id="k_avg">฿47.4M</div></div>
             <div class="kpi"><div class="label">Land Required</div><div class="value" id="k_landreq">32.0 rai</div></div>
-            <div class="kpi"><div class="label">Implied Margin</div><div class="value" id="k_margin">33%</div></div>
+            <div class="kpi"><div class="label">Implied Margin</div><div class="value" id="k_margin">22%</div></div>
           </div>
 
+          <div class="table-scroll">
           <table>
             <thead>
-              <tr><th>Type</th><th>Beds</th><th>Living Area</th><th>Plot Size</th><th class="num">Price (THB)</th><th class="num">Units</th></tr>
+              <tr><th>Type</th><th>Beds</th><th>Living Area</th><th>Plot Size</th><th class="num">Price (THB)</th><th class="num">Units</th><th class="num">Approx. Monthly Rent</th></tr>
             </thead>
             <tbody id="mixTable"></tbody>
           </table>
+          </div>
           <div id="typeNotes"></div>
-        </div>
-
-        <div class="card">
-          <h2>Market Positioning Map</h2>
-          <p class="hint">Your configuration vs. the comparable projects in Section 2 — unit count × blended average price, bubble size ≈ total GDV.</p>
-          <div class="chart-wrap" id="chartPositioning"></div>
-        </div>
-
-        <div class="card">
-          <h2>Revenue Mix by Unit Type</h2>
-          <p class="hint">Share of estimated GDV contributed by each type in the recommended mix.</p>
-          <div class="chart-wrap" id="chartRevenueMix"></div>
+          <div class="sources-line" id="rentNote"></div>
         </div>
 
         <div class="card">
           <h2>Budget, Cost &amp; Margin</h2>
-          <p class="hint">Estimated GDV vs. your stated budget ceiling vs. an illustrative construction-cost estimate.</p>
+          <p class="hint">GDV vs. your budget ceiling vs. modeled land + construction cost.</p>
           <div class="chart-wrap" id="chartFeasibility"></div>
         </div>
 
         <div class="card">
           <h2>Feasibility Flags</h2>
-          <p class="hint">Automated checks against the report's evidence and your stated assumptions.</p>
+          <p class="hint">Automated checks against the report's evidence and your assumptions.</p>
           <div id="flags"></div>
         </div>
+
+        <div class="group-label">Market context</div>
+
+        <div class="card">
+          <h2>Market Positioning Map</h2>
+          <p class="hint">Your configuration vs. 11 corridor comparables (below) — unit count × avg. price, bubble size ≈ GDV. Hover a gray dot for details.</p>
+          <div class="chart-wrap scrollable" id="chartPositioning"></div>
+        </div>
+
+        <div class="card">
+          <h2>Benchmark Developments</h2>
+          <p class="hint">The comparable pool-villa/gated projects behind the positioning map, with location, price range and configuration.</p>
+          <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Project</th><th class="num">Units</th><th>Beds</th><th>Size</th><th class="num">Price (THB)</th><th>Location</th><th>Positioning</th></tr>
+            </thead>
+            <tbody id="benchTable"></tbody>
+          </table>
+          </div>
+          <div class="tag">Older/lower-priced product also exists in this corridor (e.g. Patta Village, Siam Place, Sirisa 16 — resale from ≈฿3.5M–11M) and isn't shown here as it sits well below this project's positioning tier.</div>
+          <details>
+            <summary>Sources</summary>
+            <div class="details-body">Lumina Pool Villa (developer site) · Thailand-Property.com · ddproperty.com · KellerHenson · PropertyHub.in.th · PropertySpace · FazWaz · Coastal Real Estate Thailand · ESS Developments · Lazudi · Property-Hua-Hin.com. Figures gathered Aug 2026 from developer sites and listing portals — re-verify before underwriting; some (e.g. Panalee Banna, resale-derived comps) likely understate original launch pricing.</div>
+          </details>
+        </div>
+
+        <div class="card">
+          <h2>Revenue Mix by Unit Type</h2>
+          <p class="hint">Share of estimated GDV contributed by each type.</p>
+          <div class="chart-wrap" id="chartRevenueMix"></div>
+        </div>
+
+        <div class="card">
+          <h2>Property Demand by Price Segment</h2>
+          <p class="hint">Is there real buyer demand at this project's price point? No Pattaya-specific villa-demand-by-price-band survey exists publicly — this section states the best available proxies plainly, each labeled by confidence.</p>
+          <ul style="margin:0 0 12px;padding-left:18px;font-size:.88rem;line-height:1.7;">
+            <li><strong>~80% of general-market residential transactions</strong> in the wider Pattaya area fall between ฿2.5M–฿12M.<span class="tag">[proxy — REIC-derived, all housing types, not villa-specific]</span></li>
+            <li><strong>Detached houses ≈10%</strong> of the Pattaya residential market, averaging ≈฿6.5M.<span class="tag">[proxy — REIC-derived]</span></li>
+            <li><strong>New luxury condo (&gt;฿6M) launches</strong> took the largest share of new supply in H2 2024, with 47% of the pipeline already sold.<span class="tag">[solid — CBRE Thailand H2 2024, condos only, not villas]</span></li>
+            <li><strong>CBRE notes luxury/super-luxury residential demand remains resilient</strong>, led by Middle East, Japan and Russia buyers.<span class="tag">[qualitative — CBRE, no unit-level data]</span></li>
+            <li>Corridor-wide, the largest schemes (40–124 units) cluster under ฿30M, while very small schemes (5–14 units) exist above ฿45M.<span class="tag">[inferred from Benchmark Developments above, not a demand study]</span></li>
+          </ul>
+          <div class="narrative">Read together, these proxies suggest deep general-market demand well below this project's ฿40M–65M+ price band, and thin proven demand above it — which is exactly why the Demand Fit banner at the top of this page tracks the ฿40M+ share of your mix against the corridor's proven ceiling, rather than against the general market.</div>
+          <details>
+            <summary>Sources &amp; caveats</summary>
+            <div class="details-body">CBRE (Thailand) "Pattaya Overall" H2 2024 report (PDF) · Bamboo Routes market blog (REIC-attributed figures, not directly quoted from a REIC table — treat as directional) · a 2019-era low-rise absorption-rate figure (3.3%, scope not confirmed as Pattaya-specific) was found but is too dated/uncertain to include above. Knight Frank and REIC do not publish a public Pattaya villa-demand-by-price-band breakdown as of Aug 2026.</div>
+          </details>
+        </div>
+
+        <div class="group-label">Demand &amp; timing</div>
 
         <div class="card">
           <h2>Phasing Plan</h2>
@@ -340,30 +430,35 @@
         </div>
 
         <div class="card">
-          <h2>Market-Gap Positioning</h2>
-          <div id="narrative" class="narrative"></div>
-        </div>
-
-        <div class="card">
           <h2>Ownership Structure — Buyer Pool Impact</h2>
           <div id="ownershipNote" class="narrative"></div>
         </div>
 
         <div class="card">
-          <h2>Corporate &amp; Expat Rental Affordability</h2>
-          <p class="hint">What capital value can the researched corporate-housing-budget demand pool actually support — and does your current mix reach it?</p>
-          <div class="chart-wrap" id="chartAffordability"></div>
-          <div id="affordabilityVerdict" style="margin-top:12px;"></div>
-          <div class="sources-line">
-            Research sources: <a href="https://pearlpropertythailand.com/blog/highgate-international-school-thailand" target="_blank" rel="noopener">Pearl Property Pattaya — Highgate School</a>,
-            <a href="https://lakesidepropertypattaya.com/real-talk/international-schools-pattaya-guide/" target="_blank" rel="noopener">Lakeside Property — International Schools Guide</a>,
-            <a href="https://www.fazwaz.com/villa-for-rent/thailand/chon-buri/pattaya" target="_blank" rel="noopener">FazWaz — Pattaya villa rentals</a>,
-            <a href="https://www.internationalcitizens.com/living-abroad/costs/thailand.php" target="_blank" rel="noopener">International Citizens — Thailand cost of living</a>,
-            <a href="https://www.gregtodiffer.com/housing-allowance/" target="_blank" rel="noopener">Greg to Differ — Bangkok housing allowance</a>,
-            <a href="https://www.globalpropertyguide.com/asia/thailand/rental-yields" target="_blank" rel="noopener">Global Property Guide — Thailand rental yields</a>.
-            Figures are illustrative benchmarks (Aug 2026), not a Pattaya-specific corporate-mobility survey — validate with HR/relocation data before underwriting.
+          <h2>Corporate &amp; Expat Housing Budgets &amp; Rental Affordability</h2>
+          <p class="hint">What companies typically budget for family housing here, and what capital value that demand pool can support.</p>
+
+          <div class="table-scroll">
+          <table>
+            <thead><tr><th>Family size</th><th class="num">Illustrative monthly budget (THB)</th><th>Basis</th></tr></thead>
+            <tbody>
+              <tr><td>2 (couple)</td><td class="num">≈60,000–70,000</td><td>Cost-of-living aggregates <span class="tag">[estimate]</span></td></tr>
+              <tr><td>3</td><td class="num">≈90,000–120,000</td><td>Aggregates; one relocation package reported ฿50,000 housing-only as insufficient <span class="tag">[estimate + 1 anecdote]</span></td></tr>
+              <tr><td>4</td><td class="num">≈100,000–150,000</td><td>Consistent across several 2025/26 cost-of-living guides <span class="tag">[estimate]</span></td></tr>
+              <tr><td>5</td><td class="num">≈140,000–180,000+</td><td>Bracketed by two relocation-package anecdotes <span class="tag">[anecdotal]</span></td></tr>
+            </tbody>
+          </table>
           </div>
+          <p class="hint" style="margin-top:10px;">Authoritative family-size-segmented allowance data (ECA International, Mercer) is industry-paywalled and not publicly accessible — figures above are the best public substitute, not a corporate-mobility survey.</p>
+
+          <div class="chart-wrap" id="chartAffordability" style="margin-top:6px;"></div>
+          <div id="affordabilityVerdict" style="margin-top:12px;"></div>
+          <details>
+            <summary>Sources</summary>
+            <div class="details-body">Pearl Property Pattaya · Lakeside Property Pattaya · FazWaz villa rentals · International Citizens (cost of living) · ExpatDen · WDX Properties · Varsovia Estate · Global Property Guide (Thailand rental yields) · two anecdotal relocation-package data points (Mumsnet, Quora forums — single reports, not survey data). Aug 2026 — illustrative, not a Pattaya-specific corporate-mobility survey.</div>
+          </details>
         </div>
+
       </div>
 
     </div>
@@ -371,7 +466,11 @@
 
   <footer>
     <div class="conf">Confidential — internal investment discussion only.</div>
-    <div>Source: "Investment Recommendation — Family Housing Development, East Pattaya," prepared for the Investment Committee, 24 August 2026. Figures are indicative, based on comparable-market benchmarking, and require validation via a full feasibility study. Sources: Highgate School Thailand · Highgate School UK · Siam Motors Group · Bangkok Post · The Pattaya News · Cornerstone Real Estate · Pearl Property Pattaya · Lakeside Property Pattaya · Conrad Villas/Conrad Properties · Hipflat · Thailand-Property · FazWaz · PropertyHub.in.th · Lumina Pool Villa · Opal Village · Keller Henson · Thai Property 1 · Lazudi · PropertySpace Pattaya · Wikipedia (Siam Country Club). Figures current as of August 2026.</div>
+    <div>Source: "Investment Recommendation — Family Housing Development, East Pattaya," prepared for the Investment Committee, 24 August 2026. Figures are indicative and require validation via a full feasibility study.</div>
+    <details>
+      <summary>Full source list</summary>
+      <div class="details-body">Highgate School Thailand · Highgate School UK · Siam Motors Group · Bangkok Post · The Pattaya News · Cornerstone Real Estate · Pearl Property Pattaya · Lakeside Property Pattaya · Conrad Villas/Conrad Properties · Hipflat · Thailand-Property · FazWaz · PropertyHub.in.th · Lumina Pool Villa · Opal Village · Keller Henson · Thai Property 1 · Lazudi · PropertySpace Pattaya · ddproperty.com · Coastal Real Estate Thailand · ESS Developments · Property-Hua-Hin.com · CBRE Thailand · Bamboo Routes · ExpatDen · WDX Properties · Varsovia Estate · International Citizens · Global Property Guide · Wikipedia (Siam Country Club). Figures current as of August 2026; re-verify before formal underwriting.</div>
+    </details>
   </footer>
 </div>
 
@@ -409,9 +508,9 @@
     B: { name:"Elevated",  beds:5, livingLabel:"550–650 sqm",  livingAvg:600, plotLabel:"180–220 sq.wah",              plotSqm:800,  priceLabel:"48M – 55M",  priceLow:48,  priceHigh:55,  priceMid:51.5, color:"var(--series-2)" },
     C: { name:"Signature", beds:6, livingLabel:"750–900+ sqm", livingAvg:825, plotLabel:"250+ sq.wah (premium plots)", plotSqm:1100, priceLabel:"58M – 65M+", priceLow:58,  priceHigh:65,  priceMid:61.5, color:"var(--series-3)" },
     D: { name:"Essential", beds:3, livingLabel:"280–320 sqm",  livingAvg:300, plotLabel:"100–120 sq.wah",              plotSqm:440,  priceLabel:"18M – 25M",  priceLow:18,  priceHigh:25,  priceMid:21.5, color:"var(--series-4)",
-         note:"Type D has no exact match among the report's ultra-luxury comps, but aligns with proven mid-luxury comparables (Amber/Onyx: 3–5 bed, ฿17.9M–28.5M+; Lumina Pool Villa: 3–6 bed, mid-luxury family estate) — a lower-risk, already-proven category in this corridor." },
+         note:"No exact report match — aligns with proven mid-luxury comps (Amber/Onyx, Lumina Pool Villa), a lower-risk, already-proven category here." },
     E: { name:"Compact",   beds:2, livingLabel:"150–180 sqm",  livingAvg:165, plotLabel:"60–80 sq.wah",                plotSqm:280,  priceLabel:"9.5M – 13M", priceLow:9.5, priceHigh:13,  priceMid:11.25, color:"var(--series-5)",
-         note:"Type E has no comparable of this size anywhere in the report's corridor. Hitting this price point likely means a shared communal pool rather than a private pool — a departure from the private-pool market-entry standard identified in Sections 2 & 4. Treat as exploratory, not a validated local product." }
+         note:"No comparable of this size in the corridor. Likely means a shared, not private, pool — exploratory, not a validated local product." }
   };
   var TYPE_ORDER = ["E","D","A","B","C"]; // ascending by price — the product ladder
 
@@ -423,8 +522,25 @@
   };
 
   var CONSTRUCTION_COST_PER_SQM = 55000; // Illustrative assumption — not from source report.
+  var LAND_COST_PER_RAI_M = 10; // Illustrative assumption (≈฿10M/rai) — not from source report or researched; override once the confirmed parcel has a real price.
   var COMMON_AREA_FACTOR = 1.325; // midpoint of report's 30–35% allowance (Section 5)
-  var MAX_GDV_FOR_BUBBLE_SCALE = 4300; // ≈ 70 units all at Type C avg price — fixed reference so bubble sizes stay comparable as inputs change, instead of auto-normalizing to whatever is largest on screen.
+  var MAX_GDV_FOR_BUBBLE_SCALE = 4300; // ≈ 70 units all at Type C avg price — fixed reference so bubble sizes stay comparable as inputs change.
+  var PROVEN_40M_PLUS_CEILING = 11; // largest proven unit count sold at a ฿40M+ average price in this corridor (Siam Royal View)
+
+  // Corridor comparables — see "Benchmark Developments" table. avg = representative price (THB M) used for the y-axis.
+  var BENCHMARKS = [
+    { name:"Siam Royal View",            units:11,  beds:"6",   size:"721–1,000 sqm",         price:"45M – 65M",                    avg:55,   location:"Soi Khao Talo, Mabprachan corridor", positioning:"Boutique ultra-luxury flagship villas" },
+    { name:"Sedona Creek",               units:8,   beds:"n/a", size:"1-rai plots",            price:"from 52M",                     avg:52,   location:"Pong / Mabprachan",                  positioning:"Ultra-low-density new launch" },
+    { name:"Opal Village",               units:8,   beds:"5",   size:"825 sqm",                price:"from 39.9M",                   avg:39.9, location:"Mabprachan-adjacent",                positioning:"Boutique ultra-luxury" },
+    { name:"Layan Mabprachan Lake",      units:18,  beds:"4–5", size:"410–907 sqm",            price:"24.2M – 39.93M",               avg:32.1, location:"Mabprachan lakefront",               positioning:"Lakefront mid/upper-luxury" },
+    { name:"Amber / Onyx",               units:40,  beds:"3–5", size:"n/a",                    price:"17.9M – 28.5M+",                avg:23.2, location:"Toongklom, East Pattaya",            positioning:"Mid-luxury, gated, amenity-led" },
+    { name:"REKHA Pattaya – Motorway",   units:40,  beds:"4–5", size:"e.g. 387 sqm (5-bed)",   price:"16.15M – 27.27M",              avg:21.7, location:"Motorway-fronting, East Pattaya",    positioning:"Gated, design-led" },
+    { name:"Lumina Pool Villa",          units:69,  beds:"3–6", size:"292–421 sqm",            price:"12.0M – 23.6M",                avg:17.8, location:"17-rai gated estate, East Pattaya",  positioning:"Mid-luxury, quiet family estate" },
+    { name:"Zensiri Lakeside Mabprachan",units:21,  beds:"3–5", size:"307–504 sqm",            price:"12.79M – 19.56M",              avg:16.2, location:"East Pattaya, Mabprachan",           positioning:"Mid-luxury lakeside, private pool each villa" },
+    { name:"Impress Village",            units:5,   beds:"5",   size:"330 sqm",                price:"13.9M – 17.9M",                avg:15.9, location:"Mabprachan-adjacent",                positioning:"Small boutique" },
+    { name:"Tropical Village 2",         units:124, beds:"3–5", size:"n/a",                    price:"6.69M – 22.0M",                avg:14.3, location:"Huai Yai",                           positioning:"Volume family housing" },
+    { name:"Panalee Banna Village",      units:45,  beds:"3",   size:"n/a",                    price:"6.9M – 9.99M (core cluster)",  avg:8.4,  location:"Soi K9, Huay Yai",                   positioning:"Established family estate (2014)" }
+  ];
 
   function fmtBaht(millions){
     if(Math.abs(millions) >= 1000) return "฿" + (millions/1000).toFixed(2) + "bn";
@@ -433,7 +549,7 @@
 
   var state = {
     land: 32, dist: 1500, own: "freehold", velocity: "moderate",
-    budget: 1.60, margin: 20, launch: "phased", contractor: "top",
+    budget: 2.20, margin: 20, launch: "phased", contractor: "top",
     units: 50, position: "gapfill",
     famBudget: 115000, rentalYield: 6
   };
@@ -465,21 +581,16 @@
   }
 
   function renderPositioningChart(mix, N, avgM, gdvM){
-    var W=640, H=380, padL=54, padR=16, padT=16, padB=44;
+    var W=680, H=380, padL=54, padR=16, padT=16, padB=44;
     var plotW=W-padL-padR, plotH=H-padT-padB;
-    var comps=[
-      {name:"Siam Royal View", units:11, price:55},
-      {name:"Opal Village",    units:8,  price:39.9},
-      {name:"Amber / Onyx",    units:40, price:23.2},
-      {name:"Impress Village", units:5,  price:15.9}
-    ];
-    comps.forEach(function(c){ c.gdv = c.units * c.price; });
-    var xMax = Math.max(N+10, 50);
-    var yMax = Math.max(avgM+10, 70);
+    var maxCompUnits = Math.max.apply(null, BENCHMARKS.map(function(b){ return b.units; }));
+    var maxCompPrice = Math.max.apply(null, BENCHMARKS.map(function(b){ return b.avg; }));
+    BENCHMARKS.forEach(function(c){ c.gdv = c.units * c.avg; });
+    var xMax = Math.max(N+10, 50, maxCompUnits+10);
+    var yMax = Math.max(avgM+10, 70, maxCompPrice+5);
+    var xStep = xMax > 90 ? 20 : 10;
     var x = scale(0, xMax, 0, plotW);
     var y = scale(0, yMax, plotH, 0);
-    // Fixed reference domain (not auto-normalized to the current max) so bubble size
-    // actually responds as GDV changes, instead of every configuration clipping to the cap.
     function r(g){ return 6 + Math.sqrt(Math.min(g, MAX_GDV_FOR_BUBBLE_SCALE) / MAX_GDV_FOR_BUBBLE_SCALE) * 20; }
 
     var svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Market positioning map" style="width:100%;height:auto;">';
@@ -489,7 +600,7 @@
       svg += '<line x1="0" y1="'+yy+'" x2="'+plotW+'" y2="'+yy+'" stroke="var(--gridline)" stroke-width="1"/>';
       svg += '<text x="-8" y="'+(yy+3)+'" text-anchor="end" font-size="10" fill="var(--muted)">'+gy+'</text>';
     }
-    for(var gx=0; gx<=xMax; gx+=10){
+    for(var gx=0; gx<=xMax; gx+=xStep){
       svg += '<text x="'+x(gx)+'" y="'+(plotH+16)+'" text-anchor="middle" font-size="10" fill="var(--muted)">'+gx+'</text>';
     }
     svg += '<line x1="0" y1="'+plotH+'" x2="'+plotW+'" y2="'+plotH+'" stroke="var(--axis-line)" stroke-width="1"/>';
@@ -504,10 +615,9 @@
     svg += '<rect x="'+vx1+'" y="'+vy1+'" width="'+(vx2p-vx1)+'" height="'+(vy2-vy1)+'" fill="var(--context-gray)" opacity="0.18"/>';
     svg += '<text x="'+(vx1+4)+'" y="'+(vy1+13)+'" font-size="9" font-weight="700" fill="var(--muted)">Proven mid-luxury volume zone</text>';
 
-    comps.forEach(function(c){
-      var cx=x(c.units), cy=y(c.price), rr=r(c.gdv);
-      svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+rr+'" fill="var(--context-gray)" fill-opacity="0.6" stroke="#fff" stroke-width="2"><title>'+c.name+': '+c.units+' units, ฿'+c.price.toFixed(1)+'M avg price, ≈'+fmtBaht(c.gdv)+' GDV</title></circle>';
-      svg += '<text x="'+cx+'" y="'+(cy-rr-5)+'" text-anchor="middle" font-size="9" fill="var(--muted)">'+c.name+'</text>';
+    BENCHMARKS.forEach(function(c){
+      var cx=x(c.units), cy=y(c.avg), rr=r(c.gdv);
+      svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+rr+'" fill="var(--context-gray)" fill-opacity="0.6" stroke="#fff" stroke-width="2"><title>'+c.name+': '+c.units+' units, ≈฿'+c.avg.toFixed(1)+'M avg price, ≈'+fmtBaht(c.gdv)+' GDV — '+c.positioning+'</title></circle>';
     });
 
     var yr=r(gdvM), yx=x(N), yyv=y(avgM);
@@ -518,7 +628,7 @@
     svg += '<text x="14" y="'+(padT+plotH/2)+'" text-anchor="middle" font-size="11" fill="var(--muted)" transform="rotate(-90 14 '+(padT+plotH/2)+')">Blended Avg. Price (฿M)</text>';
     svg += '</svg>';
     var legend = '<div style="display:flex;gap:18px;margin-top:4px;font-size:.8rem;color:var(--muted);flex-wrap:wrap;">'+
-      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--context-gray);margin-right:5px;"></span>Comparable projects (Section 2)</span>'+
+      '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--context-gray);margin-right:5px;"></span>Comparable projects — see table below</span>'+
       '<span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--navy-2);margin-right:5px;"></span>Your configuration</span>'+
       '</div>';
     return svg + legend;
@@ -549,11 +659,11 @@
     return svg + legend;
   }
 
-  function renderFeasibilityChart(gdvM, budgetM, constructionM, impliedMarginPct){
+  function renderFeasibilityChart(gdvM, budgetM, totalCostM, constructionCostM, landCostM, impliedMarginPct){
     var items = [
       { label:"Estimated GDV", value:gdvM, color:"var(--navy-2)" },
-      { label:"Budget ceiling (land + construction)", value:budgetM, color:"var(--gold)" },
-      { label:"Illustrative construction cost", value:constructionM, color:"var(--context-gray)" }
+      { label:"Budget ceiling", value:budgetM, color:"var(--gold)" },
+      { label:"Modeled cost (land + construction)", value:totalCostM, color:"var(--context-gray)" }
     ];
     var W=640, rowH=36, labelW=190;
     var H = items.length*rowH + 12;
@@ -568,9 +678,10 @@
       svg += '<text x="'+(labelW+w+8)+'" y="'+(yy+15)+'" font-size="11" font-weight="700" fill="var(--navy-2)">'+fmtBaht(it.value)+'</text>';
     });
     svg += '</svg>';
+    var breakdown = '<div style="margin-top:8px;font-size:.78rem;color:var(--muted);">Of which construction ≈'+fmtBaht(constructionCostM)+' (฿'+CONSTRUCTION_COST_PER_SQM.toLocaleString()+'/sqm living area, illustrative) and land ≈'+fmtBaht(landCostM)+' (฿'+(LAND_COST_PER_RAI_M).toFixed(0)+'M/rai, illustrative).</div>';
     var marginColor = impliedMarginPct>=20 ? "#1f8a55" : (impliedMarginPct>=10 ? "#a8710a" : "#b3261e");
-    var note = '<div style="margin-top:6px;font-size:.82rem;color:var(--muted);">Implied margin (GDV vs. budget ceiling, illustrative): <strong style="color:'+marginColor+';">'+impliedMarginPct.toFixed(0)+'%</strong></div>';
-    return svg + note;
+    var note = '<div style="margin-top:6px;font-size:.82rem;color:var(--muted);">Implied margin (GDV vs. modeled land + construction cost): <strong style="color:'+marginColor+';">'+impliedMarginPct.toFixed(0)+'%</strong></div>';
+    return svg + breakdown + note;
   }
 
   function renderPhasingChart(launch, mix, gdvM){
@@ -620,6 +731,13 @@
     return svg;
   }
 
+  function renderBenchmarkTable(){
+    var rows = BENCHMARKS.map(function(b){
+      return "<tr><td>"+b.name+"</td><td class='num'>"+b.units+"</td><td>"+b.beds+"</td><td>"+b.size+"</td><td class='num'>"+b.price+"</td><td>"+b.location+"</td><td>"+b.positioning+"</td></tr>";
+    }).join("");
+    document.getElementById('benchTable').innerHTML = rows;
+  }
+
   /* ---------------- Main render ---------------- */
   function render(){
     var mix = computeMix();
@@ -634,9 +752,11 @@
     var avgM = gdvM / N;
     var landReqRai = (plotSqmTotal * COMMON_AREA_FACTOR) / 1600;
     var constructionCostM = (livingSqmTotal * CONSTRUCTION_COST_PER_SQM) / 1e6;
+    var landCostM = state.land * LAND_COST_PER_RAI_M;
+    var totalCostM = constructionCostM + landCostM;
     var budgetM = state.budget * 1000;
-    var remainingForLandEtc = budgetM - constructionCostM;
-    var impliedMarginPct = ((gdvM - budgetM) / gdvM) * 100;
+    var headroomM = budgetM - totalCostM;
+    var impliedMarginPct = ((gdvM - totalCostM) / gdvM) * 100;
 
     document.getElementById('k_units').textContent = N;
     document.getElementById('k_gdv').textContent = fmtBaht(gdvM);
@@ -645,13 +765,16 @@
     document.getElementById('k_margin').textContent = impliedMarginPct.toFixed(0) + "%";
 
     // Mix table
+    var monthlyRentOf = function(k){ return TYPES[k].priceMid * 1e6 * (state.rentalYield/100) / 12; };
     var rows = "";
     TYPE_ORDER.forEach(function(k){
       var t = TYPES[k];
       var label = "<span class='swatch' style='background:"+t.color+"'></span>"+k+" — " + t.name;
-      rows += "<tr class='"+(mix[k]===0?'zero':'')+"'><td>"+label+"</td><td>"+t.beds+"</td><td>"+t.livingLabel+"</td><td>"+t.plotLabel+"</td><td class='num'>"+t.priceLabel+"</td><td class='num'>"+mix[k]+"</td></tr>";
+      var rent = monthlyRentOf(k);
+      rows += "<tr class='"+(mix[k]===0?'zero':'')+"'><td>"+label+"</td><td>"+t.beds+"</td><td>"+t.livingLabel+"</td><td>"+t.plotLabel+"</td><td class='num'>"+t.priceLabel+"</td><td class='num'>"+mix[k]+"</td><td class='num'>฿"+Math.round(rent).toLocaleString()+"</td></tr>";
     });
     document.getElementById('mixTable').innerHTML = rows;
+    document.getElementById('rentNote').innerHTML = "Illustrative — priceMid × assumed "+state.rentalYield.toFixed(1)+"% gross yield ÷ 12 (yield set in the panel below). Not a per-unit rental survey.";
 
     var notesHtml = "";
     ["D","E"].forEach(function(k){
@@ -662,70 +785,70 @@
     // Charts
     document.getElementById('chartPositioning').innerHTML = renderPositioningChart(mix, N, avgM, gdvM);
     document.getElementById('chartRevenueMix').innerHTML = renderRevenueMixChart(mix, gdvM);
-    document.getElementById('chartFeasibility').innerHTML = renderFeasibilityChart(gdvM, budgetM, constructionCostM, impliedMarginPct);
+    document.getElementById('chartFeasibility').innerHTML = renderFeasibilityChart(gdvM, budgetM, totalCostM, constructionCostM, landCostM, impliedMarginPct);
     document.getElementById('chartPhasing').innerHTML = renderPhasingChart(state.launch, mix, gdvM);
+    renderBenchmarkTable();
 
     // ---- Flags ----
     var flags = [];
     var smallShare = (mix.D + mix.E) > 0;
 
     if(landReqRai > state.land * 1.05){
-      var suggestion = smallShare ? "" : " Consider shifting some allocation to Type D (Essential) or Type E (Compact) — they use significantly less land per unit and would ease this constraint (try the 'Affordable / corporate-rental anchored' positioning).";
+      var suggestion = smallShare ? "" : " Consider shifting some allocation to Type D or E — they use less land per unit (try 'Affordable / corporate-rental anchored').";
       flags.push(['red', "Undersized parcel: this mix needs ≈"+landReqRai.toFixed(1)+" rai but only "+state.land+" rai is confirmed."+suggestion]);
     } else if(landReqRai < state.land * 0.85){
-      flags.push(['amber', "Parcel is larger than required: this mix needs only ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" rai available. Consider more units, larger common areas, or a higher-end mix."]);
+      flags.push(['amber', "Parcel is larger than required: needs only ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" available. Consider more units or a higher-end mix."]);
     } else {
-      flags.push(['green', "Land parcel is appropriately sized for this configuration (requires ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" rai)."]);
+      flags.push(['green', "Land parcel is appropriately sized (requires ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" rai)."]);
     }
 
-    if(remainingForLandEtc <= 0){
-      var suggestion2 = smallShare ? "" : " Consider adding Type D/E units to lower blended construction cost.";
-      flags.push(['red', "Illustrative construction cost alone (≈"+fmtBaht(constructionCostM)+" at ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm of living area) already exceeds your ฿"+state.budget.toFixed(2)+"bn budget ceiling — no room left for land, financing, or margin."+suggestion2]);
-    } else if(remainingForLandEtc < 0.15 * budgetM){
-      flags.push(['amber', "Tight budget: illustrative construction cost is ≈"+fmtBaht(constructionCostM)+", leaving only ≈"+fmtBaht(remainingForLandEtc)+" of your "+state.budget.toFixed(2)+"bn ceiling for land, financing, and contingency."]);
+    if(headroomM <= 0){
+      var suggestion2 = smallShare ? "" : " Consider adding Type D/E units to lower blended cost.";
+      flags.push(['red', "Modeled cost (≈"+fmtBaht(totalCostM)+" land + construction) already exceeds your ฿"+state.budget.toFixed(2)+"bn budget ceiling by ≈"+fmtBaht(-headroomM)+" — no room for financing or contingency."+suggestion2]);
+    } else if(headroomM < 0.15 * budgetM){
+      flags.push(['amber', "Tight budget: modeled cost (≈"+fmtBaht(totalCostM)+") leaves only ≈"+fmtBaht(headroomM)+" of your "+state.budget.toFixed(2)+"bn ceiling for financing and contingency."]);
     } else {
-      flags.push(['green', "Illustrative construction cost (≈"+fmtBaht(constructionCostM)+") leaves ≈"+fmtBaht(remainingForLandEtc)+" of your budget ceiling for land, financing, and contingency."]);
+      flags.push(['green', "Modeled cost (≈"+fmtBaht(totalCostM)+") leaves ≈"+fmtBaht(headroomM)+" of your budget ceiling for financing and contingency."]);
     }
 
     if(impliedMarginPct < state.margin - 5){
-      flags.push(['red', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%, GDV vs. budget ceiling) is materially below your "+state.margin+"% target."]);
+      flags.push(['red', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) is materially below your "+state.margin+"% target."]);
     } else if(impliedMarginPct < state.margin){
       flags.push(['amber', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) is close to but below your "+state.margin+"% target."]);
     } else {
-      flags.push(['green', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) meets or exceeds your "+state.margin+"% target (illustrative, excludes financing detail)."]);
+      flags.push(['green', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) meets or exceeds your "+state.margin+"% target (illustrative; excludes financing detail)."]);
     }
 
     if(state.dist <= 800){
-      flags.push(['green', "At "+state.dist+" m, the site is genuinely walkable to Highgate's gate (~"+Math.round(state.dist/80)+" min) — a 'walking distance to school' marketing claim is defensible."]);
+      flags.push(['green', "At "+state.dist+" m, the site is genuinely walkable to Highgate's gate (~"+Math.round(state.dist/80)+" min) — a 'walking distance' claim is defensible."]);
     } else if(state.dist <= 2000){
-      flags.push(['amber', "At "+state.dist+" m, 'walking distance' is a stretch (~"+Math.round(state.dist/80)+" min walk). Consider '"+Math.round(state.dist/80)+" minutes from Highgate' or shuttle-based messaging instead."]);
+      flags.push(['amber', "At "+state.dist+" m, 'walking distance' is a stretch (~"+Math.round(state.dist/80)+" min walk). Consider '"+Math.round(state.dist/80)+" minutes from Highgate' instead."]);
     } else {
-      flags.push(['red', "At "+state.dist+" m, this is not walking distance. Do not use a 'walking distance to school' claim — lead with the scheduled shuttle-service differentiator (Section 4) instead."]);
+      flags.push(['red', "At "+state.dist+" m, this is not walking distance — lead with the scheduled shuttle-service differentiator instead."]);
     }
 
     var signatureShare = mix.C / N;
     var essentialCompactShare = (mix.D + mix.E) / N;
     if(state.contractor === "standard" && (signatureShare > 0.05 || state.position === "flagship")){
-      flags.push(['red', "A standard local builder profile may not credibly back the 5-star warranty and specification claims Type C Signature pricing (58M–65M+) requires against the comparables in Section 2. Consider an established or top-tier contractor for this mix."]);
+      flags.push(['red', "A standard local builder may not credibly back Type C Signature pricing (58M–65M+) against the comparables above. Consider an established or top-tier contractor."]);
     } else if(state.contractor === "top" && essentialCompactShare > 0.5){
-      flags.push(['amber', "A top-tier international contractor may be cost-inefficient for a volume-driven Essential/Compact product — an established regional builder can typically deliver comparable quality at this tier for lower overhead."]);
+      flags.push(['amber', "A top-tier contractor may be cost-inefficient for a volume-driven Essential/Compact product — an established regional builder can typically match quality here at lower overhead."]);
     } else if(state.contractor === "top"){
       flags.push(['green', "Top-tier international contractor is consistent with top-end positioning across the mix."]);
     } else {
-      flags.push(['amber', "Established regional builder is generally consistent with this tier — confirm the firm's track record includes comparable villa delivery before finalizing."]);
+      flags.push(['amber', "Established regional builder is generally consistent with this tier — confirm comparable villa delivery track record."]);
     }
 
     if(state.velocity === "fast" && state.launch === "phased"){
-      flags.push(['amber', "Section 6's phased plan assumes a multi-year sell-down tied to Highgate's opening and growth. A 12–18 month fast-velocity target may be hard to reconcile with a 2-phase plan gated on school-opening performance — consider a simultaneous release or a compressed gap between phases."]);
+      flags.push(['amber', "A 12–18 month fast-velocity target is hard to reconcile with a 2-phase plan gated on Highgate's opening — consider a simultaneous release or a compressed gap between phases."]);
     }
     if(state.velocity === "patient" && state.launch === "simultaneous"){
-      flags.push(['amber', "A patient hold period reduces the urgency to phase, but releasing all "+N+" units simultaneously still carries the absorption risk described in Section 6."]);
+      flags.push(['amber', "A patient hold period reduces phasing urgency, but releasing all "+N+" units at once still carries absorption risk."]);
     }
 
-    // Demand-driven suggestion, computed after affordability math below is available — placeholder inserted, filled after.
     document.getElementById('flags').innerHTML = flags.map(function(f){
       return "<div class='flag "+f[0]+"'><div class='dot'></div><div>"+f[1]+"</div></div>";
-    }).join("") + "<div class='assumption'>Illustrative assumption — not from source report: all-in construction cost of ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm applied to total living area only (excludes land cost, infrastructure, financing, and contingency). Land-area math and unit pricing are sourced directly from Sections 3 and 5 of the report.</div>";
+    }).join("") + "<div class='assumption'>Illustrative assumptions, not from the source report: construction ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm of living area, and land ฿"+LAND_COST_PER_RAI_M+"M/rai. Excludes financing and contingency.</div>";
 
     // ---- Phasing narrative ----
     var phasingHtml = "";
@@ -733,32 +856,19 @@
       var p1C = Math.min(2, mix.C);
       var p1Units = mix.A + mix.D + mix.E + p1C;
       var p2Units = mix.B + (mix.C - p1C);
-      phasingHtml = "<strong>Phase 1 (~"+p1Units+" units):</strong> Full allocation of the everyday sizes in the mix (Types A/D/E as applicable) plus "+p1C+" Type C (Signature) show villa(s) to establish top-of-market pricing and generate marketing material.<br><br>" +
-        "<strong>Phase 2 (~"+p2Units+" units):</strong> Full Type B (Elevated) allocation ("+mix.B+" units) plus the remaining "+(mix.C-p1C)+" Type C unit(s), released once Highgate has opened and Phase 1 performance is known.";
+      phasingHtml = "<strong>Phase 1 (~"+p1Units+" units):</strong> Types A/D/E as applicable, plus "+p1C+" Type C show villa(s) to set top-of-market pricing.<br><br>" +
+        "<strong>Phase 2 (~"+p2Units+" units):</strong> Full Type B allocation ("+mix.B+" units) plus the remaining "+(mix.C-p1C)+" Type C unit(s), once Highgate has opened and Phase 1 performance is known.";
     } else {
       phasingHtml = "<strong>Simultaneous release:</strong> All "+N+" units marketed together. " +
-        (N > 11 ? "No comparable project in this corridor has proven simultaneous absorption of "+N+" units at this price tier — the largest proven scheme at THB 40M+ sold 8–11 units (Section 2). This is the single biggest lever on absorption risk (Section 6, Q5)." : "At "+N+" units, this is within the range of proven boutique ultra-luxury absorption in this corridor (8–11 units, Section 2).");
+        (N > 11 ? "No comparable project has proven simultaneous absorption of "+N+" units at this price tier (largest proven: 8–11 units) — the single biggest lever on absorption risk." : "At "+N+" units, this is within proven boutique ultra-luxury absorption (8–11 units).");
     }
     document.getElementById('phasing').innerHTML = phasingHtml;
 
-    // ---- Market-gap narrative ----
-    var narrative;
-    if(N <= 11 && avgM >= 40){
-      narrative = "This configuration targets "+N+" units at a blended average price of ≈"+fmtBaht(avgM)+". This matches the scale of proven boutique ultra-luxury absorption in this corridor (comparables sell 8–11 units in the THB 40M–65M range).";
-    } else if(avgM < 30 && N > 40){
-      narrative = "This configuration targets "+N+" units at a blended average price of ≈"+fmtBaht(avgM)+". This aligns with proven mid-luxury volume absorption in this corridor (comparables sell 40–124 units, typically under THB 30M).";
-    } else if(N > 11 && avgM >= 40){
-      narrative = "This configuration targets "+N+" units at a blended average price of ≈"+fmtBaht(avgM)+" — exceeding the largest proven absorption at this price tier (8–11 units) by "+(N-11)+" units. This is the core absorption-risk gap the report identifies: no comparable project has yet sold "+N+" units at a THB 40M+ average price.";
-    } else {
-      narrative = "This configuration targets "+N+" units at a blended average price of ≈"+fmtBaht(avgM)+" — occupying the gap between boutique ultra-luxury (8–11 units, THB 40M–65M) and mid-luxury volume schemes (40–124 units, typically under THB 30M). No direct comparable has yet proven this combination; absorption should be managed carefully (Section 2).";
-    }
-    document.getElementById('narrative').innerHTML = narrative;
-
     // ---- Ownership note ----
     var ownNotes = {
-      freehold: "Thai-Company Freehold enables freehold registration via a Thai limited company structure — the most flexible option for high-net-worth Thai buyers and international buyers willing to use a company vehicle. It adds legal/compliance complexity that can slow individual transactions. Not legal or tax advice — confirm structuring with Thai counsel.",
-      leasehold: "Leasehold (typically a 30-year, often renewable structure) is simpler and often preferred by international buyers who cannot or prefer not to hold Thai company structures. Perceived leasehold risk can soften pricing power versus freehold comparables and may narrow the buyer pool among Thai HNW families who expect freehold. Not legal or tax advice.",
-      condo: "Condominium-titled villas allow up to 49% foreign freehold ownership per project under the Condominium Act, which can speed international sales. This requires titling the development under a condominium juristic structure rather than as standalone landed villas — a departure from every comparable in Section 2, which are all titled as landed villas — and should be tested with counsel before finalizing this unit mix. Not legal or tax advice."
+      freehold: "Thai-Company Freehold: most flexible for HNW Thai and international buyers willing to use a company vehicle, but adds legal/compliance complexity. Not legal or tax advice — confirm structuring with Thai counsel.",
+      leasehold: "Leasehold (typically 30-year, often renewable): simpler for buyers who can't/won't hold Thai company structures, but perceived risk can soften pricing and narrow the Thai HNW buyer pool. Not legal or tax advice.",
+      condo: "Condominium-titled villas allow up to 49% foreign freehold ownership under the Condominium Act — faster international sales, but requires a condo juristic structure, a departure from every landed-villa comparable above. Test with counsel. Not legal or tax advice."
     };
     document.getElementById('ownershipNote').innerHTML = ownNotes[state.own];
 
@@ -772,18 +882,35 @@
     var reachable = TYPE_ORDER.filter(function(k){ return TYPES[k].priceLow <= supportableM; });
     var verdictHtml;
     if(reachable.length === 0){
-      verdictHtml = "<div class='flag red'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and a "+state.rentalYield+"% gross yield assumption, this demand pool supports a capital value of only ≈"+fmtBaht(supportableM)+" — below even the smallest proposed unit (Type E, from ฿"+TYPES.E.priceLow+"M). At this budget level, corporate-rental demand cannot support new-build purchase economics here; it would only work as a directly-held build-to-rent asset, not a for-sale product.</div></div>";
+      verdictHtml = "<div class='flag red'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and "+state.rentalYield+"% yield, this pool supports ≈"+fmtBaht(supportableM)+" — below even Type E (from ฿"+TYPES.E.priceLow+"M). This demand pool can't support new-build purchase economics here as a for-sale product.</div></div>";
     } else {
       var reachableInMix = reachable.filter(function(k){ return mix[k] > 0; });
-      var reachableLabel = reachable.map(function(k){ return "Type "+k+" ("+TYPES[k].name+")"; }).join(", ");
+      var reachableLabel = reachable.map(function(k){ return "Type "+k; }).join(", ");
       if(reachableInMix.length > 0){
         var pct = reachableInMix.reduce(function(s,k){return s+mix[k];},0) / N * 100;
-        verdictHtml = "<div class='flag green'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and a "+state.rentalYield+"% gross yield assumption, this demand pool supports a capital value of ≈"+fmtBaht(supportableM)+" — reaching "+reachableLabel+". Your current mix allocates "+pct.toFixed(0)+"% of units to these reachable types, so it does align with this researched corporate-rental demand pool.</div></div>";
+        verdictHtml = "<div class='flag green'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and "+state.rentalYield+"% yield, this pool supports ≈"+fmtBaht(supportableM)+" — reaching "+reachableLabel+". Your mix allocates "+pct.toFixed(0)+"% of units to these types, so it aligns with this demand pool.</div></div>";
       } else {
-        verdictHtml = "<div class='flag amber'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and a "+state.rentalYield+"% gross yield assumption, this demand pool supports a capital value of ≈"+fmtBaht(supportableM)+" — reaching "+reachableLabel+". Your current mix (positioning: '"+state.position+"') allocates 0 units to these types, so this configuration is not aimed at corporate-rental tenant demand and should be underwritten against outright HNW purchasers instead. If capturing this segment matters to the investment thesis, try the 'Affordable / corporate-rental anchored' positioning.</div></div>";
+        verdictHtml = "<div class='flag amber'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and "+state.rentalYield+"% yield, this pool supports ≈"+fmtBaht(supportableM)+" — reaching "+reachableLabel+". Your mix allocates 0 units to these types — this configuration targets outright HNW purchasers, not corporate-rental tenants. Try 'Affordable / corporate-rental anchored' to capture this segment.</div></div>";
       }
     }
     document.getElementById('affordabilityVerdict').innerHTML = verdictHtml;
+
+    // ---- Demand Fit banner (prominent, top of page) ----
+    var highTierCount = mix.A + mix.B + mix.C; // types priced ฿40M+, per the report's boutique-ultra-luxury threshold
+    var demandFit = document.getElementById('demandFit');
+    var cls, headline, body;
+    if(highTierCount <= PROVEN_40M_PLUS_CEILING){
+      cls = "green"; headline = "Demand Fit: Within Proven Range";
+      body = highTierCount+" of "+N+" units ("+(highTierCount/N*100).toFixed(0)+"%) are priced at ฿40M+ — at or below the largest proven absorption at this tier in the corridor ("+PROVEN_40M_PLUS_CEILING+" units, Siam Royal View).";
+    } else if(highTierCount <= 20){
+      cls = "amber"; headline = "Demand Fit: Stretches Proven Demand";
+      body = highTierCount+" of "+N+" units ("+(highTierCount/N*100).toFixed(0)+"%) are priced at ฿40M+ — above the largest proven absorption at this tier ("+PROVEN_40M_PLUS_CEILING+" units). A phased, multi-year release is important to de-risk this.";
+    } else {
+      cls = "red"; headline = "Demand Fit: High Risk";
+      body = highTierCount+" of "+N+" units ("+(highTierCount/N*100).toFixed(0)+"%) are priced at ฿40M+ — far beyond any proven absorption at this tier ("+PROVEN_40M_PLUS_CEILING+" units max). This is the project's central demand risk.";
+    }
+    demandFit.className = "demandfit " + cls;
+    demandFit.innerHTML = "<div class='tag-line'>"+headline+"</div><div class='body'>"+body+"</div><div class='context'>For context: an estimated ~80% of general-market Pattaya transactions fall under ฿12M (proxy — see Property Demand by Price Segment). This project deliberately targets a narrow, Highgate-anchored buyer pool, not the general market.</div>";
   }
 
   /* ---------------- Wire up inputs ---------------- */
@@ -833,12 +960,12 @@
   });
 
   document.getElementById('resetBtn').addEventListener('click', function(){
-    state = { land:32, dist:1500, own:"freehold", velocity:"moderate", budget:1.60, margin:20, launch:"phased", contractor:"top", units:50, position:"gapfill", famBudget:115000, rentalYield:6 };
+    state = { land:32, dist:1500, own:"freehold", velocity:"moderate", budget:2.20, margin:20, launch:"phased", contractor:"top", units:50, position:"gapfill", famBudget:115000, rentalYield:6 };
     document.getElementById('in_land').value = 32; document.getElementById('v_land').textContent = "32 rai";
     document.getElementById('in_dist').value = 1500; document.getElementById('v_dist').textContent = "1,500 m";
     document.getElementById('in_own').value = "freehold";
     document.getElementById('in_velocity').value = "moderate";
-    document.getElementById('in_budget').value = 1.60; document.getElementById('v_budget').textContent = "฿1.60bn";
+    document.getElementById('in_budget').value = 2.20; document.getElementById('v_budget').textContent = "฿2.20bn";
     document.getElementById('in_margin').value = 20; document.getElementById('v_margin').textContent = "20%";
     document.getElementById('in_contractor').value = "top";
     document.getElementById('in_units').value = 50; document.getElementById('v_units').textContent = "50";
