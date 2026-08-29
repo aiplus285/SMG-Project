@@ -80,9 +80,25 @@
     padding:8px 28px;text-align:center;border-bottom:1px solid #e9dcbf;
   }
   main{max-width:1400px;margin:0 auto;padding:28px;}
-  .grid{display:grid;grid-template-columns:400px 1fr;gap:24px;align-items:start;}
-  .grid > div{min-width:0;} /* prevent wide nowrap tables/charts from blowing out the grid track */
-  @media (max-width:960px){.grid{grid-template-columns:1fr;}}
+
+  /* Top-level page sections (1. Parameters / 2. Executive Summary / 3. Details of Results) */
+  .section-header{padding:32px 0 6px;display:flex;align-items:flex-start;gap:16px;}
+  .page-section:first-of-type .section-header{padding-top:0;}
+  .section-header:not(:first-child){border-top:1px solid var(--border);padding-top:34px;margin-top:12px;}
+  .section-header-num{
+    flex:0 0 auto;width:40px;height:40px;border-radius:50%;background:var(--navy);color:var(--gold);
+    display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;
+  }
+  .section-header h2{margin:0;font-size:1.75rem;font-weight:800;color:var(--navy);letter-spacing:-.01em;}
+  .section-header-sub{margin:4px 0 0;color:var(--muted);font-size:.95rem;}
+
+  .grid-2up{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+  .grid-2up > div{min-width:0;} /* prevent wide nowrap tables/charts from blowing out the grid track */
+  @media (max-width:960px){.grid-2up{grid-template-columns:1fr;}}
+
+  .exec-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;margin-top:16px;}
+  .exec-grid > div{min-width:0;}
+  @media (max-width:760px){.exec-grid{grid-template-columns:1fr;}}
 
   .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:16px;min-width:0;}
   .card h2{margin:0 0 4px;font-size:1.05rem;color:var(--navy);}
@@ -110,6 +126,12 @@
     font-weight:700;font-size:.85rem;cursor:pointer;margin-top:4px;
   }
   #resetBtn:hover{background:var(--navy);color:#fff;}
+
+  .btn-gold{
+    width:100%;padding:11px;background:var(--gold);border:1px solid var(--gold);color:var(--navy);
+    border-radius:8px;font-weight:800;font-size:.87rem;cursor:pointer;margin-top:4px;transition:background .15s;
+  }
+  .btn-gold:hover{background:#b5893f;}
 
   /* Recommendation panel */
   .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:6px;}
@@ -154,28 +176,93 @@
   details summary{cursor:pointer;font-weight:700;color:var(--navy-2);font-size:.8rem;}
   details .details-body{font-size:.78rem;color:var(--muted);line-height:1.6;margin-top:8px;}
 
-  /* Top-of-page featured card (Demand–Offer Match) */
-  .top-card-wrap{max-width:1400px;margin:0 auto;padding:16px 28px 0;}
-
   footer{max-width:1400px;margin:0 auto;padding:20px 28px 40px;color:var(--muted);font-size:.78rem;}
   footer .conf{font-weight:700;color:var(--navy);margin-bottom:6px;}
 
-  /* ---------- Mobile ---------- */
+  /* ---------- Mobile ----------
+     "Old eyes" readability pass: nearly every font-size in this file is in rem, so a
+     single html{font-size} bump cascades everywhere at once; a handful of rules below
+     were previously DOWNSCALED below desktop on mobile (.kpi .value, table, header) —
+     those get explicit larger values instead. Tap targets (buttons/selects/sliders)
+     are enlarged to ~44px+ effective height per standard touch-target guidance. */
   @media (max-width:640px){
+    html{font-size:125%;} /* 16px -> 20px base; respects the user's own browser text-size setting */
+
     header.site{padding:16px 16px;}
-    header.site h1{font-size:1.15rem;}
-    header.site .sub{font-size:.82rem;}
-    .conf-banner{padding:8px 16px;font-size:.7rem;}
-    .top-card-wrap{padding:12px 14px 0;}
+    header.site h1{font-size:1.3rem;}
+    header.site .sub{font-size:.95rem;}
+    .conf-banner{padding:10px 16px;font-size:.85rem;}
     main{padding:14px;}
-    .card{padding:16px 14px;margin-bottom:14px;}
-    .kpis{grid-template-columns:repeat(2,1fr);gap:8px;}
-    .kpi{padding:10px 12px;}
-    .kpi .value{font-size:1.05rem;}
-    table{font-size:.78rem;}
-    th,td{padding:7px 6px;}
-    .chart-wrap.scrollable svg{min-width:520px;}
-    footer{padding:16px 16px 32px;}
+
+    .card{padding:18px 16px;margin-bottom:14px;}
+    .card h2{font-size:1.15rem;}
+    .card .hint{font-size:.95rem;}
+    .group-label,.subhead{font-size:.85rem;}
+
+    .section-header{padding:24px 0 6px;gap:12px;}
+    .section-header-num{width:34px;height:34px;font-size:1.05rem;}
+    .section-header h2{font-size:1.5rem;}
+    .section-header-sub{font-size:.9rem;}
+
+    .field{margin-bottom:16px;}
+    .field label{font-size:1rem;}
+    .field .tip{font-size:.9rem;}
+    .assumption,.type-note{font-size:.9rem;}
+
+    select{font-size:1rem;padding:14px 12px;}
+    .toggle-group{gap:10px;}
+    .toggle-group button{font-size:.95rem;padding:13px 12px;min-height:44px;}
+    #resetBtn,.btn-gold{font-size:1rem;padding:15px;min-height:44px;}
+
+    input[type=range]{height:44px;}
+    input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--border);}
+    input[type=range]::-webkit-slider-thumb{
+      -webkit-appearance:none;appearance:none;width:28px;height:28px;border-radius:50%;
+      background:var(--gold);border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.3);
+      margin-top:-11.5px;cursor:pointer;
+    }
+    input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:var(--border);}
+    input[type=range]::-moz-range-thumb{
+      width:28px;height:28px;border-radius:50%;background:var(--gold);border:2px solid #fff;
+      box-shadow:0 1px 3px rgba(0,0,0,.3);cursor:pointer;
+    }
+
+    .kpis{grid-template-columns:repeat(2,1fr);gap:10px;}
+    .kpi{padding:12px 14px;}
+    .kpi .label{font-size:.85rem;}
+    .kpi .value{font-size:1.5rem;}
+
+    table{font-size:.95rem;}
+    th{font-size:.85rem;}
+    th,td{padding:11px 9px;}
+
+    .flag{font-size:1rem;padding:14px 16px;}
+    .narrative{font-size:1.05rem;}
+    details summary{font-size:.95rem;padding:12px 0;}
+    details .details-body{font-size:.9rem;}
+    .sources-line{font-size:.88rem;}
+    .tag{font-size:.8rem;}
+    footer{padding:16px 16px 32px;font-size:.88rem;}
+
+    /* Chart legibility: an SVG font-size="N" presentation attribute (baked into each
+       render*Chart() string) is still overridable by a CSS rule, so this reaches every
+       chart's text with zero JS changes. Two tiers, keyed to every literal value used
+       across all render*Chart() functions (9/9.5/10 = axis ticks/zone labels;
+       10.5/11 = primary data labels & titles). The one dynamic value — per-bubble
+       comparable numbers on the Positioning Map, sized to bubble radius — is handled
+       in JS instead (see the widened clamp in renderPositioningChart). */
+    .chart-wrap svg text[font-size="9"],
+    .chart-wrap svg text[font-size="9.5"],
+    .chart-wrap svg text[font-size="10"]{font-size:15px;}
+    .chart-wrap svg text[font-size="10.5"],
+    .chart-wrap svg text[font-size="11"]{font-size:18px;}
+
+    /* Every chart except the Positioning Map already shrinks to fit the card
+       (width:100%, no min-width). The Positioning Map is the one dense 11-bubble
+       scatter forced into horizontal scroll; its old 520px floor was smaller than its
+       own 680-wide viewBox, so it was scrolled AND shrunk below its authored size at
+       once. Raising the floor to native width renders it at true 1:1 scale. */
+    .chart-wrap.scrollable svg{min-width:680px;}
   }
 </style>
 </head>
@@ -203,23 +290,18 @@
   </header>
   <div class="conf-banner">Confidential — internal investment discussion only. Figures are indicative, based on comparable-market benchmarking, and require validation via a full feasibility study.</div>
 
-  <div class="top-card-wrap">
-    <div class="card" id="demandMatchCard">
-      <h2>Demand&ndash;Offer Match</h2>
-      <p class="hint">Does this configuration's unit mix actually match real demand &mdash; proven &#3647;40M+ corridor absorption, the corporate/expat affordability pool, and general-market price-segment proxies &mdash; or is it priced beyond what's proven to sell here? Updates live with unit count, positioning, family housing budget and rental yield.</p>
-      <div class="chart-wrap" id="chartDemandMatch"></div>
-      <details>
-        <summary>Method &amp; sources</summary>
-        <div class="details-body">Composite = (share of your mix priced &#3647;40M+) &times; High-Tier Absorption Fit + (share priced under &#3647;40M) &times; Low-Tier Demand Fit. High-Tier Absorption Fit compares your &#3647;40M+ unit count to the single largest count ever proven sold at that price band in this corridor (11 units, Siam Royal View). Low-Tier Demand Fit averages (a) the share of your under-&#3647;40M units reachable by the current corporate/expat housing budget at the current assumed rental yield, and (b) the share priced at/under &#3647;12M, the ceiling of the proxy covering roughly 80% of general Pattaya-area transactions. Sources: CBRE (Thailand) H2 2024 &middot; Bamboo Routes (REIC-derived) &middot; the Benchmark Developments table below &middot; the Corporate &amp; Expat Rental Demand Check panel. CBRE's qualitative note that luxury/super-luxury demand remains resilient (Middle East, Japan, Russia buyers) isn't reducible to a number and isn't reflected in the score &mdash; treat it as context, not evidence the score already counts.</div>
-      </details>
-    </div>
-  </div>
-
   <main>
-    <div class="grid">
 
-      <!-- ================= PART 1: INPUTS ================= -->
-      <div>
+    <section class="page-section" id="sec-params">
+      <div class="section-header">
+        <div class="section-header-num">1</div>
+        <div>
+          <h2>Parameters</h2>
+          <p class="section-header-sub">Set the deal — everything below recomputes live as you move these. Starts pre-filled with the recommended configuration.</p>
+        </div>
+      </div>
+
+      <div class="grid-2up">
         <div class="card">
           <h2>Configuration Parameters</h2>
 
@@ -292,11 +374,11 @@
             <input type="range" id="in_margin" min="10" max="35" step="1" value="20">
           </div>
 
-          <button id="optimalBtn" type="button" style="width:100%;padding:11px;background:var(--gold);border:1px solid var(--gold);color:var(--navy);border-radius:8px;font-weight:800;font-size:.87rem;cursor:pointer;margin-top:4px;">Suggest Optimal Configuration</button>
-          <div class="tip" style="margin-bottom:10px;">Grid-searches unit count &amp; positioning for the highest-margin mix where demand match is Green.</div>
+          <button id="optimalBtn" type="button" class="btn-gold">Suggest Optimal Configuration</button>
+          <div class="tip" style="margin-bottom:10px;">Re-tunes unit count &amp; positioning for the demand assumptions on the right. Use Reset to start over completely.</div>
           <div id="optimalMsg" class="flag" style="display:none;"><div class="dot"></div><div id="optimalMsgText"></div></div>
 
-          <button id="resetBtn">Reset to base case</button>
+          <button id="resetBtn">Reset to Recommended Configuration</button>
         </div>
 
         <div class="card">
@@ -326,15 +408,62 @@
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- ================= PART 2: RECOMMENDATION ================= -->
-      <div>
+    <section class="page-section" id="sec-summary">
+      <div class="section-header">
+        <div class="section-header-num">2</div>
+        <div>
+          <h2>Executive Summary</h2>
+          <p class="section-header-sub">The two things that decide whether this deal works.</p>
+        </div>
+      </div>
 
-        <div class="group-label">Recommended build</div>
+      <div class="kpis">
+        <div class="kpi"><div class="label">Total Units</div><div class="value" id="es_units">50</div></div>
+        <div class="kpi"><div class="label">Est. GDV</div><div class="value" id="es_gdv">฿2.37bn</div></div>
+        <div class="kpi"><div class="label">Blended Avg. Price</div><div class="value" id="es_avg">฿47.4M</div></div>
+        <div class="kpi"><div class="label">Implied Margin</div><div class="value" id="es_margin">22%</div></div>
+      </div>
 
+      <div class="exec-grid">
         <div class="card">
-          <h2>Recommended Configuration</h2>
-          <p class="hint">Recomputes instantly from the parameters on the left.</p>
+          <h2>Market-Demand Fit</h2>
+          <p class="hint">Does the unit mix match proven local demand, or is it priced beyond what's proven to sell here? Full factor-by-factor breakdown and sources are in Details below.</p>
+          <div class="chart-wrap" id="chartDemandMatchSummary"></div>
+        </div>
+        <div class="card">
+          <h2>Profitability at a Glance</h2>
+          <p class="hint">Est. GDV vs. modeled land + construction cost. Budget ceiling and full cost breakdown are in Details below.</p>
+          <div class="chart-wrap" id="chartProfitabilitySummary"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section" id="sec-details">
+      <div class="section-header">
+        <div class="section-header-num">3</div>
+        <div>
+          <h2>Details of Results</h2>
+          <p class="section-header-sub">The full breakdown, comparables and methodology behind the summary above.</p>
+        </div>
+      </div>
+
+      <div class="card" id="demandMatchCard">
+        <h2>Demand&ndash;Offer Match &mdash; Full Breakdown</h2>
+        <p class="hint">Does this configuration's unit mix actually match real demand &mdash; proven &#3647;40M+ corridor absorption, the corporate/expat affordability pool, and general-market price-segment proxies &mdash; or is it priced beyond what's proven to sell here? Updates live with unit count, positioning, family housing budget and rental yield.</p>
+        <div class="chart-wrap" id="chartDemandMatch"></div>
+        <details>
+          <summary>Method &amp; sources</summary>
+          <div class="details-body">Composite = (share of your mix priced &#3647;40M+) &times; High-Tier Absorption Fit + (share priced under &#3647;40M) &times; Low-Tier Demand Fit. High-Tier Absorption Fit compares your &#3647;40M+ unit count to the single largest count ever proven sold at that price band in this corridor (11 units, Siam Royal View). Low-Tier Demand Fit averages (a) the share of your under-&#3647;40M units reachable by the current corporate/expat housing budget at the current assumed rental yield, and (b) the share priced at/under &#3647;12M, the ceiling of the proxy covering roughly 80% of general Pattaya-area transactions. Sources: CBRE (Thailand) H2 2024 &middot; Bamboo Routes (REIC-derived) &middot; the Benchmark Developments table below &middot; the Corporate &amp; Expat Rental Demand Check panel. CBRE's qualitative note that luxury/super-luxury demand remains resilient (Middle East, Japan, Russia buyers) isn't reducible to a number and isn't reflected in the score &mdash; treat it as context, not evidence the score already counts.</div>
+        </details>
+      </div>
+
+      <div class="group-label">Recommended build</div>
+
+      <div class="card">
+        <h2>Recommended Configuration</h2>
+        <p class="hint">Recomputes instantly from the parameters above.</p>
 
           <div class="kpis">
             <div class="kpi"><div class="label">Total Units</div><div class="value" id="k_units">50</div></div>
@@ -420,9 +549,8 @@
           <div id="affordabilityVerdict" style="margin-top:12px;"></div>
         </div>
 
-      </div>
+    </section>
 
-    </div>
   </main>
 
   <footer>
@@ -583,7 +711,7 @@
 
     BENCHMARKS.forEach(function(c){
       var cx=x(c.units), cy=y(c.avg), rr=r(c.gdv);
-      var fs = Math.max(7, Math.min(11, rr*0.6));
+      var fs = Math.max(9, Math.min(14, rr*0.6)); // widened for mobile legibility — text scales with bubble radius so digits stay inside small circles
       svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+rr+'" fill="var(--context-gray)" fill-opacity="0.6" stroke="#fff" stroke-width="2"><title>#'+c.no+' — '+c.name+': '+c.units+' units, ≈฿'+c.avg.toFixed(1)+'M avg price, ≈'+fmtBaht(c.gdv)+' GDV — '+c.positioning+'</title></circle>';
       svg += '<text x="'+cx+'" y="'+(cy+fs*0.35)+'" text-anchor="middle" font-size="'+fs+'" font-weight="700" fill="var(--navy)" pointer-events="none">'+c.no+'</text>';
     });
@@ -831,6 +959,82 @@
     return headline + svg + notes;
   }
 
+  /* Condensed "essential information only" version of the Demand–Offer Match score for
+     the Executive Summary — same computeDemandMatch() output as the full breakdown chart
+     above, just a hero score instead of the per-factor bars. */
+  function renderDemandMatchSummary(dm){
+    var zoneColor = { green:"var(--green)", amber:"var(--amber)", red:"var(--red)" };
+    var zoneBg    = { green:"var(--green-bg)", amber:"var(--amber-bg)", red:"var(--red-bg)" };
+    var zoneText  = { green:"#155c38", amber:"#7a5107", red:"#7d1c16" };
+    var zoneLabel = { green:"Strong Match", amber:"Partial Match", red:"Weak Match" };
+
+    var oneLiner;
+    if(dm.lowTierUnits > 0){
+      oneLiner = dm.highTierUnits+" of "+dm.N+" units priced ฿40M+ (proven ceiling: "+PROVEN_40M_PLUS_CEILING+" units) — the remaining "+
+        dm.lowTierUnits+" reach "+dm.affordReachPct.toFixed(0)+"% of the corporate/expat budget pool and "+
+        dm.generalMarketPct.toFixed(0)+"% of the general market.";
+    } else {
+      oneLiner = "All "+dm.N+" units are priced ฿40M+ ("+dm.highTierUnits+" vs. a proven ceiling of "+PROVEN_40M_PLUS_CEILING+
+        ") — a single-tier bet on outright HNW/international buyers, with no affordability reach.";
+    }
+
+    return ''
+      + '<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:'+zoneBg[dm.zone]+';border-radius:12px;padding:18px 20px;">'
+      +   '<div style="flex:0 0 auto;text-align:center;min-width:108px;">'
+      +     '<div style="font-size:clamp(2.2rem,7vw,2.7rem);font-weight:800;line-height:1;color:'+zoneColor[dm.zone]+';">'+dm.composite.toFixed(0)+'</div>'
+      +     '<div style="font-size:.8rem;font-weight:700;color:'+zoneColor[dm.zone]+';margin-top:2px;">/ 100</div>'
+      +   '</div>'
+      +   '<div style="flex:1 1 220px;min-width:0;">'
+      +     '<div style="display:inline-block;background:'+zoneColor[dm.zone]+';color:#fff;font-weight:800;font-size:.8rem;letter-spacing:.02em;padding:4px 11px;border-radius:20px;margin-bottom:8px;">'+zoneLabel[dm.zone]+'</div>'
+      +     '<div style="font-size:1rem;line-height:1.55;color:'+zoneText[dm.zone]+';">'+oneLiner+'</div>'
+      +   '</div>'
+      + '</div>';
+  }
+
+  /* Lean "is this profitable at a glance" visual for the Executive Summary — reuses the
+     same gdvM/totalCostM/impliedMarginPct render() already computes, and the same
+     green/amber/red margin thresholds already used by renderFeasibilityChart. Distinct
+     from that detailed 3-row chart (kept unchanged in Details): one stat + one bar. */
+  function renderProfitabilitySummary(gdvM, totalCostM, impliedMarginPct){
+    var marginColor = impliedMarginPct>=20 ? "var(--green)" : (impliedMarginPct>=10 ? "var(--amber)" : "var(--red)");
+    var marginBg    = impliedMarginPct>=20 ? "var(--green-bg)" : (impliedMarginPct>=10 ? "var(--amber-bg)" : "var(--red-bg)");
+    var marginText  = impliedMarginPct>=20 ? "#155c38" : (impliedMarginPct>=10 ? "#7a5107" : "#7d1c16");
+    var marginLabel = impliedMarginPct>=20 ? "Healthy margin" : (impliedMarginPct>=10 ? "Thin margin" : "Below target margin");
+
+    var diffM = gdvM - totalCostM;
+    var costShare = gdvM > 0 ? Math.max(0, Math.min(1, totalCostM/gdvM)) : 1;
+
+    var W = 520, barH = 30, barY = 8;
+    var costW = costShare * W;
+    var marginW = W - costW;
+
+    var svg = '<svg viewBox="0 0 '+W+' '+(barY+barH+20)+'" role="img" aria-label="Cost vs. margin share of estimated GDV" style="width:100%;height:auto;">'
+      + '<rect x="0" y="'+barY+'" width="'+costW+'" height="'+barH+'" rx="4" fill="var(--context-gray)"><title>Modeled cost (land + construction): '+fmtBaht(totalCostM)+'</title></rect>'
+      + '<rect x="'+costW+'" y="'+barY+'" width="'+marginW+'" height="'+barH+'" rx="4" fill="'+marginColor+'"><title>Margin: '+fmtBaht(diffM)+' ('+impliedMarginPct.toFixed(0)+'%)</title></rect>'
+      + (costW > 55 ? '<text x="'+(costW/2)+'" y="'+(barY+barH/2+4)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Cost</text>' : '')
+      + (marginW > 55 ? '<text x="'+(costW+marginW/2)+'" y="'+(barY+barH/2+4)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Margin</text>' : '')
+      + '<text x="0" y="'+(barY+barH+16)+'" font-size="11" fill="var(--muted)">'+fmtBaht(totalCostM)+' cost</text>'
+      + '<text x="'+W+'" y="'+(barY+barH+16)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+fmtBaht(gdvM)+' GDV</text>'
+      + '</svg>';
+
+    var diffLabel = diffM >= 0
+      ? 'a surplus of '+fmtBaht(diffM)+' over modeled cost.'
+      : 'a shortfall of '+fmtBaht(-diffM)+' below modeled cost.';
+
+    return ''
+      + '<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:'+marginBg+';border-radius:12px;padding:18px 20px;">'
+      +   '<div style="flex:0 0 auto;text-align:center;min-width:108px;">'
+      +     '<div style="font-size:clamp(2.2rem,7vw,2.7rem);font-weight:800;line-height:1;color:'+marginColor+';">'+impliedMarginPct.toFixed(0)+'%</div>'
+      +     '<div style="font-size:.8rem;font-weight:700;color:'+marginColor+';margin-top:2px;">implied margin</div>'
+      +   '</div>'
+      +   '<div style="flex:1 1 220px;min-width:0;">'
+      +     '<div style="display:inline-block;background:'+marginColor+';color:#fff;font-weight:800;font-size:.8rem;letter-spacing:.02em;padding:4px 11px;border-radius:20px;margin-bottom:8px;">'+marginLabel+'</div>'
+      +     '<div style="font-size:1rem;line-height:1.55;color:'+marginText+';margin-bottom:10px;">Est. GDV '+fmtBaht(gdvM)+' vs. modeled cost '+fmtBaht(totalCostM)+' — '+diffLabel+'</div>'
+      +     svg
+      +   '</div>'
+      + '</div>';
+  }
+
   /* ---------------- Main render ---------------- */
   function render(){
     var mix = computeMix();
@@ -861,6 +1065,11 @@
     document.getElementById('k_landreq').textContent = landReqRai.toFixed(1) + " rai";
     document.getElementById('k_margin').textContent = impliedMarginPct.toFixed(0) + "%";
 
+    document.getElementById('es_units').textContent = N;
+    document.getElementById('es_gdv').textContent = fmtBaht(gdvM);
+    document.getElementById('es_avg').textContent = fmtBaht(avgM);
+    document.getElementById('es_margin').textContent = impliedMarginPct.toFixed(0) + "%";
+
     // Mix table
     var monthlyRentOf = function(k){ return TYPES[k].priceMid * 1e6 * (state.rentalYield/100) / 12; };
     var rows = "";
@@ -889,6 +1098,8 @@
 
     var dm = computeDemandMatch(mix, N, supportableM);
     document.getElementById('chartDemandMatch').innerHTML = renderDemandMatchChart(dm);
+    document.getElementById('chartDemandMatchSummary').innerHTML = renderDemandMatchSummary(dm);
+    document.getElementById('chartProfitabilitySummary').innerHTML = renderProfitabilitySummary(gdvM, totalCostM, impliedMarginPct);
 
     // ---- Flags ----
     var flags = [];
@@ -1068,6 +1279,28 @@
     };
   }
 
+  /* The page's base scenario is the recommended/optimal configuration, not an arbitrary
+     hardcoded snapshot. This resets every field to its baseline (including famBudget/
+     rentalYield), then re-derives units/position/land/margin live via findOptimalConfig()
+     — used both to seed the page on load and by the "Reset to Recommended Configuration"
+     button, so the two can never drift apart. */
+  function applyRecommendedDefaults(){
+    state.dist = 1500;
+    state.own = "freehold";
+    state.velocity = "moderate";
+    state.budget = 2.20;
+    state.launch = "phased";
+    state.contractor = "top";
+    state.famBudget = 115000;
+    state.rentalYield = 6;
+
+    var rec = findOptimalConfig();
+    state.units = rec.units;
+    state.position = rec.position;
+    state.land = rec.land;
+    state.margin = Math.min(35, Math.max(10, Math.round(rec.marginPct)));
+  }
+
   /* ---------------- Wire up inputs ---------------- */
   function bindRange(id, stateKey, fmt){
     var el = document.getElementById(id);
@@ -1150,25 +1383,35 @@
     msgEl.style.display = "";
   });
 
+  /* Syncs every input element's displayed value/active-state to the current `state` —
+     used both after applyRecommendedDefaults() (initial load, and the reset button) and
+     nowhere else, since every other mutation path (sliders, selects, toggles) already
+     updates its own control directly as it changes state. */
+  function syncInputsFromState(){
+    document.getElementById('in_land').value = state.land; document.getElementById('v_land').textContent = state.land + " rai";
+    document.getElementById('in_dist').value = state.dist; document.getElementById('v_dist').textContent = state.dist.toLocaleString() + " m";
+    document.getElementById('in_own').value = state.own;
+    document.getElementById('in_velocity').value = state.velocity;
+    document.getElementById('in_budget').value = state.budget; document.getElementById('v_budget').textContent = "฿" + state.budget.toFixed(2) + "bn";
+    document.getElementById('in_margin').value = state.margin; document.getElementById('v_margin').textContent = state.margin + "%";
+    document.getElementById('in_contractor').value = state.contractor;
+    document.getElementById('in_units').value = state.units; document.getElementById('v_units').textContent = state.units;
+    document.getElementById('in_position').value = state.position;
+    document.getElementById('in_famBudget').value = state.famBudget; document.getElementById('v_famBudget').textContent = "฿" + state.famBudget.toLocaleString();
+    document.getElementById('in_yield').value = state.rentalYield; document.getElementById('v_yield').textContent = state.rentalYield.toFixed(1) + "%";
+    toggleBtns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-val') === state.launch); });
+    famBtns.forEach(function(b){ b.classList.toggle('active', parseInt(b.getAttribute('data-budget'), 10) === state.famBudget); });
+  }
+
   document.getElementById('resetBtn').addEventListener('click', function(){
-    state = { land:32, dist:1500, own:"freehold", velocity:"moderate", budget:2.20, margin:20, launch:"phased", contractor:"top", units:50, position:"gapfill", famBudget:115000, rentalYield:6 };
-    document.getElementById('in_land').value = 32; document.getElementById('v_land').textContent = "32 rai";
-    document.getElementById('in_dist').value = 1500; document.getElementById('v_dist').textContent = "1,500 m";
-    document.getElementById('in_own').value = "freehold";
-    document.getElementById('in_velocity').value = "moderate";
-    document.getElementById('in_budget').value = 2.20; document.getElementById('v_budget').textContent = "฿2.20bn";
-    document.getElementById('in_margin').value = 20; document.getElementById('v_margin').textContent = "20%";
-    document.getElementById('in_contractor').value = "top";
-    document.getElementById('in_units').value = 50; document.getElementById('v_units').textContent = "50";
-    document.getElementById('in_position').value = "gapfill";
-    document.getElementById('in_famBudget').value = 115000; document.getElementById('v_famBudget').textContent = "฿115,000";
-    document.getElementById('in_yield').value = 6; document.getElementById('v_yield').textContent = "6.0%";
-    toggleBtns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-val')==='phased'); });
-    famBtns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-budget')==='115000'); });
+    applyRecommendedDefaults();
+    syncInputsFromState();
     document.getElementById('optimalMsg').style.display = "none";
     render();
   });
 
+  applyRecommendedDefaults();
+  syncInputsFromState();
   render();
 })();
 </script>
