@@ -79,6 +79,12 @@
     background:var(--gold-soft);color:#7a5b1e;font-size:.78rem;font-weight:600;
     padding:8px 28px;text-align:center;border-bottom:1px solid #e9dcbf;
   }
+
+  /* Mobile-only persistent glance bar (Fix 4): placed before the Parameters section so
+     it sticks to the viewport top almost as soon as the user starts scrolling, staying
+     visible through the whole parameter stack instead of only after Executive Summary. */
+  .mobile-summary-bar{display:none;}
+
   main{max-width:1400px;margin:0 auto;padding:28px;}
 
   /* Top-level page sections (1. Parameters / 2. Executive Summary / 3. Details of Results) */
@@ -120,12 +126,6 @@
     cursor:pointer;font-weight:600;color:var(--muted);transition:all .15s;
   }
   .toggle-group button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
-
-  #resetBtn{
-    width:100%;padding:10px;background:#fff;border:1px solid var(--navy);color:var(--navy);border-radius:8px;
-    font-weight:700;font-size:.85rem;cursor:pointer;margin-top:4px;
-  }
-  #resetBtn:hover{background:var(--navy);color:#fff;}
 
   .btn-gold{
     width:100%;padding:11px;background:var(--gold);border:1px solid var(--gold);color:var(--navy);
@@ -212,7 +212,16 @@
     select{font-size:1rem;padding:14px 12px;}
     .toggle-group{gap:10px;}
     .toggle-group button{font-size:.95rem;padding:13px 12px;min-height:44px;}
-    #resetBtn,.btn-gold{font-size:1rem;padding:15px;min-height:44px;}
+    .btn-gold{font-size:1rem;padding:15px;min-height:44px;}
+
+    .mobile-summary-bar{
+      display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;
+      position:sticky;top:0;z-index:50;background:var(--navy);color:#fff;
+      padding:10px 16px;font-size:.95rem;font-weight:600;
+      box-shadow:0 2px 10px rgba(0,0,0,.2);
+    }
+    .mobile-summary-bar .msb-item{display:flex;align-items:center;gap:6px;white-space:nowrap;}
+    .mobile-summary-bar .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;}
 
     input[type=range]{height:44px;}
     input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--border);}
@@ -290,6 +299,12 @@
   </header>
   <div class="conf-banner">Confidential — internal investment discussion only. Figures are indicative, based on comparable-market benchmarking, and require validation via a full feasibility study.</div>
 
+  <div id="mobileSummaryBar" class="mobile-summary-bar" role="status" aria-live="polite">
+    <span class="msb-item"><strong id="msb_units">–</strong>&nbsp;units</span>
+    <span class="msb-item">avg&nbsp;<strong id="msb_avg">–</strong></span>
+    <span class="msb-item msb-zone"><span class="dot" id="msb_zone_dot"></span><strong id="msb_zone_label">–</strong></span>
+  </div>
+
   <main>
 
     <section class="page-section" id="sec-params">
@@ -305,32 +320,35 @@
         <div class="card">
           <h2>Configuration Parameters</h2>
 
-          <div class="subhead">Product &amp; site</div>
+          <div class="subhead">Levers that change the numbers</div>
+          <p class="hint" style="margin:-8px 0 14px;">Drive the unit mix, GDV, and demand-match score above.</p>
           <div class="field">
-            <label>Total unit count <span class="val" id="v_units">50</span></label>
-            <input type="range" id="in_units" min="20" max="70" step="1" value="50">
+            <label>Total unit count <span class="val" id="v_units">–</span></label>
+            <input type="range" id="in_units" min="20" max="70" step="1" value="20">
           </div>
           <div class="field">
             <label>Price / unit-mix positioning</label>
             <select id="in_position">
-              <option value="gapfill" selected>Boutique-ultra-luxury gap-fill (base case)</option>
+              <option value="" disabled selected>–</option>
+              <option value="gapfill">Boutique-ultra-luxury gap-fill (base case)</option>
               <option value="volume">Push toward mid-luxury volume</option>
               <option value="flagship">Push toward ultra-luxury flagship-only</option>
               <option value="affordable">Affordable / corporate-rental anchored</option>
             </select>
           </div>
           <div class="field">
-            <label>Confirmed land parcel size <span class="val" id="v_land">32 rai</span></label>
-            <input type="range" id="in_land" min="15" max="40" step="1" value="32">
+            <label>Confirmed land parcel size <span class="val" id="v_land">–</span></label>
+            <input type="range" id="in_land" min="15" max="40" step="1" value="15">
             <div class="tip">Indicative requirement: ≈31–34 rai.</div>
           </div>
+
+          <div class="subhead">Assumptions that change the advice</div>
+          <p class="hint" style="margin:-8px 0 14px;">Don't move the headline numbers — they drive the Feasibility Flags and phasing guidance in Details below.</p>
           <div class="field">
             <label>Distance to Highgate campus gate <span class="val" id="v_dist">1,500 m</span></label>
             <input type="range" id="in_dist" min="0" max="5000" step="100" value="1500">
             <div class="tip">Only market as "walking distance" if actually true from the site.</div>
           </div>
-
-          <div class="subhead">Deal terms</div>
           <div class="field">
             <label>Ownership structure</label>
             <select id="in_own">
@@ -363,22 +381,18 @@
               <option value="standard">Standard local builder</option>
             </select>
           </div>
-
-          <div class="subhead">Financial targets</div>
           <div class="field">
             <label>All-in budget ceiling (land + construction) <span class="val" id="v_budget">฿2.20bn</span></label>
             <input type="range" id="in_budget" min="0.6" max="3.0" step="0.05" value="2.20">
           </div>
           <div class="field">
-            <label>Target margin / IRR <span class="val" id="v_margin">20%</span></label>
-            <input type="range" id="in_margin" min="10" max="35" step="1" value="20">
+            <label>Target margin / IRR <span class="val" id="v_margin">–</span></label>
+            <input type="range" id="in_margin" min="10" max="35" step="1" value="10">
           </div>
 
-          <button id="optimalBtn" type="button" class="btn-gold">Suggest Optimal Configuration</button>
-          <div class="tip" style="margin-bottom:10px;">Re-tunes unit count &amp; positioning for the demand assumptions on the right. Use Reset to start over completely.</div>
+          <button id="optimalBtn" type="button" class="btn-gold">Re-optimize</button>
+          <div class="tip" style="margin-bottom:10px;">Re-tunes unit count &amp; positioning for the demand assumptions in the panel on the right, keeping every other parameter as currently set.</div>
           <div id="optimalMsg" class="flag" style="display:none;"><div class="dot"></div><div id="optimalMsgText"></div></div>
-
-          <button id="resetBtn">Reset to Recommended Configuration</button>
         </div>
 
         <div class="card">
@@ -420,10 +434,10 @@
       </div>
 
       <div class="kpis">
-        <div class="kpi"><div class="label">Total Units</div><div class="value" id="es_units">50</div></div>
-        <div class="kpi"><div class="label">Est. GDV</div><div class="value" id="es_gdv">฿2.37bn</div></div>
-        <div class="kpi"><div class="label">Blended Avg. Price</div><div class="value" id="es_avg">฿47.4M</div></div>
-        <div class="kpi"><div class="label">Implied Margin</div><div class="value" id="es_margin">22%</div></div>
+        <div class="kpi"><div class="label">Total Units</div><div class="value" id="es_units">–</div></div>
+        <div class="kpi"><div class="label">Est. GDV</div><div class="value" id="es_gdv">–</div></div>
+        <div class="kpi"><div class="label">Blended Avg. Price</div><div class="value" id="es_avg">–</div></div>
+        <div class="kpi"><div class="label">Implied Margin</div><div class="value" id="es_margin">–</div></div>
       </div>
 
       <div class="exec-grid">
@@ -463,14 +477,10 @@
 
       <div class="card">
         <h2>Recommended Configuration</h2>
-        <p class="hint">Recomputes instantly from the parameters above.</p>
+        <p class="hint">Recomputes instantly from the parameters above. Totals, GDV, price and margin are in the Executive Summary above.</p>
 
           <div class="kpis">
-            <div class="kpi"><div class="label">Total Units</div><div class="value" id="k_units">50</div></div>
-            <div class="kpi"><div class="label">Est. GDV</div><div class="value" id="k_gdv">฿2.37bn</div></div>
-            <div class="kpi"><div class="label">Blended Avg. Price</div><div class="value" id="k_avg">฿47.4M</div></div>
-            <div class="kpi"><div class="label">Land Required</div><div class="value" id="k_landreq">32.0 rai</div></div>
-            <div class="kpi"><div class="label">Implied Margin</div><div class="value" id="k_margin">22%</div></div>
+            <div class="kpi"><div class="label">Land Required</div><div class="value" id="k_landreq">–</div></div>
           </div>
 
           <div class="table-scroll">
@@ -572,7 +582,12 @@
 (function(){
   "use strict";
 
-  /* ---------------- Password gate ---------------- */
+  /* ---------------- Password gate ----------------
+     This is a soft, client-side-only gate meant to deter casual link-sharing, not real
+     access control — PASSWORD and this whole check are visible in page source (see the
+     repo README's "Access note"). Genuine access control on a static GitHub Pages site
+     would require a separate server-side/auth-proxy layer in front of it; don't treat
+     this check as one. */
   var PASSWORD = "SMGPattaya2026";
   var gate = document.getElementById('gate');
   var app = document.getElementById('app');
@@ -827,11 +842,15 @@
     return svg;
   }
 
+  // Shared "map rows to <tr> strings and join" pattern used by every table builder below.
+  function renderRows(data, rowFn){
+    return data.map(rowFn).join("");
+  }
+
   function renderBenchmarkTable(){
-    var rows = BENCHMARKS.map(function(b){
+    document.getElementById('benchTable').innerHTML = renderRows(BENCHMARKS, function(b){
       return "<tr><td class='num'>"+b.no+"</td><td>"+b.name+"</td><td class='num'>"+b.units+"</td><td>"+b.beds+"</td><td>"+b.size+"</td><td class='num'>"+b.price+"</td><td>"+b.location+"</td><td>"+b.positioning+"</td></tr>";
-    }).join("");
-    document.getElementById('benchTable').innerHTML = rows;
+    });
   }
 
   var FAMILY_BUDGETS = [
@@ -842,13 +861,12 @@
   ];
 
   function renderFamilyBudgetTable(rentalYield){
-    var rows = FAMILY_BUDGETS.map(function(f){
+    document.getElementById('familyBudgetTable').innerHTML = renderRows(FAMILY_BUDGETS, function(f){
       var mid = (f.low + f.high) / 2;
       var refSaleM = (mid * 12 / (rentalYield/100)) / 1e6;
       var budgetLabel = "≈" + f.low.toLocaleString() + "–" + f.high.toLocaleString() + (f.openEnded ? "+" : "");
       return "<tr><td>"+f.size+"</td><td class='num'>"+budgetLabel+"</td><td class='num'>≈฿"+refSaleM.toFixed(1)+"M</td><td>"+f.basis+"</td></tr>";
-    }).join("");
-    document.getElementById('familyBudgetTable').innerHTML = rows;
+    });
   }
 
   /* ---------------- Demand–Offer Match ----------------
@@ -1059,11 +1077,7 @@
     var supportableTHB = annualRent / (state.rentalYield/100);
     var supportableM = supportableTHB / 1e6;
 
-    document.getElementById('k_units').textContent = N;
-    document.getElementById('k_gdv').textContent = fmtBaht(gdvM);
-    document.getElementById('k_avg').textContent = fmtBaht(avgM);
     document.getElementById('k_landreq').textContent = landReqRai.toFixed(1) + " rai";
-    document.getElementById('k_margin').textContent = impliedMarginPct.toFixed(0) + "%";
 
     document.getElementById('es_units').textContent = N;
     document.getElementById('es_gdv').textContent = fmtBaht(gdvM);
@@ -1072,14 +1086,12 @@
 
     // Mix table
     var monthlyRentOf = function(k){ return TYPES[k].priceMid * 1e6 * (state.rentalYield/100) / 12; };
-    var rows = "";
-    TYPE_ORDER.forEach(function(k){
+    document.getElementById('mixTable').innerHTML = renderRows(TYPE_ORDER, function(k){
       var t = TYPES[k];
       var label = "<span class='swatch' style='background:"+t.color+"'></span>"+k+" — " + t.name;
       var rent = monthlyRentOf(k);
-      rows += "<tr class='"+(mix[k]===0?'zero':'')+"'><td>"+label+"</td><td>"+t.beds+"</td><td>"+t.livingLabel+"</td><td>"+t.plotLabel+"</td><td class='num'>"+t.priceLabel+"</td><td class='num'>"+mix[k]+"</td><td class='num'>฿"+Math.round(rent).toLocaleString()+"</td></tr>";
+      return "<tr class='"+(mix[k]===0?'zero':'')+"'><td>"+label+"</td><td>"+t.beds+"</td><td>"+t.livingLabel+"</td><td>"+t.plotLabel+"</td><td class='num'>"+t.priceLabel+"</td><td class='num'>"+mix[k]+"</td><td class='num'>฿"+Math.round(rent).toLocaleString()+"</td></tr>";
     });
-    document.getElementById('mixTable').innerHTML = rows;
     document.getElementById('rentNote').innerHTML = "Illustrative — priceMid × assumed "+state.rentalYield.toFixed(1)+"% gross yield ÷ 12 (yield set in the panel below). Not a per-unit rental survey.";
 
     var notesHtml = "";
@@ -1100,6 +1112,16 @@
     document.getElementById('chartDemandMatch').innerHTML = renderDemandMatchChart(dm);
     document.getElementById('chartDemandMatchSummary').innerHTML = renderDemandMatchSummary(dm);
     document.getElementById('chartProfitabilitySummary').innerHTML = renderProfitabilitySummary(gdvM, totalCostM, impliedMarginPct);
+
+    // ---- Mobile persistent glance bar (Fix 4) — mirrors a subset of the Executive
+    // Summary + Market-Demand Fit numbers above so a mobile user adjusting a slider in
+    // the long Parameters stack doesn't have to scroll past it to see the effect.
+    var zoneDotColor = { green:"var(--green)", amber:"var(--amber)", red:"var(--red)" };
+    var zoneShortLabel = { green:"Strong Match", amber:"Partial Match", red:"Weak Match" };
+    document.getElementById('msb_units').textContent = N;
+    document.getElementById('msb_avg').textContent = fmtBaht(avgM);
+    document.getElementById('msb_zone_dot').style.background = zoneDotColor[dm.zone];
+    document.getElementById('msb_zone_label').textContent = zoneShortLabel[dm.zone];
 
     // ---- Flags ----
     var flags = [];
@@ -1402,13 +1424,6 @@
     toggleBtns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-val') === state.launch); });
     famBtns.forEach(function(b){ b.classList.toggle('active', parseInt(b.getAttribute('data-budget'), 10) === state.famBudget); });
   }
-
-  document.getElementById('resetBtn').addEventListener('click', function(){
-    applyRecommendedDefaults();
-    syncInputsFromState();
-    document.getElementById('optimalMsg').style.display = "none";
-    render();
-  });
 
   applyRecommendedDefaults();
   syncInputsFromState();
