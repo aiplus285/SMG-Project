@@ -1,8 +1,8 @@
 # SMG Project — East Pattaya Villa Development Configurator
 
-An interactive, single-file investor configurator built from the "Investment
-Recommendation — Family Housing Development, East Pattaya" report (24 Aug 2026,
-prepared for the Investment Committee).
+An interactive, single-file investor configurator built from the "Investor
+Recommendation — Revised, 50-Unit Family Villa Development, East Pattaya" report
+(Update 3, August 2026 — land ownership and site location confirmed).
 
 **⚠️ Access note:** the live site sits behind a client-side password screen
 (password shared separately). This is a soft gate for casual visitors only —
@@ -13,28 +13,42 @@ sensitive data.
 
 ## What it does
 
-**Part 1 — Investment Committee Parameters** (left column): exposes the six
-open questions from Section 7 of the report as adjustable inputs — confirmed
-land parcel size, distance to the Highgate campus gate, ownership structure,
-target sales velocity/hold period, all-in budget ceiling, target margin/IRR,
-launch approach (phased vs. simultaneous), and contractor/developer tier. An
-"Advanced" section adds two extra levers beyond Section 7: total unit count
-and price-positioning target.
+Three numbered sections, top to bottom:
 
-**Part 2 — Recommended Configuration** (right column): recomputes instantly,
-with no submit button, using a deterministic rules engine — not a generative
-or AI-driven output. Every constant (unit type specs, price bands, the
-30/14/6 mix ratio, the 30–35% common-area allowance, the phasing logic) is
-sourced directly from Sections 2, 3, 5, and 6 of the report. The one
-quantity not in the source report — an illustrative all-in construction cost
-per sqm, used only for the budget/margin sanity check — is explicitly labeled
-as an assumption in the UI.
+**1. Parameters** — the decision levers still open after Update 3: unit-mix
+positioning, ownership structure, target sales velocity/hold period,
+construction budget ceiling (land excluded — already owned), target
+margin/IRR, launch approach (phased vs. simultaneous), contractor/developer
+tier, total unit count, and the corporate/expat rental-demand check (family
+size, monthly housing budget, assumed rental yield). Two parameters from the
+prior version were **removed** because the report resolved them: confirmed
+land parcel size (the site is owned, ≈65–75 rai available against the
+≈23–25 rai this mix needs) and distance to the Highgate campus gate (confirmed
+≈320–450m, a genuine walking distance) — both now shown as static, sourced
+facts instead of sliders.
 
-Outputs: recommended unit mix table, estimated GDV, land-utilization check,
-budget/margin feasibility flags, a walking-distance marketing-claim flag, a
-contractor-tier consistency flag, a generated phasing plan, a market-gap
-positioning narrative (vs. the comparable set in Section 2), and an
-ownership-structure buyer-pool impact note.
+**2. Executive Summary** — total units, est. GDV, blended avg. price, and
+implied margin, plus a Market-Demand Fit score and a Profitability-at-a-glance
+bar, both recomputing live.
+
+**3. Details of Results** — recomputes instantly, with no submit button,
+using a deterministic rules engine, not a generative or AI-driven output.
+Every constant (the four unit tiers — Signature, Estate, Family,
+Corporate-Ready — their price bands, the report's own 6/5/20/19 base-case
+mix, the 30–35% common-area allowance, the phasing logic) is sourced directly
+from the Update 3 report. The one quantity not in the source report — an
+illustrative construction cost per sqm, used for the budget/margin check — is
+explicitly labeled as an assumption in the UI, as is the fact that
+site-clearing for this raw, forested land is not yet costed.
+
+Outputs: the Demand–Offer Match score and its full factor breakdown, the
+recommended unit mix table, a budget/cost/margin chart, feasibility flags, a
+**Key Risks & Decisions Needed** card (land survey, the unidentified
+neighboring compound, an on-site waterway, cost quotes, ownership structure,
+and pricing headroom — lifted from the report's own risk list), the market
+positioning map and benchmark table (11 corridor comparables), a revenue-mix
+chart, a generated phasing plan, and the corporate/expat housing-budget
+affordability table.
 
 ## Tech
 

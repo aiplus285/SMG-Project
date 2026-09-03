@@ -139,7 +139,22 @@
   .kpi .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700;}
   .kpi .value{font-size:1.3rem;font-weight:800;color:var(--navy);margin-top:4px;}
 
-  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -2px;}
+  /* Horizontal-scroll affordance: a soft edge fade + shadow that only shows over content
+     still hidden off-screen (scrolls with the content, so it disappears once you reach
+     that edge) — tells a mobile user there's more to see without adding any copy. Same
+     recipe applied to .chart-wrap.scrollable below. */
+  .table-scroll{
+    overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -2px;
+    background:
+      linear-gradient(to right, var(--card) 30%, rgba(255,255,255,0)),
+      linear-gradient(to right, rgba(255,255,255,0), var(--card) 70%) 100% 0,
+      radial-gradient(farthest-side at 0 50%, rgba(19,42,68,.15), rgba(19,42,68,0)),
+      radial-gradient(farthest-side at 100% 50%, rgba(19,42,68,.15), rgba(19,42,68,0)) 100% 0;
+    background-repeat:no-repeat;
+    background-color:var(--card);
+    background-size:24px 100%, 24px 100%, 10px 100%, 10px 100%;
+    background-attachment:local, local, scroll, scroll;
+  }
   table{width:100%;border-collapse:collapse;font-size:.86rem;}
   th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--border);white-space:nowrap;}
   th{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}
@@ -160,13 +175,38 @@
   .flag.red{background:var(--red-bg);color:#7d1c16;}
   .flag.red .dot{background:var(--red);}
 
+  /* Key Risks & Decisions Needed: a fixed checklist, not a live pass/fail signal like
+     .flag above — six consecutive full-color amber pills read as a wall of alerts rather
+     than a register of open items, so this uses one shared quiet-amber numbering chip on
+     a plain white row instead of a saturated background per item. Amber is kept only as
+     the small chip accent, matching the restrained, "confirm before underwriting" tone. */
+  .risk-list{margin:2px 0 0;}
+  .risk-item{display:flex;gap:12px;align-items:flex-start;padding:13px 2px;border-bottom:1px solid var(--border);font-size:.86rem;line-height:1.55;}
+  .risk-item:last-child{border-bottom:none;}
+  .risk-item .risk-num{
+    flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--amber-bg);color:var(--amber);
+    font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;
+  }
+  .risk-item .risk-body strong{color:var(--text);}
+
   .assumption{
     font-size:.76rem;color:var(--muted);background:var(--bg);border-left:3px solid var(--gold);
     padding:8px 12px;border-radius:0 6px 6px 0;margin-top:10px;
   }
   .narrative{font-size:.92rem;line-height:1.6;background:var(--bg);border-radius:10px;padding:14px 16px;}
   .chart-wrap{margin-top:6px;}
-  .chart-wrap.scrollable{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .chart-wrap.scrollable{
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    background:
+      linear-gradient(to right, var(--card) 30%, rgba(255,255,255,0)),
+      linear-gradient(to right, rgba(255,255,255,0), var(--card) 70%) 100% 0,
+      radial-gradient(farthest-side at 0 50%, rgba(19,42,68,.15), rgba(19,42,68,0)),
+      radial-gradient(farthest-side at 100% 50%, rgba(19,42,68,.15), rgba(19,42,68,0)) 100% 0;
+    background-repeat:no-repeat;
+    background-color:var(--card);
+    background-size:24px 100%, 24px 100%, 10px 100%, 10px 100%;
+    background-attachment:local, local, scroll, scroll;
+  }
   .chart-wrap svg{display:block;}
   .sources-line{font-size:.74rem;color:var(--muted);margin-top:12px;line-height:1.6;}
   .sources-line a{color:var(--muted);text-decoration:underline;}
@@ -215,13 +255,20 @@
     .btn-gold{font-size:1rem;padding:15px;min-height:44px;}
 
     .mobile-summary-bar{
-      display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;
+      display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;
       position:sticky;top:0;z-index:50;background:var(--navy);color:#fff;
-      padding:10px 16px;font-size:.95rem;font-weight:600;
+      padding:9px 14px;font-size:.86rem;font-weight:600;
       box-shadow:0 2px 10px rgba(0,0,0,.2);
     }
     .mobile-summary-bar .msb-item{display:flex;align-items:center;gap:6px;white-space:nowrap;}
-    .mobile-summary-bar .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;}
+    .mobile-summary-bar .msb-item:not(:last-child)::after{
+      content:"";width:1px;height:12px;background:rgba(255,255,255,.25);margin-left:10px;
+    }
+    .mobile-summary-bar .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0;}
+
+    /* Key Risks list: same sizing bump as .field/.flag text above for one-hand legibility. */
+    .risk-item{font-size:1rem;padding:15px 2px;gap:14px;}
+    .risk-item .risk-num{width:26px;height:26px;font-size:.85rem;}
 
     input[type=range]{height:44px;}
     input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:var(--border);}
@@ -292,8 +339,8 @@
   <header class="site">
     <div class="wrap">
       <div>
-        <h1>SMG Project — Family Housing Development, East Pattaya</h1>
-        <div class="sub">Interactive investor configurator · luxury pool villa community near Highgate International School Thailand &amp; Siam Country Club. Key question: does this configuration actually fit proven local demand?</div>
+        <h1>SMG Project — 50-Unit Family Villa Development, East Pattaya</h1>
+        <div class="sub">Interactive investor configurator · rebalanced for proven demand-offer fit and corporate/expat housing budgets, near Highgate International School Thailand &amp; Siam Country Club. Land is confirmed owned; site location confirmed ≈320–450m from Highgate's gate.</div>
       </div>
     </div>
   </header>
@@ -330,25 +377,20 @@
             <label>Price / unit-mix positioning</label>
             <select id="in_position">
               <option value="" disabled selected>–</option>
-              <option value="gapfill">Boutique-ultra-luxury gap-fill (base case)</option>
-              <option value="volume">Push toward mid-luxury volume</option>
-              <option value="flagship">Push toward ultra-luxury flagship-only</option>
-              <option value="affordable">Affordable / corporate-rental anchored</option>
+              <option value="gapfill">Recommended rebalanced mix (base case)</option>
+              <option value="volume">Push toward Family/Corporate-Ready volume</option>
+              <option value="flagship">Push toward Signature/Estate flagship</option>
+              <option value="affordable">Corporate-Ready anchored (max affordability)</option>
             </select>
           </div>
           <div class="field">
-            <label>Confirmed land parcel size <span class="val" id="v_land">–</span></label>
-            <input type="range" id="in_land" min="15" max="40" step="1" value="15">
-            <div class="tip">Indicative requirement: ≈31–34 rai.</div>
+            <div class="type-note" style="margin-top:0;">
+              <strong>Site confirmed, pending survey:</strong> land is already owned — the parcel north of the gas station on Phorn Prapha Nimit 35 — with ≈65–75 rai available (2–3× the ≈23–25 rai this mix needs) and ≈320–450m from Highgate's gate, a genuine walking distance. Both figures are satellite-based estimates. Open items (title deed boundary, a neighboring compound, an on-site waterway) are in Key Risks below.
+            </div>
           </div>
 
           <div class="subhead">Assumptions that change the advice</div>
           <p class="hint" style="margin:-8px 0 14px;">Don't move the headline numbers — they drive the Feasibility Flags and phasing guidance in Details below.</p>
-          <div class="field">
-            <label>Distance to Highgate campus gate <span class="val" id="v_dist">1,500 m</span></label>
-            <input type="range" id="in_dist" min="0" max="5000" step="100" value="1500">
-            <div class="tip">Only market as "walking distance" if actually true from the site.</div>
-          </div>
           <div class="field">
             <label>Ownership structure</label>
             <select id="in_own">
@@ -382,12 +424,13 @@
             </select>
           </div>
           <div class="field">
-            <label>All-in budget ceiling (land + construction) <span class="val" id="v_budget">฿2.20bn</span></label>
-            <input type="range" id="in_budget" min="0.6" max="3.0" step="0.05" value="2.20">
+            <label>Construction budget ceiling <span class="val" id="v_budget">฿1.45bn</span></label>
+            <input type="range" id="in_budget" min="0.5" max="2.0" step="0.05" value="1.45">
+            <div class="tip">Land is excluded — already owned and treated as sunk (Section 4).</div>
           </div>
           <div class="field">
             <label>Target margin / IRR <span class="val" id="v_margin">–</span></label>
-            <input type="range" id="in_margin" min="10" max="35" step="1" value="10">
+            <input type="range" id="in_margin" min="10" max="35" step="1" value="20">
           </div>
 
           <button id="optimalBtn" type="button" class="btn-gold">Re-optimize</button>
@@ -402,16 +445,16 @@
           <div class="field">
             <label>Representative family size</label>
             <div class="toggle-group">
-              <button type="button" class="famBtn" data-budget="62000">Family of 2</button>
-              <button type="button" class="famBtn" data-budget="90000">Family of 3</button>
-              <button type="button" class="famBtn active" data-budget="115000">Family of 4</button>
-              <button type="button" class="famBtn" data-budget="140000">Family of 5</button>
+              <button type="button" class="famBtn" data-budget="65000">Family of 2</button>
+              <button type="button" class="famBtn" data-budget="105000">Family of 3</button>
+              <button type="button" class="famBtn active" data-budget="125000">Family of 4</button>
+              <button type="button" class="famBtn" data-budget="160000">Family of 5</button>
             </div>
           </div>
 
           <div class="field">
-            <label>Monthly corporate housing budget <span class="val" id="v_famBudget">฿115,000</span></label>
-            <input type="range" id="in_famBudget" min="40000" max="200000" step="5000" value="115000">
+            <label>Monthly corporate housing budget <span class="val" id="v_famBudget">฿125,000</span></label>
+            <input type="range" id="in_famBudget" min="40000" max="200000" step="5000" value="125000">
             <div class="tip">See the full breakdown by family size in "Corporate &amp; Expat Housing Budgets" below.</div>
           </div>
 
@@ -420,6 +463,7 @@
             <input type="range" id="in_yield" min="4" max="8" step="0.5" value="6">
             <div class="tip">Also drives the "Approx. Monthly Rent" column in Recommended Configuration.</div>
           </div>
+          <div class="type-note">Families of 3, 4 and 5 — the households Highgate actually attracts — all have real purchasing power in this mix. Only couples without children (Family of 2) fall just short of the Corporate-Ready floor.</div>
         </div>
       </div>
     </section>
@@ -448,7 +492,7 @@
         </div>
         <div class="card">
           <h2>Profitability at a Glance</h2>
-          <p class="hint">Est. GDV vs. modeled land + construction cost. Budget ceiling and full cost breakdown are in Details below.</p>
+          <p class="hint">Est. GDV vs. modeled construction cost (land already owned, excluded as sunk). Budget ceiling and full cost breakdown are in Details below.</p>
           <div class="chart-wrap" id="chartProfitabilitySummary"></div>
         </div>
       </div>
@@ -465,11 +509,11 @@
 
       <div class="card" id="demandMatchCard">
         <h2>Demand&ndash;Offer Match &mdash; Full Breakdown</h2>
-        <p class="hint">Does this configuration's unit mix actually match real demand &mdash; proven &#3647;40M+ corridor absorption, the corporate/expat affordability pool, and general-market price-segment proxies &mdash; or is it priced beyond what's proven to sell here? Updates live with unit count, positioning, family housing budget and rental yield.</p>
+        <p class="hint">Does this configuration's unit mix actually match real demand &mdash; proven &#3647;36M+ corridor absorption and the corporate/expat affordability pool &mdash; or is it priced beyond what's proven to sell here? Updates live with unit count, positioning, family housing budget and rental yield.</p>
         <div class="chart-wrap" id="chartDemandMatch"></div>
         <details>
           <summary>Method &amp; sources</summary>
-          <div class="details-body">Composite = (share of your mix priced &#3647;40M+) &times; High-Tier Absorption Fit + (share priced under &#3647;40M) &times; Low-Tier Demand Fit. High-Tier Absorption Fit compares your &#3647;40M+ unit count to the single largest count ever proven sold at that price band in this corridor (11 units, Siam Royal View). Low-Tier Demand Fit averages (a) the share of your under-&#3647;40M units reachable by the current corporate/expat housing budget at the current assumed rental yield, and (b) the share priced at/under &#3647;12M, the ceiling of the proxy covering roughly 80% of general Pattaya-area transactions. Sources: CBRE (Thailand) H2 2024 &middot; Bamboo Routes (REIC-derived) &middot; the Benchmark Developments table below &middot; the Corporate &amp; Expat Rental Demand Check panel. CBRE's qualitative note that luxury/super-luxury demand remains resilient (Middle East, Japan, Russia buyers) isn't reducible to a number and isn't reflected in the score &mdash; treat it as context, not evidence the score already counts.</div>
+          <div class="details-body">Composite = (share of your mix priced &#3647;36M+, i.e. Signature + Estate) &times; High-Tier Absorption Fit + (share priced under &#3647;36M, i.e. Family + Corporate-Ready) &times; Low-Tier Affordability Fit. High-Tier Absorption Fit compares your Signature+Estate unit count to the single largest count ever proven sold at a &#3647;40M+ average price in this corridor (11 units, Siam Royal View) &mdash; the report applies this same ceiling to the combined &#3647;36M+ band. Low-Tier Affordability Fit is graded per unit against the current corporate/expat housing budget at the current assumed rental yield, not a binary cutoff. Sources: the Benchmark Developments table below (Update 3 report, Section 1) &middot; the Corporate &amp; Expat Rental Demand Check panel &middot; CBRE (Thailand) H2 2024 and Bamboo Routes (REIC-derived) market data, carried over from the original analysis behind this tool and not restated in the Update 3 report's own shorter reference list (see footer). A fifth, smaller-footprint shared-pool tier tested during the report's analysis would have scored a fully "green" match, but was excluded here because it drops below the 5-star, every-unit-has-a-private-pool brief this configuration keeps (see Executive Summary). CBRE's qualitative note that luxury/super-luxury demand remains resilient (Middle East, Japan, Russia buyers) isn't reducible to a number and isn't reflected in the score &mdash; treat it as context, not evidence the score already counts.</div>
         </details>
       </div>
 
@@ -497,7 +541,7 @@
 
         <div class="card">
           <h2>Budget, Cost &amp; Margin</h2>
-          <p class="hint">GDV vs. your budget ceiling vs. modeled land + construction cost.</p>
+          <p class="hint">GDV vs. your budget ceiling vs. modeled construction cost. Land is excluded &mdash; already owned and treated as sunk.</p>
           <div class="chart-wrap" id="chartFeasibility"></div>
         </div>
 
@@ -505,6 +549,29 @@
           <h2>Feasibility Flags</h2>
           <p class="hint">Automated checks against the report's evidence and your assumptions.</p>
           <div id="flags"></div>
+        </div>
+
+        <div class="card">
+          <h2>Key Risks &amp; Decisions Needed</h2>
+          <p class="hint">Static — condensed from Section 5 of the Update 3 (Aug 2026) report (Section 5's 7th item, phasing sequence, is covered in its own Phasing Plan card below). Not driven by the parameters above; confirm each before underwriting or marketing off these figures.</p>
+          <div class="risk-list">
+            <div class="risk-item"><span class="risk-num">1</span><div class="risk-body"><strong>Land survey:</strong> the ≈320&ndash;450m distance to Highgate and the ≈65&ndash;75 rai size are satellite-based estimates calibrated against known coordinates, not survey figures &mdash; confirm both, and the title deed (Chanote) boundary, before using either in marketing or underwriting.</div></div>
+            <div class="risk-item"><span class="risk-num">2</span><div class="risk-body"><strong>Neighboring compound:</strong> a walled compound with several long buildings sits directly between the plot and Pornprapanimit Rd &mdash; identify what it is (agricultural, industrial, or otherwise), since it's the site's closest neighbor and sits on the route to Highgate.</div></div>
+            <div class="risk-item"><span class="risk-num">3</span><div class="risk-body"><strong>Waterway on site:</strong> a stream or canal (Khlong Takiang) appears to cross the property &mdash; check flood risk, drainage, and buildable-area impact before finalizing the site plan.</div></div>
+            <div class="risk-item"><span class="risk-num">4</span><div class="risk-body"><strong>Cost quotes:</strong> the &#3647;55,000/sqm construction placeholder is not a researched figure, and site-clearing for raw forested land is not yet costed &mdash; get real quotes for both before setting a margin or IRR target.</div></div>
+            <div class="risk-item"><span class="risk-num">5</span><div class="risk-body"><strong>Ownership structure:</strong> confirm how a mixed Thai/international buyer base will be handled &mdash; Thai-quota units vs. a company-ownership structure &mdash; with Thai counsel.</div></div>
+            <div class="risk-item"><span class="risk-num">6</span><div class="risk-body"><strong>Pricing headroom:</strong> with villas in this market currently closing ≈8% below asking, build negotiation room into initial list prices rather than pricing to the top of each tier's range.</div></div>
+          </div>
+          <details>
+            <summary>Next steps (Section 6)</summary>
+            <div class="details-body">
+              &bull; Site survey: confirm the title deed boundary and actual size, true distance to Highgate, access road status, and what the neighboring compound is.<br>
+              &bull; Get real construction and site-clearing quotes; rebuild the margin/IRR model on those, not the &#3647;55,000/sqm placeholder above.<br>
+              &bull; Commission concept design for the four unit types, prioritizing Family and Corporate-Ready first &mdash; they carry the volume.<br>
+              &bull; Legal review of ownership structure for the target buyer mix.<br>
+              &bull; Soft-launch Phase 1 (Corporate-Ready + Family + show villas) to validate real absorption before releasing Phase 2.
+            </div>
+          </details>
         </div>
 
         <div class="group-label">Market context</div>
@@ -541,6 +608,7 @@
           <h2>Phasing Plan</h2>
           <div id="phasing" class="narrative"></div>
           <div class="chart-wrap" id="chartPhasing" style="margin-top:14px;"></div>
+          <p class="hint" style="margin-top:10px;">Note: the report's Section 5 approximates Phase 1 at "~30 units," while its own categorical breakdown (Corporate-Ready + Family + 1&ndash;2 Signature show villas) totals ≈39&ndash;41 at the base-case mix &mdash; a rounding already present in the source report, not introduced here. This tool computes the full categorical total live.</p>
         </div>
 
         <div class="card">
@@ -565,14 +633,18 @@
 
   <footer>
     <div class="conf">Confidential — internal investment discussion only.</div>
-    <div>Source: "Investment Recommendation — Family Housing Development, East Pattaya," prepared for the Investment Committee, 24 August 2026. Figures are indicative and require validation via a full feasibility study.</div>
+    <div>Source: "Investor Recommendation — Revised, 50-Unit Family Villa Development, East Pattaya" (Update 3, August 2026 — land ownership and site location confirmed). Figures are indicative and require validation via a full feasibility study.</div>
     <details>
       <summary>Sources &amp; Methodology</summary>
       <div class="details-body">
-        <strong>Benchmarks:</strong> Lumina Pool Villa (developer site) · Thailand-Property.com · ddproperty.com · KellerHenson · PropertyHub.in.th · PropertySpace · FazWaz · Coastal Real Estate Thailand · ESS Developments · Lazudi · Property-Hua-Hin.com · Opal Village · Thai Property 1. Gathered Aug 2026 from developer sites and listing portals — re-verify before underwriting; some (e.g. Panalee Banna, resale-derived comps) likely understate original launch pricing.<br><br>
-        <strong>Corporate &amp; Expat Housing:</strong> Pearl Property Pattaya · Lakeside Property Pattaya · FazWaz villa rentals · International Citizens (cost of living) · ExpatDen · WDX Properties · Varsovia Estate · Global Property Guide (Thailand rental yields) · two anecdotal relocation-package data points (Mumsnet, Quora forums — single reports, not survey data). Illustrative, not a Pattaya-specific corporate-mobility survey.<br><br>
-        <strong>General:</strong> Highgate School Thailand · Highgate School UK · Siam Motors Group · Bangkok Post · The Pattaya News · Cornerstone Real Estate · Conrad Villas/Conrad Properties · Hipflat · CBRE Thailand (Pattaya Overall H2 2024) · Bamboo Routes (REIC-derived) · Wikipedia (Siam Country Club).<br><br>
-        Figures current as of August 2026; re-verify before formal underwriting.
+        <em>From the Update 3 (Aug 2026) report's own Sources &amp; References (Section 7):</em><br>
+        <strong>School &amp; location:</strong> Highgate International School Thailand (official site) · The Pattaya News (opening date, campus details, admissions) · Google Maps/Places (site coordinates, distances, and the annotated plot analysis referenced in Section 4 of the report).<br><br>
+        <strong>Pattaya market conditions (2026):</strong> Pattaya Mail — "Pattaya Property Market 2026: inventory pressure meets relocation-driven demand" · KiTalent — "Pattaya's Real Estate Paradox: 42,000 Unsold Units" · Bamboo Routes — Pattaya Real Estate Market Analysis 2026 (pricing power, days-on-market).<br><br>
+        <strong>Comparable developments:</strong> Thailand-Property.com (Siam Royal View listings) · Hipflat (Pattaya villa listings) · FazWaz (Pattaya villa listings), plus similar listing portals and developer sites gathered Aug 2026 &mdash; re-verify before underwriting; some (e.g. Panalee Banna, resale-derived comps) likely understate original launch pricing.<br><br>
+        <em>Additional sourcing behind this tool's interactive features (Demand&ndash;Offer Match score, Corporate &amp; Expat Rental Demand Check) &mdash; carried over from the original analysis this tool was built from, and not restated in the Update 3 report's own shorter reference list above:</em><br>
+        <strong>Market data:</strong> CBRE (Thailand) H2 2024.<br><br>
+        <strong>Corporate &amp; expat housing:</strong> Pearl Property Pattaya · Lakeside Property Pattaya · FazWaz villa rentals · International Citizens (cost of living) · ExpatDen · WDX Properties · Varsovia Estate · Global Property Guide (Thailand rental yields) · two anecdotal relocation-package data points (Mumsnet, Quora forums — single reports, not survey data). Illustrative, not a Pattaya-specific corporate-mobility survey.<br><br>
+        Figures current as of the Update 3 (August 2026) report; re-verify before formal underwriting.
       </div>
     </details>
   </footer>
@@ -610,31 +682,30 @@
     if(sessionStorage.getItem('smg_unlocked')==='1'){ unlock(); }
   }catch(e){}
 
-  /* ---------------- Recommendation engine ---------------- */
-  // Constants sourced from the report (Sections 2, 3, 5, 6) unless marked as an assumption.
+  /* ---------------- Recommendation engine ----------------
+     Constants sourced from the Update 3 (Aug 2026) report's Section 2 unit-mix table
+     unless marked as an assumption. The four tiers replace the original three/five —
+     every unit keeps a private pool, full garden and 5-star finish; only price changes. */
   var TYPES = {
-    A: { name:"Core",      beds:4, livingLabel:"450–500 sqm",  livingAvg:475, plotLabel:"150–180 sq.wah",              plotSqm:660,  priceLabel:"40M – 45M",  priceLow:40,  priceHigh:45,  priceMid:42.5, color:"var(--series-1)" },
-    B: { name:"Elevated",  beds:5, livingLabel:"550–650 sqm",  livingAvg:600, plotLabel:"180–220 sq.wah",              plotSqm:800,  priceLabel:"48M – 55M",  priceLow:48,  priceHigh:55,  priceMid:51.5, color:"var(--series-2)" },
-    C: { name:"Signature", beds:6, livingLabel:"750–900+ sqm", livingAvg:825, plotLabel:"250+ sq.wah (premium plots)", plotSqm:1100, priceLabel:"58M – 65M+", priceLow:58,  priceHigh:65,  priceMid:61.5, color:"var(--series-3)" },
-    D: { name:"Essential", beds:3, livingLabel:"280–320 sqm",  livingAvg:300, plotLabel:"100–120 sq.wah",              plotSqm:440,  priceLabel:"18M – 25M",  priceLow:18,  priceHigh:25,  priceMid:21.5, color:"var(--series-4)",
-         note:"No exact report match — aligns with proven mid-luxury comps (Amber/Onyx, Lumina Pool Villa), a lower-risk, already-proven category here." },
-    E: { name:"Compact",   beds:2, livingLabel:"150–180 sqm",  livingAvg:165, plotLabel:"60–80 sq.wah",                plotSqm:280,  priceLabel:"9.5M – 13M", priceLow:9.5, priceHigh:13,  priceMid:11.25, color:"var(--series-5)",
-         note:"No comparable of this size in the corridor. Likely means a shared, not private, pool — exploratory, not a validated local product." }
+    CRD: { name:"Corporate-Ready", beds:3, livingLabel:"280–330 sqm", livingAvg:305, plotLabel:"80–100 sq.wah",  plotSqm:360,  priceLabel:"15M – 21M", priceLow:15, priceHigh:21, priceMid:18,   color:"var(--series-1)" },
+    FAM: { name:"Family",          beds:4, livingLabel:"380–450 sqm", livingAvg:415, plotLabel:"130–160 sq.wah", plotSqm:580,  priceLabel:"24M – 32M", priceLow:24, priceHigh:32, priceMid:28,   color:"var(--series-3)" },
+    EST: { name:"Estate",          beds:5, livingLabel:"500–600 sqm", livingAvg:550, plotLabel:"180–220 sq.wah", plotSqm:800,  priceLabel:"36M – 44M", priceLow:36, priceHigh:44, priceMid:40,   color:"var(--series-4)" },
+    SIG: { name:"Signature",       beds:6, livingLabel:"750–900 sqm", livingAvg:825, plotLabel:"250+ sq.wah",    plotSqm:1100, priceLabel:"55M – 65M", priceLow:55, priceHigh:65, priceMid:60,   color:"var(--series-2)" }
   };
-  var TYPE_ORDER = ["E","D","A","B","C"]; // ascending by price — the product ladder
+  var TYPE_ORDER = ["CRD","FAM","EST","SIG"]; // ascending by price — the product ladder
 
   var POSITION_RATIOS = {
-    gapfill:    { A:0.60, B:0.28, C:0.12, D:0,    E:0    }, // report's base case: 30/14/6 of 50
-    volume:     { A:0.70, B:0.20, C:0.05, D:0.05, E:0    },
-    flagship:   { A:0.20, B:0.35, C:0.45, D:0,    E:0    },
-    affordable: { A:0.10, B:0.05, C:0,    D:0.45, E:0.40 }
+    gapfill:    { CRD:0.38, FAM:0.40, EST:0.10, SIG:0.12 }, // report's base case: 19/20/5/6 of 50 (Section 2)
+    volume:     { CRD:0.44, FAM:0.44, EST:0.06, SIG:0.06 },
+    flagship:   { CRD:0.15, FAM:0.30, EST:0.30, SIG:0.25 },
+    affordable: { CRD:0.65, FAM:0.35, EST:0,    SIG:0    }
   };
 
-  var CONSTRUCTION_COST_PER_SQM = 55000; // Illustrative assumption — not from source report.
-  var LAND_COST_PER_RAI_M = 10; // Illustrative assumption (≈฿10M/rai) — not from source report or researched; override once the confirmed parcel has a real price.
-  var COMMON_AREA_FACTOR = 1.325; // midpoint of report's 30–35% allowance (Section 5)
-  var MAX_GDV_FOR_BUBBLE_SCALE = 4300; // ≈ 70 units all at Type C avg price — fixed reference so bubble sizes stay comparable as inputs change.
-  var PROVEN_40M_PLUS_CEILING = 11; // largest proven unit count sold at a ฿40M+ average price in this corridor (Siam Royal View)
+  var CONSTRUCTION_COST_PER_SQM = 55000; // Illustrative placeholder used throughout the report — not a researched figure (Section 4).
+  var COMMON_AREA_FACTOR = 1.325; // midpoint of report's 30–35% allowance
+  var MAX_GDV_FOR_BUBBLE_SCALE = 4300; // ≈ 70 units all at Signature avg price — fixed reference so bubble sizes stay comparable as inputs change.
+  var PROVEN_HIGH_TIER_CEILING = 11; // largest proven unit count ever sold at a ฿40M+ average price in this corridor (Siam Royal View) — applied here as the ceiling for the combined ฿36M+ Signature+Estate band.
+  var LAND_AVAILABLE_LOW = 65, LAND_AVAILABLE_HIGH = 75; // confirmed-owned parcel, satellite-estimated size pending survey (Section 4)
 
   // Corridor comparables — see "Benchmark Developments" table. avg = representative price (THB M) used for the y-axis.
   var BENCHMARKS = [
@@ -657,10 +728,10 @@
   }
 
   var state = {
-    land: 32, dist: 1500, own: "freehold", velocity: "moderate",
-    budget: 2.20, margin: 20, launch: "phased", contractor: "top",
+    own: "freehold", velocity: "moderate",
+    budget: 1.45, margin: 20, launch: "phased", contractor: "top",
     units: 50, position: "gapfill",
-    famBudget: 115000, rentalYield: 6
+    famBudget: 125000, rentalYield: 6
   };
 
   // Largest-remainder apportionment: guarantees counts sum to exactly N,
@@ -669,7 +740,7 @@
   function computeMix(){
     var ratios = POSITION_RATIOS[state.position];
     var N = state.units;
-    var keys = ["A","B","C","D","E"];
+    var keys = ["CRD","FAM","EST","SIG"];
     var floor = {}, fracs = [], flooredSum = 0;
     keys.forEach(function(k){
       var exact = N * (ratios[k] || 0);
@@ -715,9 +786,9 @@
     svg += '<line x1="0" y1="'+plotH+'" x2="'+plotW+'" y2="'+plotH+'" stroke="var(--axis-line)" stroke-width="1"/>';
     svg += '<line x1="0" y1="0" x2="0" y2="'+plotH+'" stroke="var(--axis-line)" stroke-width="1"/>';
 
-    var bx1=x(5), bx2=x(11), by1=y(65), by2=y(39);
+    var bx1=x(5), bx2=x(11), by1=y(65), by2=y(36);
     svg += '<rect x="'+bx1+'" y="'+by1+'" width="'+(bx2-bx1)+'" height="'+(by2-by1)+'" fill="var(--gold)" opacity="0.12"/>';
-    svg += '<text x="'+(bx1+4)+'" y="'+(by1+13)+'" font-size="9" font-weight="700" fill="#7a5b1e">Proven boutique ultra-luxury zone</text>';
+    svg += '<text x="'+(bx1+4)+'" y="'+(by1+13)+'" font-size="9" font-weight="700" fill="#7a5b1e">Proven ฿36M+ zone (max 11 units)</text>';
 
     var vx2=Math.min(124,xMax);
     var vx1=x(40), vx2p=x(vx2), vy1=y(30), vy2=y(0);
@@ -770,13 +841,17 @@
     return svg + legend;
   }
 
-  function renderFeasibilityChart(gdvM, budgetM, totalCostM, constructionCostM, landCostM, impliedMarginPct){
+  function renderFeasibilityChart(gdvM, budgetM, totalCostM, constructionCostM, impliedMarginPct){
     var items = [
       { label:"Estimated GDV", value:gdvM, color:"var(--navy-2)" },
       { label:"Budget ceiling", value:budgetM, color:"var(--gold)" },
-      { label:"Modeled cost (land + construction)", value:totalCostM, color:"var(--context-gray)" }
+      { label:"Modeled cost (construction — land already owned)", value:totalCostM, color:"var(--context-gray)" }
     ];
-    var W=640, rowH=36, labelW=190;
+    // Layout only (no text/values/colors changed): the "Modeled cost" label is long enough
+    // that a single text line at the old labelW=190 ran under the bar and got painted over
+    // by it (SVG paints in document order). Labels containing an em dash now wrap onto a
+    // second, smaller line above/below the bar's vertical center instead of overflowing.
+    var W=640, rowH=40, labelW=214;
     var H = items.length*rowH + 12;
     var maxV = Math.max.apply(null, items.map(function(i){return i.value;})) * 1.2;
     var barMaxW = W - labelW - 70;
@@ -784,27 +859,33 @@
     items.forEach(function(it, i){
       var yy = 8 + i*rowH;
       var w = (it.value/maxV) * barMaxW;
-      svg += '<text x="0" y="'+(yy+15)+'" font-size="11" fill="var(--text)">'+it.label+'</text>';
+      var labelParts = it.label.split(' — ');
+      if(labelParts.length === 2){
+        svg += '<text x="0" y="'+(yy+9)+'" font-size="11" fill="var(--text)">'+labelParts[0]+'</text>';
+        svg += '<text x="0" y="'+(yy+21)+'" font-size="9.5" fill="var(--muted)">'+labelParts[1]+'</text>';
+      } else {
+        svg += '<text x="0" y="'+(yy+15)+'" font-size="11" fill="var(--text)">'+it.label+'</text>';
+      }
       svg += '<rect x="'+labelW+'" y="'+yy+'" width="'+w+'" height="20" rx="4" fill="'+it.color+'"><title>'+it.label+': '+fmtBaht(it.value)+'</title></rect>';
       svg += '<text x="'+(labelW+w+8)+'" y="'+(yy+15)+'" font-size="11" font-weight="700" fill="var(--navy-2)">'+fmtBaht(it.value)+'</text>';
     });
     svg += '</svg>';
-    var breakdown = '<div style="margin-top:8px;font-size:.78rem;color:var(--muted);">Of which construction ≈'+fmtBaht(constructionCostM)+' (฿'+CONSTRUCTION_COST_PER_SQM.toLocaleString()+'/sqm living area, illustrative) and land ≈'+fmtBaht(landCostM)+' (฿'+(LAND_COST_PER_RAI_M).toFixed(0)+'M/rai, illustrative).</div>';
+    var breakdown = '<div style="margin-top:8px;font-size:.78rem;color:var(--muted);">Construction only, ≈'+fmtBaht(constructionCostM)+' at ฿'+CONSTRUCTION_COST_PER_SQM.toLocaleString()+'/sqm of living area (illustrative placeholder — Section 4). Land is excluded as sunk (already owned); site-clearing for this raw, forested land is not yet costed.</div>';
     var marginColor = impliedMarginPct>=20 ? "#1f8a55" : (impliedMarginPct>=10 ? "#a8710a" : "#b3261e");
-    var note = '<div style="margin-top:6px;font-size:.82rem;color:var(--muted);">Implied margin (GDV vs. modeled land + construction cost): <strong style="color:'+marginColor+';">'+impliedMarginPct.toFixed(0)+'%</strong></div>';
+    var note = '<div style="margin-top:6px;font-size:.82rem;color:var(--muted);">Implied margin (GDV vs. modeled construction cost, land excluded as sunk): <strong style="color:'+marginColor+';">'+impliedMarginPct.toFixed(0)+'%</strong></div>';
     return svg + breakdown + note;
   }
 
   function renderPhasingChart(launch, mix, gdvM){
     var W=640;
     if(launch === "simultaneous"){
-      var total = mix.A+mix.B+mix.C+mix.D+mix.E;
+      var total = mix.CRD+mix.FAM+mix.EST+mix.SIG;
       return '<svg viewBox="0 0 '+W+' 50" style="width:100%;height:auto;"><rect x="0" y="10" width="'+W+'" height="24" rx="4" fill="var(--navy-2)"><title>Simultaneous release: '+total+' units, '+fmtBaht(gdvM)+'</title></rect><text x="'+(W/2)+'" y="27" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">All '+total+' units — simultaneous release — '+fmtBaht(gdvM)+' GDV</text></svg>';
     }
-    var p1C = Math.min(2, mix.C);
-    var p1Units = mix.A + mix.D + mix.E + p1C;
-    var p2Units = mix.B + (mix.C - p1C);
-    var p1GDV = mix.A*TYPES.A.priceMid + mix.D*TYPES.D.priceMid + mix.E*TYPES.E.priceMid + p1C*TYPES.C.priceMid;
+    var p1Sig = Math.min(2, mix.SIG);
+    var p1Units = mix.CRD + mix.FAM + p1Sig;
+    var p2Units = mix.EST + (mix.SIG - p1Sig);
+    var p1GDV = mix.CRD*TYPES.CRD.priceMid + mix.FAM*TYPES.FAM.priceMid + p1Sig*TYPES.SIG.priceMid;
     var p2GDV = gdvM - p1GDV;
     var w1 = (p1GDV/gdvM) * W, w2 = W - w1 - 2;
     var svg = '<svg viewBox="0 0 '+W+' 50" style="width:100%;height:auto;">'+
@@ -821,7 +902,7 @@
   function renderAffordabilityChart(supportableM){
     var W=640, padL=94, rowH=34;
     var H = TYPE_ORDER.length*rowH + 26;
-    var xMax = Math.max(70, supportableM+10, TYPES.C.priceHigh+5);
+    var xMax = Math.max(70, supportableM+10, TYPES.SIG.priceHigh+5);
     var plotW = W - padL - 16;
     var x = function(v){ return padL + (v/xMax)*plotW; };
     var svg = '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;">';
@@ -870,36 +951,36 @@
   }
 
   /* ---------------- Demand–Offer Match ----------------
-     Composite = (share of the mix priced ฿40M+) × High-Tier Absorption Fit
-               + (share priced under ฿40M) × Low-Tier Demand Fit.
-     No invented numbers: PROVEN_40M_PLUS_CEILING, the ฿40M tier threshold, the ฿12M
-     general-market ceiling, and the famBudget/rentalYield→supportableM math are all
-     already used elsewhere in this file — this just recombines them into one score. */
+     Composite = (share of the mix priced ฿36M+) × High-Tier Absorption Fit
+               + (share priced under ฿36M) × Low-Tier Affordability Fit.
+     High-Tier Absorption Fit compares Signature+Estate units against
+     PROVEN_HIGH_TIER_CEILING (11) — the report's own "combined, exactly 11 units sit
+     above ฿36M, matching the single largest proven count" framing (Executive Summary).
+     Low-Tier Affordability Fit is graded per unit (not a binary reachable/not-reachable
+     cutoff): each Family/Corporate-Ready unit scores min(100, supportableM/priceMid×100),
+     weighted by how many units sit in each tier. The report's own ~80%-of-transactions
+     general-market proxy no longer applies now that the cheapest tier floor is ฿15M, so
+     it's been retired rather than kept as a metric that would always read 0%. */
   function computeDemandMatch(mix, N, supportableM){
-    var GENERAL_MARKET_CEILING_M = 12; // upper bound of the "~80% of Pattaya transactions fall under ฿12M" proxy
-
-    var highTierUnits = mix.A + mix.B + mix.C; // priced ฿40M+ — same threshold the old Demand Fit banner used
-    var lowTierUnits  = mix.D + mix.E;          // priced under ฿40M
+    var highTierUnits = mix.SIG + mix.EST; // priced ฿36M+
+    var lowTierUnits  = mix.FAM + mix.CRD;  // priced under ฿36M
     var segShareHigh = N > 0 ? highTierUnits / N : 0;
     var segShareLow  = N > 0 ? lowTierUnits  / N : 0;
 
     function zoneOf(score){ return score >= 70 ? 'green' : (score >= 40 ? 'amber' : 'red'); }
 
-    var scoreHighTier = highTierUnits <= PROVEN_40M_PLUS_CEILING
+    var scoreHighTier = highTierUnits <= PROVEN_HIGH_TIER_CEILING
       ? 100
-      : 100 * PROVEN_40M_PLUS_CEILING / highTierUnits;
+      : 100 * PROVEN_HIGH_TIER_CEILING / highTierUnits;
 
-    var affordReachPct = null, generalMarketPct = null, scoreLowTier = null;
+    var affordReachPct = null, scoreLowTier = null;
     if(lowTierUnits > 0){
-      var affordableUnits = ["D","E"].filter(function(k){ return TYPES[k].priceLow <= supportableM; })
-        .reduce(function(sum,k){ return sum + mix[k]; }, 0);
-      affordReachPct = affordableUnits / lowTierUnits * 100;
-
-      var generalMarketUnits = ["D","E"].filter(function(k){ return TYPES[k].priceLow <= GENERAL_MARKET_CEILING_M; })
-        .reduce(function(sum,k){ return sum + mix[k]; }, 0);
-      generalMarketPct = generalMarketUnits / lowTierUnits * 100;
-
-      scoreLowTier = 0.5 * affordReachPct + 0.5 * generalMarketPct;
+      var reachSum = ["FAM","CRD"].reduce(function(sum,k){
+        var reach = Math.min(100, (supportableM / TYPES[k].priceMid) * 100);
+        return sum + mix[k] * Math.max(0, reach);
+      }, 0);
+      affordReachPct = reachSum / lowTierUnits;
+      scoreLowTier = affordReachPct;
     }
 
     var composite = segShareHigh * scoreHighTier + segShareLow * (scoreLowTier === null ? 0 : scoreLowTier);
@@ -908,10 +989,10 @@
       composite: composite, zone: zoneOf(composite),
       scoreHighTier: scoreHighTier, zoneHighTier: zoneOf(scoreHighTier),
       scoreLowTier: scoreLowTier, zoneLowTier: scoreLowTier === null ? null : zoneOf(scoreLowTier),
-      affordReachPct: affordReachPct, generalMarketPct: generalMarketPct,
+      affordReachPct: affordReachPct,
       highTierUnits: highTierUnits, lowTierUnits: lowTierUnits,
       segShareHigh: segShareHigh, segShareLow: segShareLow,
-      N: N, supportableM: supportableM, generalMarketCeilingM: GENERAL_MARKET_CEILING_M
+      N: N, supportableM: supportableM
     };
   }
 
@@ -921,26 +1002,21 @@
 
     var rows = [
       {
-        label: "High-tier fit — "+dm.highTierUnits+" of "+dm.N+" units at ฿40M+ ("+(dm.segShareHigh*100).toFixed(0)+"% of mix)",
-        detail: "vs. "+PROVEN_40M_PLUS_CEILING+" units — the largest count ever proven sold at a ฿40M+ average price in this corridor (Siam Royal View).",
+        label: "High-tier fit — "+dm.highTierUnits+" of "+dm.N+" units at ฿36M+ ("+(dm.segShareHigh*100).toFixed(0)+"% of mix)",
+        detail: "Signature + Estate units vs. "+PROVEN_HIGH_TIER_CEILING+" — the largest count ever proven sold at a ฿40M+ average price in this corridor (Siam Royal View), applied here as the ceiling for the combined ฿36M+ band.",
         value: dm.scoreHighTier, zone: dm.zoneHighTier
       }
     ];
     if(dm.lowTierUnits > 0){
       rows.push({
-        label: "Affordability reach — of "+dm.lowTierUnits+" units under ฿40M ("+(dm.segShareLow*100).toFixed(0)+"% of mix)",
-        detail: dm.affordReachPct.toFixed(0)+"% are priced within reach of the current corporate/expat housing budget (≈฿"+dm.supportableM.toFixed(1)+"M purchase-equivalent at the assumed rental yield).",
+        label: "Affordability reach — "+dm.lowTierUnits+" Family/Corporate-Ready units under ฿36M ("+(dm.segShareLow*100).toFixed(0)+"% of mix)",
+        detail: dm.affordReachPct.toFixed(0)+"% average reach against the current corporate/expat housing budget (≈฿"+dm.supportableM.toFixed(1)+"M purchase-equivalent at the assumed rental yield, weighted by each tier's mid-price).",
         value: dm.affordReachPct, zone: dm.affordReachPct >= 70 ? 'green' : (dm.affordReachPct >= 40 ? 'amber' : 'red')
-      });
-      rows.push({
-        label: "General-market breadth — same "+dm.lowTierUnits+" units",
-        detail: dm.generalMarketPct.toFixed(0)+"% are priced at/under ฿"+dm.generalMarketCeilingM+"M, the band that absorbs roughly 80% of general Pattaya-area transactions.",
-        value: dm.generalMarketPct, zone: dm.generalMarketPct >= 70 ? 'green' : (dm.generalMarketPct >= 40 ? 'amber' : 'red')
       });
     } else {
       rows.push({
-        label: "Affordability & general-market breadth",
-        detail: "No units in this mix are priced under ฿40M — the corporate/expat rental pool and the general market can't reach any part of this configuration.",
+        label: "Affordability reach",
+        detail: "No Family or Corporate-Ready units in this mix — the corporate/expat rental pool can't reach any part of this configuration.",
         value: 0, zone: 'red'
       });
     }
@@ -968,10 +1044,10 @@
       return '<div style="font-size:.78rem;color:var(--muted);margin-top:4px;line-height:1.5;"><strong style="color:var(--text);">'+row.label.split(' — ')[0]+':</strong> '+row.detail+'</div>';
     }).join('') + '</div>';
 
-    var headlineText = "Your offer is "+(dm.segShareHigh*100).toFixed(0)+"% weighted toward the ฿40M+ tier ("+dm.highTierUnits+" units, vs. a proven ceiling of "+PROVEN_40M_PLUS_CEILING+"). " +
+    var headlineText = "Your offer is "+(dm.segShareHigh*100).toFixed(0)+"% weighted toward the ฿36M+ tier ("+dm.highTierUnits+" units, vs. a proven ceiling of "+PROVEN_HIGH_TIER_CEILING+"). " +
       (dm.lowTierUnits > 0
-        ? "The remaining "+dm.lowTierUnits+" units under ฿40M reach "+dm.affordReachPct.toFixed(0)+"% of the corporate/expat budget pool and "+dm.generalMarketPct.toFixed(0)+"% sit within the general-market price band."
-        : "No units are priced to reach the corporate/expat rental pool or the general market — this is a single-tier bet on outright HNW/international buyers alone.");
+        ? "The remaining "+dm.lowTierUnits+" Family/Corporate-Ready units reach "+dm.affordReachPct.toFixed(0)+"% of the corporate/expat housing budget pool on average."
+        : "No units are priced to reach the corporate/expat rental pool — this is a single-tier bet on outright HNW/international buyers alone.");
     var headline = '<div class="flag '+dm.zone+'"><div class="dot"></div><div><strong>'+dm.composite.toFixed(0)+'/100 — '+zoneLabel[dm.zone]+'.</strong> '+headlineText+'</div></div>';
 
     return headline + svg + notes;
@@ -988,11 +1064,10 @@
 
     var oneLiner;
     if(dm.lowTierUnits > 0){
-      oneLiner = dm.highTierUnits+" of "+dm.N+" units priced ฿40M+ (proven ceiling: "+PROVEN_40M_PLUS_CEILING+" units) — the remaining "+
-        dm.lowTierUnits+" reach "+dm.affordReachPct.toFixed(0)+"% of the corporate/expat budget pool and "+
-        dm.generalMarketPct.toFixed(0)+"% of the general market.";
+      oneLiner = dm.highTierUnits+" of "+dm.N+" units priced ฿36M+ (proven ceiling: "+PROVEN_HIGH_TIER_CEILING+" units) — the remaining "+
+        dm.lowTierUnits+" Family/Corporate-Ready units reach "+dm.affordReachPct.toFixed(0)+"% of the corporate/expat housing budget pool on average.";
     } else {
-      oneLiner = "All "+dm.N+" units are priced ฿40M+ ("+dm.highTierUnits+" vs. a proven ceiling of "+PROVEN_40M_PLUS_CEILING+
+      oneLiner = "All "+dm.N+" units are priced ฿36M+ ("+dm.highTierUnits+" vs. a proven ceiling of "+PROVEN_HIGH_TIER_CEILING+
         ") — a single-tier bet on outright HNW/international buyers, with no affordability reach.";
     }
 
@@ -1059,7 +1134,7 @@
     var N = state.units;
 
     var gdvM = 0, plotSqmTotal = 0, livingSqmTotal = 0;
-    ["A","B","C","D","E"].forEach(function(k){
+    TYPE_ORDER.forEach(function(k){
       gdvM += mix[k]*TYPES[k].priceMid;
       plotSqmTotal += mix[k]*TYPES[k].plotSqm;
       livingSqmTotal += mix[k]*TYPES[k].livingAvg;
@@ -1067,8 +1142,7 @@
     var avgM = gdvM / N;
     var landReqRai = (plotSqmTotal * COMMON_AREA_FACTOR) / 1600;
     var constructionCostM = (livingSqmTotal * CONSTRUCTION_COST_PER_SQM) / 1e6;
-    var landCostM = state.land * LAND_COST_PER_RAI_M;
-    var totalCostM = constructionCostM + landCostM;
+    var totalCostM = constructionCostM; // land excluded as sunk — already owned (Section 4)
     var budgetM = state.budget * 1000;
     var headroomM = budgetM - totalCostM;
     var impliedMarginPct = ((gdvM - totalCostM) / gdvM) * 100;
@@ -1084,26 +1158,26 @@
     document.getElementById('es_avg').textContent = fmtBaht(avgM);
     document.getElementById('es_margin').textContent = impliedMarginPct.toFixed(0) + "%";
 
-    // Mix table
+    // Mix table — highest price first, matching the report's Section 2 table order
     var monthlyRentOf = function(k){ return TYPES[k].priceMid * 1e6 * (state.rentalYield/100) / 12; };
-    document.getElementById('mixTable').innerHTML = renderRows(TYPE_ORDER, function(k){
+    document.getElementById('mixTable').innerHTML = renderRows(TYPE_ORDER.slice().reverse(), function(k){
       var t = TYPES[k];
-      var label = "<span class='swatch' style='background:"+t.color+"'></span>"+k+" — " + t.name;
+      var label = "<span class='swatch' style='background:"+t.color+"'></span>" + t.name;
       var rent = monthlyRentOf(k);
       return "<tr class='"+(mix[k]===0?'zero':'')+"'><td>"+label+"</td><td>"+t.beds+"</td><td>"+t.livingLabel+"</td><td>"+t.plotLabel+"</td><td class='num'>"+t.priceLabel+"</td><td class='num'>"+mix[k]+"</td><td class='num'>฿"+Math.round(rent).toLocaleString()+"</td></tr>";
     });
     document.getElementById('rentNote').innerHTML = "Illustrative — priceMid × assumed "+state.rentalYield.toFixed(1)+"% gross yield ÷ 12 (yield set in the panel below). Not a per-unit rental survey.";
 
     var notesHtml = "";
-    ["D","E"].forEach(function(k){
-      if(mix[k] > 0){ notesHtml += "<div class='type-note'><strong>Type "+k+" ("+TYPES[k].name+"):</strong> "+TYPES[k].note+"</div>"; }
+    TYPE_ORDER.forEach(function(k){
+      if(mix[k] > 0 && TYPES[k].note){ notesHtml += "<div class='type-note'><strong>"+TYPES[k].name+":</strong> "+TYPES[k].note+"</div>"; }
     });
     document.getElementById('typeNotes').innerHTML = notesHtml;
 
     // Charts
     document.getElementById('chartPositioning').innerHTML = renderPositioningChart(mix, N, avgM, gdvM);
     document.getElementById('chartRevenueMix').innerHTML = renderRevenueMixChart(mix, gdvM);
-    document.getElementById('chartFeasibility').innerHTML = renderFeasibilityChart(gdvM, budgetM, totalCostM, constructionCostM, landCostM, impliedMarginPct);
+    document.getElementById('chartFeasibility').innerHTML = renderFeasibilityChart(gdvM, budgetM, totalCostM, constructionCostM, impliedMarginPct);
     document.getElementById('chartPhasing').innerHTML = renderPhasingChart(state.launch, mix, gdvM);
     renderBenchmarkTable();
     renderFamilyBudgetTable(state.rentalYield);
@@ -1125,56 +1199,48 @@
 
     // ---- Flags ----
     var flags = [];
-    var smallShare = (mix.D + mix.E) > 0;
+    var lowTierShare = (mix.FAM + mix.CRD) > 0;
 
-    if(landReqRai > state.land * 1.05){
-      var suggestion = smallShare ? "" : " Consider shifting some allocation to Type D or E — they use less land per unit (try 'Affordable / corporate-rental anchored').";
-      flags.push(['red', "Undersized parcel: this mix needs ≈"+landReqRai.toFixed(1)+" rai but only "+state.land+" rai is confirmed."+suggestion]);
-    } else if(landReqRai < state.land * 0.85){
-      flags.push(['amber', "Parcel is larger than required: needs only ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" available. Consider more units or a higher-end mix."]);
+    if(landReqRai > LAND_AVAILABLE_HIGH){
+      flags.push(['red', "This mix needs ≈"+landReqRai.toFixed(1)+" rai — more than even the upper satellite estimate of the owned parcel ("+LAND_AVAILABLE_LOW+"–"+LAND_AVAILABLE_HIGH+" rai, survey pending). Trim unit count or shift toward Family/Corporate-Ready."]);
+    } else if(landReqRai > LAND_AVAILABLE_LOW){
+      flags.push(['amber', "This mix needs ≈"+landReqRai.toFixed(1)+" rai — within the "+LAND_AVAILABLE_LOW+"–"+LAND_AVAILABLE_HIGH+" rai satellite estimate, but could exceed it if the survey confirms the lower end."]);
     } else {
-      flags.push(['green', "Land parcel is appropriately sized (requires ≈"+landReqRai.toFixed(1)+" rai of "+state.land+" rai)."]);
+      flags.push(['green', "Land required (≈"+landReqRai.toFixed(1)+" rai) is comfortably inside the "+LAND_AVAILABLE_LOW+"–"+LAND_AVAILABLE_HIGH+" rai owned parcel — real room for setbacks, green space, or a later phase."]);
     }
 
+    flags.push(['green', "Site sits ≈320–450m from Highgate's gate — a genuine walking distance, not the 1,500m used in earlier modeling (satellite estimate, survey pending)."]);
+
     if(headroomM <= 0){
-      var suggestion2 = smallShare ? "" : " Consider adding Type D/E units to lower blended cost.";
-      flags.push(['red', "Modeled cost (≈"+fmtBaht(totalCostM)+" land + construction) already exceeds your ฿"+state.budget.toFixed(2)+"bn budget ceiling by ≈"+fmtBaht(-headroomM)+" — no room for financing or contingency."+suggestion2]);
+      var suggestion2 = lowTierShare ? "" : " Consider adding Family/Corporate-Ready units to lower blended cost.";
+      flags.push(['red', "Modeled construction cost (≈"+fmtBaht(totalCostM)+") already exceeds your ฿"+state.budget.toFixed(2)+"bn budget ceiling by ≈"+fmtBaht(-headroomM)+" — no room for financing, contingency or site-clearing."+suggestion2]);
     } else if(headroomM < 0.15 * budgetM){
-      flags.push(['amber', "Tight budget: modeled cost (≈"+fmtBaht(totalCostM)+") leaves only ≈"+fmtBaht(headroomM)+" of your "+state.budget.toFixed(2)+"bn ceiling for financing and contingency."]);
+      flags.push(['amber', "Tight budget: modeled construction cost (≈"+fmtBaht(totalCostM)+") leaves only ≈"+fmtBaht(headroomM)+" of your "+state.budget.toFixed(2)+"bn ceiling for financing, contingency and site-clearing."]);
     } else {
-      flags.push(['green', "Modeled cost (≈"+fmtBaht(totalCostM)+") leaves ≈"+fmtBaht(headroomM)+" of your budget ceiling for financing and contingency."]);
+      flags.push(['green', "Modeled construction cost (≈"+fmtBaht(totalCostM)+") leaves ≈"+fmtBaht(headroomM)+" of your budget ceiling for financing, contingency and site-clearing."]);
     }
 
     if(impliedMarginPct < state.margin - 5){
       flags.push(['red', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) is materially below your "+state.margin+"% target."]);
     } else if(impliedMarginPct < state.margin){
-      flags.push(['amber', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) is close to but below your "+state.margin+"% target."]);
+      flags.push(['amber', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) is close to but below your "+state.margin+"% target — consistent with the report's own ~18%-vs-20%-target finding now that land is excluded as sunk."]);
     } else {
       flags.push(['green', "Implied margin (≈"+impliedMarginPct.toFixed(0)+"%) meets or exceeds your "+state.margin+"% target."]);
     }
 
-    if(state.dist <= 800){
-      flags.push(['green', "At "+state.dist+" m, the site is genuinely walkable to Highgate's gate (~"+Math.round(state.dist/80)+" min) — a 'walking distance' claim is defensible."]);
-    } else if(state.dist <= 2000){
-      flags.push(['amber', "At "+state.dist+" m, 'walking distance' is a stretch (~"+Math.round(state.dist/80)+" min walk). Consider '"+Math.round(state.dist/80)+" minutes from Highgate' instead."]);
-    } else {
-      flags.push(['red', "At "+state.dist+" m, this is not walking distance — lead with the scheduled shuttle-service differentiator instead."]);
-    }
+    flags.push(['amber', "Villas in this market are currently closing ≈8% below asking on average — build negotiation room into initial list prices rather than pricing to the top of each tier's range."]);
 
-    var signatureShare = mix.C / N;
-    var essentialCompactShare = (mix.D + mix.E) / N;
+    var signatureShare = mix.SIG / N;
     if(state.contractor === "standard" && (signatureShare > 0.05 || state.position === "flagship")){
-      flags.push(['red', "A standard local builder may not credibly back Type C Signature pricing (58M–65M+) against the comparables above. Consider an established or top-tier contractor."]);
-    } else if(state.contractor === "top" && essentialCompactShare > 0.5){
-      flags.push(['amber', "A top-tier contractor may be cost-inefficient for a volume-driven Essential/Compact product — an established regional builder can typically match quality here at lower overhead."]);
+      flags.push(['red', "A standard local builder may not credibly back Signature pricing (55M–65M) against the comparables above. Consider an established or top-tier contractor."]);
     } else if(state.contractor === "top"){
-      flags.push(['green', "Top-tier international contractor is consistent with top-end positioning across the mix."]);
+      flags.push(['green', "Top-tier international contractor is consistent with the genuine 5-star standard the report specifies across all four tiers — private pool, full garden, staff quarters and high-spec finish, regardless of price."]);
     } else {
-      flags.push(['amber', "Established regional builder is generally consistent with this tier — confirm comparable villa delivery track record."]);
+      flags.push(['amber', "Established regional builder is generally consistent with this tier — confirm comparable villa delivery track record, since every tier must still meet the report's 5-star spec."]);
     }
 
     if(state.velocity === "fast" && state.launch === "phased"){
-      flags.push(['amber', "A 12–18 month fast-velocity target is hard to reconcile with a 2-phase plan gated on Highgate's opening — consider a simultaneous release or a compressed gap between phases."]);
+      flags.push(['amber', "A 12–18 month fast-velocity target is hard to reconcile with a 2-phase plan gated on Highgate's enrollment ramp-up — consider a simultaneous release or a compressed gap between phases."]);
     }
     if(state.velocity === "patient" && state.launch === "simultaneous"){
       flags.push(['amber', "A patient hold period reduces phasing urgency, but releasing all "+N+" units at once still carries absorption risk."]);
@@ -1182,16 +1248,16 @@
 
     document.getElementById('flags').innerHTML = flags.map(function(f){
       return "<div class='flag "+f[0]+"'><div class='dot'></div><div>"+f[1]+"</div></div>";
-    }).join("") + "<div class='assumption'>Illustrative assumptions, not from the source report: construction ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm of living area, and land ฿"+LAND_COST_PER_RAI_M+"M/rai. Excludes financing and contingency.</div>";
+    }).join("") + "<div class='assumption'>Illustrative assumption, not from the source report: construction ฿"+CONSTRUCTION_COST_PER_SQM.toLocaleString()+"/sqm of living area. Excludes site-clearing (not yet costed for this raw, forested land), financing and contingency.</div>";
 
     // ---- Phasing narrative ----
     var phasingHtml = "";
     if(state.launch === "phased"){
-      var p1C = Math.min(2, mix.C);
-      var p1Units = mix.A + mix.D + mix.E + p1C;
-      var p2Units = mix.B + (mix.C - p1C);
-      phasingHtml = "<strong>Phase 1 (~"+p1Units+" units):</strong> Types A/D/E, plus "+p1C+" Type C show villa(s) to set top-of-market pricing.<br><br>" +
-        "<strong>Phase 2 (~"+p2Units+" units):</strong> Full Type B allocation ("+mix.B+" units) plus the remaining "+(mix.C-p1C)+" Type C unit(s), once Highgate has opened and Phase 1 performance is known.";
+      var p1Sig = Math.min(2, mix.SIG);
+      var p1Units = mix.CRD + mix.FAM + p1Sig;
+      var p2Units = mix.EST + (mix.SIG - p1Sig);
+      phasingHtml = "<strong>Phase 1 (~"+p1Units+" units):</strong> Corporate-Ready + Family units, plus "+p1Sig+" Signature show villa(s) to set top-of-market pricing and validate real absorption.<br><br>" +
+        "<strong>Phase 2 (~"+p2Units+" units):</strong> Estate allocation ("+mix.EST+" units) plus the remaining "+(mix.SIG-p1Sig)+" Signature unit(s), held until Highgate's enrollment has visibly ramped up and Phase 1 performance is known.";
     } else {
       phasingHtml = "<strong>Simultaneous release:</strong> All "+N+" units marketed together. " +
         (N > 11 ? "No comparable project has proven simultaneous absorption of "+N+" units at this price tier (largest proven: 8–11 units)." : "At "+N+" units, this is within proven boutique ultra-luxury absorption (8–11 units).");
@@ -1212,10 +1278,10 @@
     var reachable = TYPE_ORDER.filter(function(k){ return TYPES[k].priceLow <= supportableM; });
     var verdictHtml;
     if(reachable.length === 0){
-      verdictHtml = "<div class='flag red'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and "+state.rentalYield+"% yield, this pool supports ≈"+fmtBaht(supportableM)+" — below even Type E (from ฿"+TYPES.E.priceLow+"M). This demand pool can't support new-build purchase economics here as a for-sale product.</div></div>";
+      verdictHtml = "<div class='flag red'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and "+state.rentalYield+"% yield, this pool supports ≈"+fmtBaht(supportableM)+" — below even Corporate-Ready (from ฿"+TYPES.CRD.priceLow+"M). This demand pool can't support new-build purchase economics here as a for-sale product.</div></div>";
     } else {
       var reachableInMix = reachable.filter(function(k){ return mix[k] > 0; });
-      var reachableLabel = reachable.map(function(k){ return "Type "+k; }).join(", ");
+      var reachableLabel = reachable.map(function(k){ return TYPES[k].name; }).join(", ");
       if(reachableInMix.length > 0){
         var pct = reachableInMix.reduce(function(s,k){return s+mix[k];},0) / N * 100;
         verdictHtml = "<div class='flag green'><div class='dot'></div><div>At ฿"+state.famBudget.toLocaleString()+"/month and "+state.rentalYield+"% yield, this pool supports ≈"+fmtBaht(supportableM)+" — reaching "+reachableLabel+". Your mix allocates "+pct.toFixed(0)+"% of units to these types, so it aligns with this demand pool.</div></div>";
@@ -1230,16 +1296,18 @@
      Grid-searches the two real decision levers this recommendation engine exposes —
      state.units (20–70) and state.position (gapfill/volume/flagship/affordable) — and
      picks the configuration that maximizes implied margin SUBJECT TO a Green demand-match
-     zone. Reuses computeMix() and computeDemandMatch() verbatim so this always stays
-     consistent with the live render() math and the Demand–Offer Match score above. */
+     zone AND fitting the owned parcel (≤ LAND_AVAILABLE_HIGH rai). Reuses computeMix() and
+     computeDemandMatch() verbatim so this always stays consistent with the live render()
+     math and the Demand–Offer Match score above. Note: the report's own recommended mix
+     (the page default) is a deliberate brief-preserving trade-off, not necessarily what
+     this search would pick — see the Demand–Offer Match card's "Method & sources" note. */
   function findOptimalConfig(){
-    var LAND_MIN = 15, LAND_MAX = 40; // must match #in_land's own min/max
     var positions = ["gapfill", "volume", "flagship", "affordable"];
 
     var annualRentNow = state.famBudget * 12;
     var supportableMNow = (annualRentNow / (state.rentalYield / 100)) / 1e6;
 
-    function buildCandidates(enforceLandBounds){
+    function buildCandidates(enforceLandBound){
       var savedUnits = state.units, savedPosition = state.position;
       var list = [];
       for(var u = 20; u <= 70; u++){
@@ -1249,18 +1317,16 @@
           var mix = computeMix();
 
           var gdvM = 0, plotSqmTotal = 0, livingSqmTotal = 0;
-          ["A","B","C","D","E"].forEach(function(k){
+          TYPE_ORDER.forEach(function(k){
             gdvM += mix[k] * TYPES[k].priceMid;
             plotSqmTotal += mix[k] * TYPES[k].plotSqm;
             livingSqmTotal += mix[k] * TYPES[k].livingAvg;
           });
           var landReqRai = (plotSqmTotal * COMMON_AREA_FACTOR) / 1600;
-          if(enforceLandBounds && (landReqRai < LAND_MIN || landReqRai > LAND_MAX)) continue;
+          if(enforceLandBound && landReqRai > LAND_AVAILABLE_HIGH) continue;
 
           var constructionCostM = (livingSqmTotal * CONSTRUCTION_COST_PER_SQM) / 1e6;
-          var landCostM = landReqRai * LAND_COST_PER_RAI_M; // this mix's own right-sized parcel
-          var totalCostM = constructionCostM + landCostM;
-          var marginPct = gdvM > 0 ? ((gdvM - totalCostM) / gdvM) * 100 : -Infinity;
+          var marginPct = gdvM > 0 ? ((gdvM - constructionCostM) / gdvM) * 100 : -Infinity;
 
           var dm = computeDemandMatch(mix, u, supportableMNow);
 
@@ -1292,35 +1358,31 @@
     }
 
     var best = pool[0];
-    var landToSet = Math.min(LAND_MAX, Math.max(LAND_MIN, Math.round(best.landReqRai)));
 
     return {
-      units: best.units, position: best.position, land: landToSet,
+      units: best.units, position: best.position,
       marginPct: best.marginPct, matchScore: best.matchScore, matchZone: best.matchZone,
       reachedGreen: reachedGreen, landReqRaiExact: best.landReqRai
     };
   }
 
-  /* The page's base scenario is the recommended/optimal configuration, not an arbitrary
-     hardcoded snapshot. This resets every field to its baseline (including famBudget/
-     rentalYield), then re-derives units/position/land/margin live via findOptimalConfig()
-     — used both to seed the page on load and by the "Reset to Recommended Configuration"
-     button, so the two can never drift apart. */
+  /* The page's base scenario is the report's own recommended configuration (Section 2:
+     19 Corporate-Ready / 20 Family / 5 Estate / 6 Signature, 50 units) — deliberately NOT
+     whatever findOptimalConfig()'s grid search would pick, because the report explicitly
+     rejected the highest-demand-match option since it meant dropping below the 5-star,
+     every-unit-has-a-private-pool brief. findOptimalConfig() / "Re-optimize" remains
+     available for exploring what a pure margin-and-match-maximizing mix would look like. */
   function applyRecommendedDefaults(){
-    state.dist = 1500;
     state.own = "freehold";
     state.velocity = "moderate";
-    state.budget = 2.20;
+    state.budget = 1.45;
+    state.margin = 20; // report's target (~18% actual, "much closer to the 20% target")
     state.launch = "phased";
     state.contractor = "top";
-    state.famBudget = 115000;
+    state.units = 50;
+    state.position = "gapfill";
+    state.famBudget = 125000;
     state.rentalYield = 6;
-
-    var rec = findOptimalConfig();
-    state.units = rec.units;
-    state.position = rec.position;
-    state.land = rec.land;
-    state.margin = Math.min(35, Math.max(10, Math.round(rec.marginPct)));
   }
 
   /* ---------------- Wire up inputs ---------------- */
@@ -1333,8 +1395,6 @@
     });
   }
 
-  bindRange('in_land','land', function(v){ document.getElementById('v_land').textContent = v+" rai"; });
-  bindRange('in_dist','dist', function(v){ document.getElementById('v_dist').textContent = Number(v).toLocaleString()+" m"; });
   bindRange('in_budget','budget', function(v){ document.getElementById('v_budget').textContent = "฿"+parseFloat(v).toFixed(2)+"bn"; });
   bindRange('in_margin','margin', function(v){ document.getElementById('v_margin').textContent = v+"%"; });
   bindRange('in_units','units', function(v){ document.getElementById('v_units').textContent = v; });
@@ -1374,13 +1434,10 @@
 
     state.units = result.units;
     state.position = result.position;
-    state.land = result.land;
 
     document.getElementById('in_units').value = result.units;
     document.getElementById('v_units').textContent = result.units;
     document.getElementById('in_position').value = result.position;
-    document.getElementById('in_land').value = result.land;
-    document.getElementById('v_land').textContent = result.land + " rai";
 
     render();
 
@@ -1399,7 +1456,7 @@
       : "no combination reaches Green demand match within the land parcel's range, so this is the closest available (" + result.matchScore.toFixed(0) + "/100, " + zoneLabel + "), tie-broken by margin (" + result.marginPct.toFixed(0) + "%).";
 
     msgText.innerHTML = "<strong>Suggested: " + result.units + " units, “" + positionLabels[result.position] + "”</strong> — " + reasonHtml +
-      " Land parcel updated to " + result.land + " rai to match this mix's actual requirement (≈" + result.landReqRaiExact.toFixed(1) + " rai).";
+      " Requires ≈" + result.landReqRaiExact.toFixed(1) + " rai, within the " + LAND_AVAILABLE_LOW + "–" + LAND_AVAILABLE_HIGH + " rai owned parcel.";
 
     msgEl.className = "flag " + result.matchZone;
     msgEl.style.display = "";
@@ -1410,8 +1467,6 @@
      nowhere else, since every other mutation path (sliders, selects, toggles) already
      updates its own control directly as it changes state. */
   function syncInputsFromState(){
-    document.getElementById('in_land').value = state.land; document.getElementById('v_land').textContent = state.land + " rai";
-    document.getElementById('in_dist').value = state.dist; document.getElementById('v_dist').textContent = state.dist.toLocaleString() + " m";
     document.getElementById('in_own').value = state.own;
     document.getElementById('in_velocity').value = state.velocity;
     document.getElementById('in_budget').value = state.budget; document.getElementById('v_budget').textContent = "฿" + state.budget.toFixed(2) + "bn";
